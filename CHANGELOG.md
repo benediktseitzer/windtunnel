@@ -413,7 +413,6 @@ in tracer_information:
  which collects tracer information. Units (where applicable) is [m].
 in save2file_ms_ensemble: 
        new function, similar to save2file_ms in PuffConcentration.py, saves model scale data to file, for (among other things),
-
        plotting the data in Tecplot. Generates a total of 2 different txt files, for convergence analysis data and class data.
        Note that data here is dimensional. 
 
