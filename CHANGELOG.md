@@ -318,9 +318,8 @@ here a threshold total dosage, in place of a threshold peak concentration, is us
 in clear_zeros:
 	new function, nearly identical to 'clear_zeros' in PointConcentration.py, but
  the varibale 'signal' is also masked. Further, since no full scale concentration exists as this
- 
-	point, the mask is based on the sign of net_concentration. Aditionally, masking operation is not performed on the variables, c*, full_scale concentration, and full_scale_time,
-	which are 
+ point, the mask is based on the sign of net_concentration. Aditionally, masking operation is not performed on the variables, c*, full_scale concentration, and full_scale_time,
+ which are 
 (currently) not calculated in this script. 
 in plot_puff: 
 	new function, which plots time series of slected variables
