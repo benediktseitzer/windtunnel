@@ -38,7 +38,6 @@ in calc_net_concentration:
 outside calc_net_concentration
 in get_dosage:
 	added new algorithm to calcualte dosage to check the original algorithm. The questionable results of orignal algorithm noted on 07/06/2019 have been attributed to incorrect indexing 
-
 	in plot_puff function. The algorithm for calcuaitng the dosage thus seems to be working correctly. 
 in get_mask: 
 	new fuction, returns the indeces of all data points which remain
