@@ -534,7 +534,7 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     return h1,h2,h3,h4
 
 def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
-                 comp1_aliasing,comp2_aliasing,wind_comps, height, set_limits=True):
+                 comp1_aliasing,comp2_aliasing,wind_comps, height, ref_path=None, set_limits=True):
     """Plots spectra using INPUT with reference data.
     @parameter: ???
     @parameter: ref_path, type = string
