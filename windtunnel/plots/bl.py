@@ -533,6 +533,66 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     
     return h1,h2,h3,h4
 
+def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
+                 comp1_aliasing,comp2_aliasing,wind_comps, height, set_limits=True):
+    """Plots spectra using INPUT with reference data.
+    @parameter: ???
+    @parameter: ref_path, type = string
+    @parameter ax: axis passed to function
+    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+
+    f_sm = [f_comp1_sm,f_comp2_sm][np.argmin([np.nanmax(f_comp1_sm),np.nanmax(f_comp2_sm)])]
+
+    xsmin = np.nanmin(f_sm[np.where(f_sm > 0)])
+    xsmax = np.nanmax(f_sm[np.where(f_sm > 0)])
+
+    S_comp1_sm = S_comp1_sm[:np.min((len(S_comp1_sm),len(S_comp2_sm)))]
+    S_comp2_sm = S_comp2_sm[:np.min((len(S_comp1_sm), len(S_comp2_sm)))]
+    #    xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
+    #    xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
+    ref_x = np.logspace(np.log10(xsmin), np.log10(xsmax), 50)
+    ref_specs = wt.get_reference_spectra(height, ref_path)
+    #f_sm = f_sm[:len(S_uu_sm)]
+    ax = plt.gca()
+    h1 = ax.loglog(f_sm[:comp1_aliasing], S_comp1_sm[:comp1_aliasing], 'ro', markersize=3,
+                   label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
+    h2 = ax.loglog(f_sm[comp1_aliasing:], S_comp1_sm[comp1_aliasing:], 'ro', markersize=3,
+                   fillstyle='none')
+    h3 =  ax.loglog(f_sm[:comp2_aliasing], S_comp2_sm[:comp2_aliasing], 'bo', markersize=3,
+                   label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[1])+'$')
+    h4 = ax.loglog(f_sm[comp2_aliasing:], S_comp2_sm[comp2_aliasing:], 'bo', markersize=3,
+                   fillstyle='none')
+    if  'u' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[0, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[1, :]),
+                        facecolor=(1., 0.6, 0.6), edgecolor='none', alpha=0.2,
+                        label=r'reference range $uu$')
+
+    if  'v' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[2, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[3, :]),
+                        facecolor=(0.6, 0.6, 1.), edgecolor='none', alpha=0.2,
+                        label=r'reference range $vv$')
+
+    if  'w' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[4, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[5, :]),
+                        facecolor=(0.6, 0.6, 1.), edgecolor='none', alpha=0.2,
+                        label=r'reference range $ww$')
+
+    if set_limits:
+        ax.set_xlim([10**-3,10**1])
+    else:
+        ax.set_xlim(xsmin,xsmax)
+    ax.set_ylim([10 ** -6, 10])
+    ax.set_xlabel(r"$f\cdot z\cdot U^{-1}$")
+    ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
+    ax.legend(loc='lower right', fontsize=11)
+    ax.grid(True)
+
+    return h1, h2
+
 
 def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-

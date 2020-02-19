@@ -438,6 +438,70 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
 
     return f_sm,S_uu_sm,S_vv_sm,S_uv_sm,u_aliasing,v_aliasing,uv_aliasing
 
+
+def calc_spectra_nc(u_comp, t_eq, height):
+    """ Calculate dimensionless energy density spectra from an equidistant
+    time series.
+    @parameter: u_comp, type = np.array or list
+    @parameter: t_eq, type = np.array or list """
+    ## FREQUENCY
+    freq = np.fft.fftfreq(np.size(u_comp), t_eq[1] - t_eq[0])
+
+    ## FFT
+    fft_u = np.fft.fft(u_comp) * 1. / np.size(u_comp)  # normalized fft
+
+    ## DISCRETE SPECTRA
+    nyquist_freq = np.size(t_eq) // 2  # nyquist frequency index
+
+    #  S == E/dn ; dn == 1
+    if np.size(u_comp) % 2 == 0:
+        E_uu = np.hstack((np.abs(fft_u[1:nyquist_freq]) ** 2 *
+                          2., np.abs(fft_u[nyquist_freq]) ** 2))
+
+        # frequency transformation (n to f as referenced in Stull,
+        # p.314) P = N * dt; n=f/P
+        S_uu = E_uu * len(t_eq) * (t_eq[1] - t_eq[0])
+    else:
+        E_uu = np.abs(fft_u[1:nyquist_freq + 1]) ** 2 * 2.
+
+        # frequency transformation (n to f as referenced in Stull, p.314)
+        # P = N * dt; n=f/P
+        S_uu = E_uu * len(t_eq) * (t_eq[1] - t_eq[0])
+
+    # dimensionless
+    S_uu = np.abs(freq[1:nyquist_freq + 1]) * S_uu / (np.nanstd(u_comp) ** 2)
+
+    ##  REDUCED FREQUENCY (PLOT and reference spectra)
+    reduced_freq = freq * height / np.mean(u_comp)
+
+    ##  SMOOTH SPECTRA
+    # use exponents for equi-distant bins in log plot
+    f_sm = np.hstack((np.array([0]),
+                      np.log10(np.abs(reduced_freq[1:nyquist_freq]))))
+    valcount, edges = np.histogram(f_sm, bins=np.arange(
+        f_sm.min(), f_sm.max() + 10 ** (-5), 0.05))
+    f_sm = np.zeros(valcount.shape)
+    S_uu_sm = np.zeros(valcount.shape)
+
+    vc = 0  # counting values
+    for i, n in enumerate(valcount):
+        if n > 0:
+            f_sm[i] = np.mean(np.abs(reduced_freq)[vc:vc + n])
+            S_uu_sm[i] = np.mean(S_uu[vc:vc + n])
+            vc = vc + n
+
+    ##  SORTING
+    f_arg = np.argsort(f_sm)
+    f_sm = f_sm[f_arg]
+    S_uu_sm = S_uu_sm[f_arg]
+
+    ##  ALIASING
+    u_aliasing = f_sm.size - 9 + np.hstack((np.where(
+        np.diff(S_uu_sm[-10:]) >= 0.)[0], [9]))[0]
+
+    return f_sm, S_uu_sm, u_aliasing
+
+
 #    """ Calculate dimensionless energy density spectra from an equidistant 
 #    time series.
 #    @parameter: u_comp, type = np.array or list
