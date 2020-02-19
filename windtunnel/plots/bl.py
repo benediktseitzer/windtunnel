@@ -5,6 +5,8 @@ import numpy as np
 from scipy import signal
 import windtunnel as wt
 
+plt.rcParams["figure.figsize"] = (9,6)
+plt.rcParams.update({'font.size': 15})
 
 __all__ = [
     'plot_scatter',
@@ -124,17 +126,19 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
 
     
 def plot_hist(data,ax=None,**kwargs):
-    """Creates a historgram plot of x and y.
+    """Creates a scatter plot of x and y.
     @parameter: data, type = list or np.array
     @parameter ax: axis passed to function
     @parameter kwargs : additional keyword arguments passed to plt.plot() """
-    #edit 08/12/2019: Corrected program description to specify that function plots histogram, not scatter plot. 
+	#edit 08/01/2019: convert data from times series to array manually, to avoid
+    #compatibility issues with python 3.6 & pandas 0.24
     
     # Get current axis
     if ax is None:
        ax = plt.gca()
        
     #  Calculate bin size and normalise count
+    data=np.asarray(data)
     count,bins = np.histogram(data[~np.isnan(data)],
                               bins=np.linspace(np.nanmin(data),np.nanmax(data),
                               np.max([np.nanmin([25,(int(np.nanmax(data)-
@@ -424,6 +428,7 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
     @parameter: ref_path = string
     @parameter ax: axis passed to function
     @parameter kwargs : additional keyword arguments passed to plt.plot() """
+	#edit 08/02/2019: moved labels to ax.plot, to ensure proper plotting of legend, and removing need for extra labels variable.
     if ax is None:
        ax = plt.gca()
 
@@ -433,29 +438,31 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
 
     ret = []
     if lat == False:
-        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',)
-        ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1)
-        ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1)
-        ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1)
-        ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1,)
+        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',label='wind tunnel')
+        ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1,label=r'$z_0=10\ m$ (theory)')
+        ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1,label=r'$z_0=1\ m$ (theory)')
+        ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
+        ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1,label=r'$z_0=0.01\ m$ (theory)')
         ref5 = ax.plot(Lux_obs_smooth[1,:],Lux_obs_smooth[0,:],'k+',
-                       linewidth=1)
-        ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1)
+                       linewidth=1,label='observations smooth surface')
+        ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1,label='observations rough surface')
     
-        labels = ['wind tunnel',r'$z_0=10\ m$ (theory)',r'$z_0=1\ m$ (theory)',
-                  r'$z_0=0.1\ m$ (theory)',r'$z_0=0.01\ m$ (theory)',
-                  'observations smooth surface','observations rough surface']
+        #labels = ['wind tunnel',r'$z_0$=10\ m$ (theory)',r'$z_0=1\ m$ (theory)',
+                  #r'$z_0=0.1\ m$ (theory)',r'$z_0=0.01\ m$ (theory)',
+                  #'observations smooth surface','observations rough surface']
         
+
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.grid(True,'both','both')
     
-        ax.legend([Lux,ref1,ref2,ref3,ref4,ref5,ref6],labels,
-                  bbox_to_anchor=(0.5,1.05),loc='lower center',
-                  borderaxespad=0.,ncol=2,fontsize=16)
+        #ax.legend([Lux,ref1,ref2,ref3,ref4,ref5,ref6],labels,
+                  #bbox_to_anchor=(0.5,1.05),loc='lower center',
+                  #borderaxespad=0.,ncol=2,fontsize=16)
+        ax.legend(loc='upper center',bbox_to_anchor=(0.5,1.5),borderaxespad=0.,ncol=2,fontsize=12)
         
         ax.set_xlim([10,1000])
-        ax.set_ylim([10,1000])
+        ax.set_ylim([min(heights),1000])
         ax.set_xlabel(r'$L_{u}^{x}$ full-scale [m]')
         ax.set_ylabel(r'$z$ full-scale [m]')    
         
@@ -463,7 +470,7 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
         labels = ['wind tunnel']
         ax.grid(True)
-        ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='lower center',
+        ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='upper center',
                   borderaxespad=0.,ncol=2,fontsize=16)
         ax.set_xlabel(r'$z$ full-scale [m]')
         ax.set_ylabel(r'$L_{u}^{x}$ full-scale [m]')    
@@ -488,7 +495,8 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
 #    xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
     ref_specs = wt.get_reference_spectra(height,ref_path)
-        
+    
+    print('Spectra')    
     h1 = ax.loglog(f_sm[:u_aliasing],S_uu_sm[:u_aliasing],'ro',markersize=3,
                label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
     h2 = ax.loglog(f_sm[u_aliasing:],S_uu_sm[u_aliasing:],'ro',markersize=3,
@@ -526,7 +534,7 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     return h1,h2,h3,h4
 
 
-def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
+def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
@@ -537,7 +545,10 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
     if ax is None:
         ax=plt.gca()
-
+    if ymin is None:
+       ymin=np.min(data)
+    if ymax is None:
+       ymax=np.max(data)
     # Sort wtref and data to correspond to increasing wtref values
     data = [wtref for _,wtref in sorted(zip(wtref,data))]
     wtref = sorted(wtref)
@@ -547,6 +558,7 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     for i,value in enumerate(data):
         l = ax.errorbar(wtref[i],value,yerr=yerr,fmt='o',markersize=4,
                         ls='None',color='navy',**kwargs)
+        ax.set_ylim((ymin,ymax))
         ret.append(l)
         
     ax.set_xlabel(r'$U_{0}$ $[ms^{-1}]$')
@@ -557,7 +569,7 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     return ret
 
 
-def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',ax=None,
+def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
                           **kwargs):
     """Plots results of convergence tests  from data. This is a very limited 
     function and is only intended to give a brief overview of the convergence
@@ -573,26 +585,28 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',ax=None,
 
     if ax is None:
         ax = plt.gca()
-    
-    handles = []   
-    keys = [key for key in data.keys()]
-    keys.sort()
-    for i, key in enumerate(keys):
-        l, = ax.plot([i] * len(data[key]), data[key], color='navy',
-                      linestyle='None',marker='o', markersize=15)                  
+    handles = []
+    print(['ylabel ='+ylabel])
+    for i, key in enumerate([key for key in sorted(data.keys())]):
+        l, = ax.plot([key]*len(data[key]), data[key], color='navy',
+        #l, = ax.plot(key, data[key], color='navy',
+		linestyle='None',marker='o', markersize=15) 		  
         ax.grid(True)
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel('Interval Size')
         handles.append(l)
     
-    xticklabels=[key for key in data.keys()]
-    xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
-    ax.set(xticks=np.arange(0,len(data.keys())+1),
-                  xticklabels=xticklabels[::10],
-                  xlim=(-0.5, len(data.keys())-0.5))
-    ax.locator_params(axis='x', nbins=10)
-    ax.tick_params(labelsize=12)
-    ax.set_ylabel(ylabel, fontsize=18)
-    ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
-                  fontsize=18)
+    #xticklabels=[key for key in data.keys()]
+    #xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
+    #ax.set(xticks=np.arange(0,len(data.keys())+1),
+                  #xticklabels=xticklabels,
+                  #xlim=(-0.5, len(data.keys())-0.5))
+    #ax.locator_params(axis='x', nbins=10)
+    #ax.tick_params(labelsize=12)
+    #ax.set_ylabel(ylabel, fontsize=18)
+    #ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
+                  #fontsize=18)
 
     return handles
     
@@ -606,11 +620,11 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
     @parameter: data_dict, type = dictionary
     @parameter: ncols, type = int
     @parameter: kwargs keyword arguments passed to plot_convergence_test"""
-    
+
     fig, axes = plt.subplots(ncols,int(np.ceil(len(data_dict.keys())/ncols)),
                              figsize=(24,14))
     for (key,data), ax in zip(data_dict.items(), axes.flat):
-        plot_convergence_test(data,ylabel=key,ax=ax,**kwargs)        
+        plot_convergence_test(data,ylabel=key,ax=ax,**kwargs)
 
     return axes
 

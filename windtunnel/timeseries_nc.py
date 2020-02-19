@@ -28,10 +28,10 @@ class Timeseries_nc(pd.DataFrame):
         """ Initialise Timerseries_nc() object. """
         super().__init__()
 
-        self['t_arr_1'] = pd.Series(data=t_arr_1)
-        self['t_arr_2'] = pd.Series(data=t_arr_2)                                  
-        self['comp_1'] = pd.Series(data=comp_1,index = self['t_arr_1'])
-        self['comp_2'] = pd.Series(data=comp_2,index = self['t_arr_2'])
+        self.t_arr_1 = t_arr_1
+        self.t_arr_2 = t_arr_2
+        self.comp_1 = pd.Series(data=comp_1,index = t_arr_1)
+        self.comp_2 = pd.Series(data=comp_2,index = t_arr_2)
         
         self.x = x
         self.y = y
@@ -76,6 +76,12 @@ class Timeseries_nc(pd.DataFrame):
                                                   usecols=(1,2,3,4,5,6),
                                                   skip_header=6,unpack=True)
 
+        t_arr_1 = np.trim_zeros(t_arr_1,'b')
+        comp_1 = np.trim_zeros(comp_1, 'b')
+        t_transit_1 = np.trim_zeros(t_transit_1,'b')
+        t_arr_2 = np.trim_zeros(t_arr_2,'b')
+        comp_2 = np.trim_zeros(comp_2, 'b')
+        t_transit_2 = np.trim_zeros(t_transit_2,'b')
         return cls(comp_1,comp_2,x,y,z,t_arr_1,t_transit_1,t_arr_2,t_transit_2)
 
 
@@ -104,10 +110,15 @@ class Timeseries_nc(pd.DataFrame):
         """ Get wind components from filename.
         @parameter: filename, type = str """
         with open(filename) as file:
-            for i, line in enumerate(file):
-                if i == 5:
-                    self.wind_comp1 = line.split()[-4][-1].lower()
-                    self.wind_comp2 = line.split()[-2][-1].lower()
+            name = filename.split('/',-1)[-1]
+            if name.find('_UV_')>0:
+                pos = name.find('_UV_')
+            elif name.find('_UW_')>0:
+                pos = name.find('_UW_')
+            elif name.find('_VW_')>0:
+                pos = name.find('_VW_')
+            self.wind_comp_1 = name[pos+1].lower()
+            self.wind_comp_2 = name[pos+2].lower()
 
     def nondimensionalise(self):
         """ Nondimensionalise the data. wtref is set to 1 if no wtref is
@@ -127,8 +138,9 @@ class Timeseries_nc(pd.DataFrame):
         self.x = self.x * self.scale/1000           #[m]
         self.y = self.y * self.scale/1000           #[m]
         self.z = self.z * self.scale/1000           #[m]
-        self.t_arr = self.t_arr * self.scale/1000   #[s]
-        
+        self.t_arr_1 = self.t_arr_1 * self.scale / 1000   #[s]
+        self.t_arr_2 = self.t_arr_2 * self.scale / 1000  # [s]
+
     def pair_components(self,atol=1):
         """ Pair components in comp_1 and comp_2 using atol as absolute
         tolerance to match a pair of measurements. atol is set to 1 as default,
@@ -142,13 +154,15 @@ class Timeseries_nc(pd.DataFrame):
 
         self.paired_components = np.transpose(np.vstack([tmp_1,tmp_2]))
 
-    def equidistant(self):
+    def calc_equidistant_timesteps(self):
         """ Create equidistant time series. """
-        self.t_eq = np.linspace(self.t_arr[0],self.t_arr[-1],len(self.t_arr))
-        self.comp_1[:] = wt.equ_dist_ts(self.t_arr,self.t_eq,self.comp_1)
-        self.comp_2[:] = wt.equ_dist_ts(self.t_arr,self.t_eq,self.comp_2)
+        self.t_eq_1 = np.linspace(self.t_arr_1[0], self.t_arr_1[-1], len(self.t_arr_1))
+        self.t_eq_2 = np.linspace(self.t_arr_2[0], self.t_arr_2[-1], len(self.t_arr_2))
+        self.comp_1[:] = wt.equ_dist_ts(self.t_arr_1,self.t_eq_1,self.comp_1)
+        self.comp_2[:] = wt.equ_dist_ts(self.t_arr_2,self.t_eq_2,self.comp_2)
 
-        self.index = self.t_eq
+        self.index_1 = self.t_eq_1
+        self.index_2 = self.t_eq_2
         
     def mask_outliers(self,std_mask=5.):
         """ Mask outliers and print number of outliers. std_mask specifies the
@@ -161,10 +175,17 @@ class Timeseries_nc(pd.DataFrame):
         # Mask outliers
         u_mask = self.comp_1<(std_mask*np.std(self.comp_1)+np.mean(self.comp_1))
         v_mask = self.comp_2<(std_mask*np.std(self.comp_2)+np.mean(self.comp_2))
-        mask = np.logical_and(u_mask, v_mask)
 
-        self.comp_1 = self.comp_1[mask]
-        self.comp_2 = self.comp_2[mask]
+
+        self.comp_1 = self.comp_1[u_mask]
+        self.t_arr_1 = self.t_arr_1[u_mask]
+        self.t_transit_1 = self.t_transit_1[u_mask]
+
+
+        self.comp_2 = self.comp_2[v_mask]
+        self.t_arr_2 = self.t_arr_2[v_mask]
+        self.t_transit_2 = self.t_transit_2[v_mask]
+
 
         # Log outliers in console and to file
         logger.info('Outliers component 1: {} or {:.4f}%'.format(
@@ -204,9 +225,9 @@ class Timeseries_nc(pd.DataFrame):
         component means."""
         
         self.weighted_u_mean = wt.transit_time_weighted_mean(
-                                                        self.t_transit,self.u)
+                                                        self.t_transit_1,self.comp_1)
         self.weighted_v_mean = wt.transit_time_weighted_mean(
-                                                        self.t_transit,self.v)
+                                                        self.t_transit_2,self.comp_2)
 
         return float(self.weighted_u_mean), float(self.weighted_v_mean)
 
@@ -219,35 +240,35 @@ class Timeseries_nc(pd.DataFrame):
         component variance."""
 
         self.weighted_u_var = wt.transit_time_weighted_var(
-                                                        self.t_transit,self.u)
+                                                        self.t_transit_1,self.comp_1)
         self.weighted_v_var = wt.transit_time_weighted_var(
-                                                        self.t_transit,self.v)
+                                                        self.t_transit_2,self.comp_2)
 
         return float(self.weighted_u_var), float(self.weighted_v_var)
 
     @property
     def mean_magnitude(self):
         """ Calculate mean wind magnitude from unweighted components. """
-        if self.magnitude is None:
-            self.calc_magnitude()
-
-        return np.mean(self.magnitude)
-
+        #if self.magnitude is None:
+        #    self.calc_magnitude()
+        #
+        #return np.mean(self.magnitude)
+        return 0
     @property
     def mean_direction(self):
         """ Calculate mean wind direction from components relative to the wind
         tunnels axis."""
-        if self.paired_components is None:
-            self.pair_components()
-            print('Pairing components before calculation!')
+        #if self.paired_components is None:
+        #    self.pair_components()
+        #    print('Pairing components before calculation!')
         
-        unit_WD = np.arctan2(np.mean(self.paired_components[0]),
-                             np.mean(self.paired_components[1]))*\
-                             180/np.pi
-        mean_direction = (360 + unit_WD) % 360
-
-        return mean_direction
-
+        #unit_WD = np.arctan2(np.mean(self.paired_components[0]),
+        #                     np.mean(self.paired_components[1]))*\
+        #                     180/np.pi
+        #mean_direction = (360 + unit_WD) % 360
+        #
+        #return mean_direction
+        return 0
     def save2file(self,filename,out_dir=None):
         """ Save data from Timeseries object to txt file. filename must include
         '.txt' ending. If no out_dir directory is provided './' is set as
