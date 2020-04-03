@@ -4,7 +4,9 @@ import logging
 import os
 import pandas as pd
 import scipy as sc
+from scipy.stats import norm
 import matplotlib.pyplot as plt
+
 
 # Create logger
 logger = logging.getLogger()
@@ -38,7 +40,8 @@ class PuffConcentration(pd.DataFrame):
         #mass_flow_rate, pressure, ref_height, ref_length, scaling_factor, scaling_factor, standard_pressure, R (universal Gas constant), and __check_sum.  
         #edit 09/26/2019: added attribute begin_release_index_masked
         #edit 09/27/2019: added attributes dosage_unmasked, mask_full, and dt
-        #edit 10/14/2019: added attributes arrival_index and leaving_index		
+        #edit 10/14/2019: added attributes arrival_index and leaving_index	
+        #edit 02/21/2020: added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.
 		
         super().__init__()
 
@@ -54,6 +57,13 @@ class PuffConcentration(pd.DataFrame):
         self.x = None
         self.y = None
         self.z = None
+        self.x_source = None
+        self.y_source = None
+        self.z_source = None 
+        self.x_measure = None
+        self.y_measure = None
+        self.z_measure = None         
+        self.distance = None        
         self.scale = None
         self.wtref_mean = None	
         self.c_star = None	
@@ -151,6 +161,7 @@ class PuffConcentration(pd.DataFrame):
 		#edit 09/19/2019: new function, based on to_full_scale in PointConcentration.py,
         #which converts data to full scale. Note that this function, unlike the analogous 
         #function in PointConcentration.py, overwrites the variables in the dictionary. 
+        #edit 02/21/2020: added scaling of source and measurement locations
         #TODO: verify calculation of full-scale net concentration with Frank Harms and/or Bernd Leitl, since wtref was set to 0 in one of the scripts (09/19/2019)!!  		
         
         if self.__check_sum >= 8:
@@ -162,6 +173,12 @@ class PuffConcentration(pd.DataFrame):
            self.x = self.x * self.scale / 1000  # [m]
            self.y = self.y * self.scale / 1000  # [m]
            self.z = self.z * self.scale / 1000  # [m]
+           self.x_source = self.x_source * self.scale / 1000  # [m]
+           self.y_source = self.y_source * self.scale / 1000  # [m]
+           self.z_source = self.z_source * self.scale / 1000  # [m]   
+           self.x_measure = self.x_measure * self.scale / 1000  # [m]
+           self.y_measure = self.y_measure * self.scale / 1000  # [m]
+           self.z_measure = self.z_measure * self.scale / 1000  # [m]               
 
            self.calc_full_scale_time()
            self.calc_full_scale_concentration()	
@@ -178,6 +195,7 @@ class PuffConcentration(pd.DataFrame):
         """ Converts all quantities to non-dimensional, overwriting model scale variables."""
 		#edit 01/14/2020: new function, which converts data to non-dimensional values. Note that this function, like
         #to_full_scale, overwrites the variables in the dictionary. 
+        #edit 02/21/2020: added scaling of source and measurement locations        
         
         if self.__check_sum >= 8:
 
@@ -188,6 +206,12 @@ class PuffConcentration(pd.DataFrame):
            self.x = self.x / self.ref_length  # [-]
            self.y = self.y / self.ref_length  # [-]
            self.z = self.z / self.ref_length  # [-]
+           self.x_source = self.x_source / self.ref_length  # [-]
+           self.y_source = self.y_source / self.ref_length  # [-]
+           self.z_source = self.z_source / self.ref_length  # [-]    
+           self.x_measure = self.x_measure / self.ref_length  # [-]
+           self.y_measure = self.y_measure / self.ref_length  # [-]
+           self.z_measure = self.z_measure / self.ref_length  # [-]                
 
            self.calc_non_dimensional_time()
            self.calc_c_star()	
@@ -209,7 +233,8 @@ class PuffConcentration(pd.DataFrame):
         #as the measurement data, and that each column represents an input variable,
         #and each row represents a dataset. If no such file exists in the data directory,
         #function does nothing and instead ambient conditions are read from input variables
-		#in example_puff_measurement.py.fcon		
+		#in example_puff_measurement.py.fcon	
+        #edit 02/21/2020: added variables for source and measurement locations      
         if input_file==None:
            print('Warning: Input csv filename (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')
            return		   
@@ -219,12 +244,12 @@ to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
-        elif not os.path.exists(path+input_file):
-           print('Error: Cannont find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
+        elif not os.path.exists(input_file):  
+           print('Error: Cannot find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
 conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   
         else:	
-           ambient_conditions=pd.read_csv(path+input_file,sep=',',index_col=0) 
+           ambient_conditions=pd.read_csv(input_file,sep=',',index_col=0) 
         
         if name not in ambient_conditions.keys():
            print('Error: Dataset not found in csv file. Check to make sure that csv file to make sure that the csv file contains all necessary \
@@ -232,7 +257,7 @@ data and is properly formatted. Resorting to input data in example_puff_measurem
            return	
 
         #list of all variables output by read_ambient_conditions fuction.  
-        necessary_keys={'x','y','z','pressure','temperature','wdir','calibration_curve','mass_flow_controller','calibration_factor', \
+        necessary_keys={'x_source','y_source','z_source','x_measure','y_measure','z_measure','pressure','temperature','wdir','calibration_curve','mass_flow_controller','calibration_factor', \
         'scaling_factor','scale','ref_length','ref_height','gas_name','mol_weight','gas_factor','full_scale_wtref','full_scale_flow_rate' }
         if not all(name2 in ambient_conditions[name] for name2 in necessary_keys):
            print('Error: csv file does not contain all necessary ambient conditions data. Check to make sure that csv file to make sure that \
@@ -253,11 +278,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #file (and thus the ambient_conditions array) is in the correct format and contains the variables
         #x,y,z,pressure,temperature,wdir,calibration_curve,mass_flow_controller, calibration_factor,
         #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
-        #full_scale_flow_rate.
+        #full_scale_flow_rate. 
+        #edit 02/21/2020: changed position variables to source and measurement locations, also fixed previously 
+        #incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none            
  	   
-        x=None if ambient_conditions[name]['y'] =='None' else np.float(ambient_conditions[name]['x'])
-        y=None if ambient_conditions[name]['y'] =='None' else np.float(ambient_conditions[name]['y'])
-        z=None if ambient_conditions[name]['x'] =='None' else np.float(ambient_conditions[name]['z'])
+        x=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
+        y=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
+        z=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
+        x=None if ambient_conditions[name]['x_measure'] =='None' else np.float(ambient_conditions[name]['x_measure'])
+        y=None if ambient_conditions[name]['y_measure'] =='None' else np.float(ambient_conditions[name]['y_measure'])
+        z=None if ambient_conditions[name]['z_measure'] =='None' else np.float(ambient_conditions[name]['z_measure'])          
         pressure=None if ambient_conditions[name]['pressure'] =='None' else np.float(ambient_conditions[name]['pressure'])		
         temperature=None if ambient_conditions[name]['temperature'] =='None' else np.float(ambient_conditions[name]['temperature'])
         wdir=None if ambient_conditions[name]['wdir'] =='None' else np.float(ambient_conditions[name]['wdir'])	
@@ -279,17 +309,28 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         gas_factor,full_scale_wtref,full_scale_flow_rate
            		
 
-    def ambient_conditions(self, x, y, z, pressure, temperature, calibration_curve,
+    def ambient_conditions(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],
         temperature in [°C]. """
         #edit 09/19/2019: new function,based on ambient_conditions in PointConcentration.py,
-        #which collects ambient conditions during measurement. Pressure in [Pa]!		
+        #which collects ambient conditions during measurement. Pressure in [Pa]!	
+        #edit 02/21/2020: added handling of variables for source and measurement locations, added calculation of distance variable            
         self.__check_sum = self.__check_sum + 1
-
+        
+        self.x_source = x_source
+        self.y_source = y_source
+        self.z_source = z_source
+        self.x_measure = x_measure
+        self.y_measure = y_measure
+        self.z_measure = z_measure
+        x = x_measure-y_source
+        y = y_measure-y_source
+        z = z_measure-z_source        
         self.x = x
         self.y = y
         self.z = z
+        self.distance = np.sqrt(x**2 + y**2 + z**2)        
         self.pressure = pressure
         self.temperature = temperature
         self.calibration_curve = calibration_curve
@@ -560,17 +601,21 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.pct10_puff = []
         self.pct90_puff = []	
         self.pct10_signal = []
-        self.pct90_signal = []		
-		
+        self.pct90_signal = []		     	
         puffs_length=puffs_start[1:]-puffs_start[:-1]
-        self.min_puff_length=np.min(puffs_length)
+        puffs_length_mask=np.transpose(self.mask)
+        puffs_length_mask=puffs_length_mask[(np.asarray(puffs_length_mask)<(np.max(puffs_length_mask)))]                 
+        puffs_length=puffs_length[puffs_length_mask]
+        self.min_puff_length=int(np.nanmin(puffs_length))        
+        puffs_start=puffs_start[self.mask]
+        puffs_start=np.asarray(puffs_start,dtype=np.int)
+       
         self.puffs_array=np.zeros((np.shape(puffs_start)[0],self.min_puff_length))
-        self.signal_array=np.zeros((np.shape(puffs_start)[0],self.min_puff_length))		
-		
+        self.signal_array=np.zeros((np.shape(puffs_start)[0],self.min_puff_length))	  
 		#Create array of all puffs, truncated to minimum puff length
         for i in range(np.shape(puffs_start)[0]-1):
-            self.puffs_array[i,:]=self.net_concentration[self.begin_release_index[i]:self.begin_release_index[i]+self.min_puff_length]
-            self.signal_array[i,:]=self.signal[self.begin_release_index[i]:self.begin_release_index[i]+self.min_puff_length]			
+            self.puffs_array[i,:]=self.net_concentration[puffs_start[i]:puffs_start[i]+self.min_puff_length]
+            self.signal_array[i,:]=self.signal[puffs_start[i]:puffs_start[i]+self.min_puff_length]			
 		
 		#edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.  
         for i in range(np.shape(self.puffs_array)[1]):
@@ -605,10 +650,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         containing the last timestamp of each puff. """
         #edit 10/14/2019: write index of leaving time to attribute leaving_index
         #edit 02/04/2020: add variable 'time_threshold' to control dosage threshold 
-        #for determinig leaving and arrival time
-        #to use for computing characteristic puff times. Note that a 'default'
-        #agreed-upon value for this variable 5%, however,this fails to properly
-        #capture the start and end times of several puffs.		
+        #for determinig leaving and arrival time to use for computing characteristic
+        #puff times. Note that a 'default' agreed-upon value for this variable 5%,
+        #however,this fails to properly capture the start and end times of several puffs.
+        #edit 02/27/2020: edited algorithm for computing dosage. New algorithm continuously 
+        #adds infinitesimal dosage to the previously integrated dosage, instead of calculating
+        #dosage from scratch on every iteration. This new algorithm is much faster (a sample 
+        #dataset which took 584 seconds to analzye in basic mode with the old algpriothm 
+        #takes 92 seconds to analyze in basic mode with the new algotihm).  		
         self.leaving_time = []
         self.leaving_index = []			
 
@@ -618,11 +667,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             index = begin
             end = begin + 1
             dose = 0
+            dose2 = 0                
             while dose < (1-time_threshold) * value:
                 #edit 09/27/2019: multiply by dt to fix units
-                dose = self.dt*self.net_concentration[begin:end].sum()
+                #dose = self.dt*self.net_concentration[begin:end].sum()
+                dose += self.dt*self.net_concentration[index]                
                 end += 1
                 index += 1
+                #print(dose-dose2)
             self.leaving_index.append(index-1)				
             self.leaving_time.append(self.time[index - 1] - self.time[begin])
 
@@ -630,10 +682,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Detects the beginning of each puff. Returns an np.array 
         containing the first timestamp of each puff. """
         #edit 10/14/2019: write index of arrival time to attribute arrival_index
-        #edit 02/04/2020: add variable 'time_threshold' to control dosage threshold
-        #to use for computing characteristic puff times. Note that a 'default'
+        #edit 02/04/2020: add variable 'time_threshold' to control dosage threshold 
+        #for determinig leaving and arrival time. Note that a 'default'
         #agreed-upon value for this variable 5%, however,this fails to properly
-        #capture the start and end times of several puffs.			
+        #capture the start and end times of several puffs.	
+        #edit 02/27/2020: edited algorithm for computing dosage. New algorithm continuously 
+        #adds infinitesimal dosage to the previously integrated dosage, instead of calculating
+        #dosage from scratch on every iteration. This new algorithm is much faster (a sample 
+        #dataset which took 584 seconds to analzye in basic mode with the old algpriothm 
+        #takes 92 seconds to analyze in basic mode with the new algotihm).          
         self.arrival_time = []
         self.arrival_index = []
 		
@@ -643,11 +700,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             index = begin
             end = begin + 1
             dose = 0
+            #dose2 = 0            
             while dose < time_threshold * value:
                 #edit 09/27/2019: multiply by dt to fix units            
-                dose = self.dt*self.net_concentration[begin:end].sum()
+                #dose = self.dt*self.net_concentration[begin:end].sum()
+                dose += self.dt*self.net_concentration[index]
                 end += 1
-                index += 1              
+                index += 1       
+                #print(dose-dose2)                
             self.arrival_index.append(index-1)				
             self.arrival_time.append(self.time[index - 1] - self.time[begin])
 
@@ -683,8 +743,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                begin_next_release= self.begin_release_index[i+1]			
             end = self.leaving_index[i]	
             time = self.time[begin:end]           
-            if self.net_concentration[begin_release:begin_next_release].max() > self.net_concentration[begin:end].max() or begin==end:
-               print(i)               
+            if self.net_concentration[begin_release:begin_next_release].max() > self.net_concentration[begin:end].max() or begin==end:            
                log_peak[i]=1             
             #edit 10/18/2019: set peak time to nan if peak concentration is nan. This occurs, among other scenarios, if
             #the arrival time and the leaving time are identical. 			
@@ -827,17 +886,42 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         return self.puff_deviations
 		
-    def get_mask(self, threshold_concentration=0., threshold_dosage=0.):	
+    def get_mask(self, threshold_concentration=0., threshold_dosage=0.,n_exclude=None):	
         """ Return array that containts locations of unmaksed datapoints."""
         #edit 07/29/2019: new fuction, returns the indeces of all data points which remain
 		#after applying threshold concentration & dosage. 
         #edit 09/27/2019: added seperate variables which return both the indeces of data points
         #masked (self.mask_full) and puffs masked (self.mask) sepeartely. Also added logging
-        #of msaked data points and puffs. 	
-		
-        self.mask=np.asarray((np.asarray(self.peak_concentration) >
-                        threshold_concentration) & (np.asarray(self.dosage) >
-                        threshold_dosage)).nonzero() 
+        #of msaked data points and puffs. 
+        #edit 03/17/2020: apply masking of data above maximum dosage and peak concentration,
+        #defined to be the dosage/peak concentration of the top five measurements if the data
+        #were normally distributed with a mean and standard deviation equal to that of the actual
+        #measured data. This is effectively a method to remove outliers. Note that at present 
+        #the logger still logs only the puffs which are below the threshold dosage/concentration,
+        #not above the maximum dosage/concentration. 
+        #edit 03/18/2020: add variable n_exclude which sets number of puffs at top of measurements
+        #to exclude as outliers. Default option (n_exclude=None) determines number of puffs to be 
+        #excluded based on the sample size. 
+
+        if n_exclude==None:
+           n_exclude=np.int(np.shape(self.peak_concentration)[0]/100)
+           print("Using default setting of removing top "+str(n_exclude)+" values, representing 1% of concentration and dosage measurements, as these are considered to be outliers")
+        else: 
+           print(n_exclude)
+           print("Using specified setting of removing top "+str(n_exclude)+" values, representing "+str(n_exclude/np.shape(self.peak_concentration)[0])+"% of concentration and dosage measurements, as these are considered to be outliers")
+        norm_dist_peak_concentration=self.calc_norm_distribution('peak_concentration')
+        self.max_peak_concentration=norm_dist_peak_concentration.ppf((np.shape(self.peak_concentration)[0]-n_exclude)/np.shape(self.peak_concentration)[0])
+        norm_dist_dosage=self.calc_norm_distribution('dosage')
+        self.max_dosage=norm_dist_dosage.ppf((np.shape(self.dosage)[0]-n_exclude)/np.shape(self.dosage)[0])
+
+        self.mask=np.asarray(((np.asarray(self.peak_concentration) >
+                        threshold_concentration) & (np.asarray(self.peak_concentration) <
+                        self.max_peak_concentration)) & ((np.asarray(self.max_dosage) >
+                        threshold_dosage) & (np.asarray(self.dosage) <
+                        self.max_dosage))).nonzero() 
+        #self.mask=np.asarray((np.asarray(self.peak_concentration) >
+                        #threshold_concentration) & (np.asarray(self.dosage) >
+                        #threshold_dosage)).nonzero() 
 
         beginnings = self.begin_release_index    
         peak_concentration_ts=np.zeros(np.shape(self.net_concentration))
@@ -879,21 +963,43 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                         
          
 	
+    def calc_norm_distribution(self,var):
+        "calculate normal distribution using mean and standard deviation of a given variable"
+        #edit 03/16/2020: new function, calculates normal distribution based on mean and
+        #standard deviation of a given input variable.
+
+        norm_dist=norm(np.nanmean(getattr(self,var)),np.nanstd(getattr(self,var)))
+
+        return norm_dist
 
     def apply_threshold_concentration(self, threshold_concentration=0.):
         """ Apply a given threshold concentration to peak_concentration to 
-        remove weak puffs. The default value for threshold_concentration 
+        remove weak puffs, and maximum concentration based on statistical 
+        analysis to remove outliers. The default value for threshold_concentration 
         is 0. (float). """
-		#edit 07/26/2019: added logging of puffs below threshold concentration
+	#edit 07/26/2019: added logging of puffs below threshold concentration
         #edit 09/26/2019: added masked release index, to allow for proper masking of multiple variables. 
         #edit 09/27/2019: fixed logger, now outputs outliers based on size of applicable mask variables, 
         #which is equivalent to the number of data points which are masked by applying the threshold 
         #concentration. Also outputs number of ensembles which fall below the threshold dosage sepeartely
         #from the total number of masked data points. 
+        #edit 03/17/2020: added masking of data above maximum concentration, defined to be the concentraion
+        #of the top five measurements if the data were normally distributed with a mean and standard 
+        #deviation equal to that of the actual measured data. This is effectively a method to remove outliers. 
+        #Note that at present the logger still logs only the puffs which are below the threshold concentrtion,
+        #not above the maximum peak concentration.
+
+        
+        #norm_dist_peak_concentration=self.calc_norm_distribution('peak_concentration')
+        #self.max_peak_concentration=norm_dist_peak_concentration.ppf((np.shape(self.peak_concentration)[0]-5)/np.shape(self.peak_concentration)[0])
+        #print(max_peak_concentration)
+        #print(max_dosage)
+        #pause()
 
         self.threshold_concentration = threshold_concentration
-        mask = np.where(np.asarray(self.peak_concentration) >
-                        self.threshold_concentration)[0]
+        mask = np.where((np.asarray(self.peak_concentration) >
+                        self.threshold_concentration) & (np.asarray(self.peak_concentration) <
+                        self.max_peak_concentration))[0] 
 						
         beginnings = self.begin_release_index    
         peak_concentration_ts=np.zeros(np.shape(self.net_concentration))	
@@ -918,7 +1024,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         mask2 = np.where(np.asarray(peak_concentration_ts) > self.threshold_concentration)						
         
-        self.dosage_unmasked = self.dosage		
+        self.dosage_unmasked = self.dosage	    
         self.dosage = np.asarray(self.dosage)[mask]        
         self.arrival_time = np.asarray(self.arrival_time)[mask]
         self.leaving_time = np.asarray(self.leaving_time)[mask]			
@@ -952,11 +1058,24 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #Also outputs number of ensembles which fall below the threshold dosage sepeartely from the total 
         #number of masked data points. Further, the logger now counts all data points/ensembles whcih fall below
         #the threshold dosage (previously only data points which were below the threshold dosage but above the 
-        #threshold concentration were counted).        
+        #threshold concentration were counted).  
+        #edit 03/17/2020: added masking of data above maximum dosage, defined to be the dosage
+        #of the top five measurements if the data were normally distributed with a mean and standard 
+        #deviation equal to that of the actual measured data. This is effectively a method to remove outliers. 
+        #Note that at present the logger still logs only the puffs which are below the threshold dosage,
+        #not above the maximum dosage.
+        
 		
+        #norm_dist_dosage=self.calc_norm_distribution('dosage')
+        #max_dosage=norm_dist_dosage.ppf((np.shape(self.dosage)[0]-5)/np.shape(self.dosage)[0])
+
+
         self.threshold_dosage = threshold_dosage
-        mask = np.where(np.asarray(self.dosage) >
-                        self.threshold_dosage)[0]
+        mask = np.where((np.asarray(self.dosage) >
+                        self.threshold_dosage) & (np.asarray(self.dosage) <
+                        self.max_dosage))[0] 
+        #mask = np.where(np.asarray(self.dosage) >
+                        #self.threshold_dosage)[0]
         mask_logger = np.where(np.asarray(self.dosage_unmasked) >
                         self.threshold_dosage)[0]                              
         beginnings = self.begin_release_index        
@@ -1037,7 +1156,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #edit 09/23/2019: added proper plotting of full scale data      
         #edit 11/12/2019: plot signal at height of individual peak concentration for each puff,
         #not at height of mean peak concentration		
-        #edit 01/28/20: added plotting of non-dimensional data; added plotting of arrival and leaving time for first puff     
+        #edit 01/28/2020: added plotting of non-dimensional data; added plotting of arrival and leaving time for first puff     
+        #edit 03/10/2020: determine tickmark spacing automatically based on length of time series, added plotting of more puffs
+        #by enabling a fallback to minimum puff length if no puff length can be determined.  
         if hasattr(self,'signal')== False: 
            print('Error: No puff release signal found. Check integrity of dataset.')
            return
@@ -1047,7 +1168,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         #Output warnings if attempting to plot more than 10 puffs. 
         if n_puffs == 'all':
-           n_puffs=np.shape(self.dosage)[0]-1
+           n_puffs=np.shape(self.dosage)[0]
            print('Warning: entire dataset being plotted, resulting in a total of '+str(n_puffs)+' plots. Only intedned to be used for diagnositc purposes. Plots will only be saved in specificed path, not displayed in console.')
         elif n_puffs > 10:
            print('Warning: a total of '+str(n_puffs)+' plots will be generated. Consider reducing the number of puffs to be plotted. Plots will only be saved in specificed path, not displayed in console.')	   
@@ -1059,19 +1180,37 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #print(np.shape(self.dosage))
         #print(self.mask[0])		
         for i in self.mask[0][:n_puffs]:
+        #edit 02/18/2020: increase index by 1, even if puff is skipped. Previous version caused incorrect plotting of arrival and leaving times. 
             if np.isnan(puffs_start[i]) == 1:
+               index=index+1                
                continue   
-            if np.isnan(puffs_start[i + 1]) == 1:
-               continue                  
+            if index<(np.shape(self.dosage)[0]-1):
+               if np.isnan(puffs_start[i + 1])==1:
+                  puff_end=puffs_start[i]+self.min_puff_length                
+                  #index=index+1             
+                  #continue 
+               else:
+                  puff_end=puffs_start[i+1]                
+            else:
+               puff_end=puffs_start[i]+self.min_puff_length             
             if index == np.size(puffs_start) - 1:
                ts_puffs=np.asarray(getattr(self,var1))[puffs_start[i]:]
                signal_n_puffs= np.asarray(self.signal)[puffs_start[i]:]
-               time_puffs=np.asarray(self.time)[puffs_start[i]:]				
+               time_puffs=np.asarray(self.time)[puffs_start[i]:]
+			
 			 
             if index < np.size(puffs_start) - 1:			
-               ts_puffs=np.asarray(getattr(self,var1))[puffs_start[i]:puffs_start[i+1]]
-               signal_n_puffs= np.asarray(self.signal)[puffs_start[i]:puffs_start[i+1]]
-               time_puffs=np.asarray(self.time)[puffs_start[i]:puffs_start[i+1]]			   
+               #ts_puffs=np.asarray(getattr(self,var1))[puffs_start[i]:puffs_start[i+1]]
+               #signal_n_puffs= np.asarray(self.signal)[puffs_start[i]:puffs_start[i+1]]
+               #time_puffs=np.asarray(self.time)[puffs_start[i]:puffs_start[i+1]]	
+               ts_puffs=np.asarray(getattr(self,var1))[puffs_start[i]:puff_end]
+               signal_n_puffs= np.asarray(self.signal)[puffs_start[i]:puff_end]
+               time_puffs=np.asarray(self.time)[puffs_start[i]:puff_end]
+               if (np.asarray(np.shape(time_puffs)) < np.asarray(self.min_puff_length)):
+               #edit 03/26/2020: skip puffs where length of puff is greater than previously
+               #determined minimum puff length. This occurs mainly towwards the end of puff 
+               #datasets. 
+                  continue        
             ret=plt.figure(100+i)
             plt.clf()
             plt.ioff()
@@ -1081,12 +1220,12 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             ret.set_figwidth(26)	
             ret.set_figheight(16)
             if full_scale == 'ms':
-               xtick_step=1
+               xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5) 
             elif full_scale == 'fs':			   
-               xtick_step = 100
+               xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5) 
             #edit 02/04/2020: set x_tick_step to 500 for non-dimensional data.  
             elif full_scale == 'nd':			   
-               xtick_step = 500               
+               xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5)                
             else: 
                print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')") 		   
             #TODO: fix python error ufunc 'true_divide' not supported for the input types, and the inputs could not be safely coerced to any supported types
@@ -1098,7 +1237,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             #edit 07/26/2019: display arrival and leaving time in plot			
             if i >= 0:		           
                plt.axvline(x=self.begin_release_period[i]+self.arrival_time[index],linewidth=5,color='b',linestyle='--')
-               plt.axvline(x=self.begin_release_period[i]+self.leaving_time[index],linewidth=5,color='b',linestyle='--')		   
+               plt.axvline(x=self.begin_release_period[i]+self.leaving_time[index],linewidth=5,color='b',linestyle='--')               
             ax=plt.gca()   
             #edit 07/26/2019: no puff before start of data aquisiton
             #edit 09/26/2019: added units to dosage        
@@ -1130,16 +1269,22 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                   print('Name of dataset not specified. Plots will not be saved to avoid confusion in the future.')	
                else:
                   if full_scale=='ms':           
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Model_Scale.jpg')
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Model_Scale.png')
                   elif full_scale=='fs':
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Full_Scale.jpg') 
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Full_Scale.png') 
                   elif full_scale=='nd':
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Non_Dimensional.jpg')                     
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Non_Dimensional.png')                     
                   else:
                      print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")                
                   if n_puffs > 10: 
                      plt.close()
-            index=index+1 
+            plt.close()
+            index=index+1             
+            #edit 03/05/2020: moved return command inside loop. Unknown why this works,
+            #and in particular why the script does not run properly if return command 
+            #is outside the loop.
+            #edit 03/06/2020: moved return command back outside loop, as script only 
+            #saves 1 puff if return is inside loop
         return ret 
 		
     def plot_mean_puff(self,path,name,stats='off',dist='off',full_scale=None):    
@@ -1151,7 +1296,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #set to on, function also plots the mean dosage, arrival time, leaving time, and peak time. If dist is set to 
 		#on, function also plots the 10th and 90th percentile of the puff and signal. 
         #edit 09/23/2019: added proper plotting of full scale data and revisions to plot formatting, including larger figure, larger text, larger markers, and specified tickmark locations
-        #edit 01/28/2020: added plotting of non-dimensional data       
+        #edit 01/28/2020: added plotting of non-dimensional data   
+        #edit 03/10/2020: determine tickmark spacing automatically based on length of time series        
         if hasattr(self,'mean_puff')== False: 
            print('Error: mean_puff varibale not found. Check function input!')
            return 	
@@ -1160,8 +1306,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ts_pct10_puffs=np.asarray(self.pct10_puff)	
         ts_pct90_puffs=np.asarray(self.pct90_puff)			
         signal_n_puffs= np.asarray(self.mean_signal)	
-        time_puffs=np.asarray(self.time)[:self.min_puff_length]	
-	
+        time_puffs=np.asarray(self.time)[:self.min_puff_length]		
         ret=plt.figure(1001)
         plt.clf()        
         plt.plot(time_puffs,ts_puffs,label='mean puff',linewidth=5,color='#1f77b4')
@@ -1170,12 +1315,12 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ret.set_figwidth(26)	
         ret.set_figheight(16)
         if full_scale == 'ms':
-           xtick_step=1
+           xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5)  
         elif full_scale == 'fs':
-           xtick_step = 100   
+           xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5)  
         #edit 02/04/2020: set x_tick_step to 500 for non-dimensional data.      
         elif full_scale == 'nd':			   
-           xtick_step = 500          
+           xtick_step = np.int((time_puffs[self.min_puff_length-1]-time_puffs[0])/5)        
         else: 
            print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')") 
         #edit 10/25/2019: fix error in x-axis tickmark labeling. Previously only tickmark labels converted to np.int, which led to incorrect tickmark labeling.			   
@@ -1241,14 +1386,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
               print('Name of dataset not specified. Plot of mean puff will not be saved to avoid confusion in the future.')	
            else:	
               if full_scale=='ms':           
-                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Model Scale.jpg')
+                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Model Scale.png')
               elif full_scale=='fs':
-                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Full Scale.jpg')
+                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Full Scale.png')
               elif full_scale=='nd':
-                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Non-Dimensional.jpg')                  
+                 plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Mean Puff, Non-Dimensional.png')                  
               else:
                  print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")                                
-	  
+              plt.close()  
         return ret 
 		
 		
@@ -1276,41 +1421,47 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		#edit 10/01/2019: new function, similar to save2file_ms in PuffConcentration.py, saves model scale data to file, for (among other things),
         #plotting the data in Tecplot. Generates a total of 2 different txt files, for puff data, and basic statistics.
 		#Note that data here is dimensional. 	
-        #edit 10/04.2019: added proper labeling of rows and columns in txt files to make them more readable.		
+        #edit 10/04.2019: added proper labeling of rows and columns in txt files to make them more readable.
+		#edit 02/21/2020: added handling of variables for source and measurement locations, added recording of distance variable
+        #edit 02/25/2020: added compatability with tecplot         
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
         mask=self.mask
-        puffs_header= "\" time [s] \""
+        puffs_header= "variables = \"  time [s] \"     "
         self.number = np.arange(1, np.size(self.begin_release_index) + 1)		
         for i in self.number[mask]:
         #for i in range(np.shape(self.ensemble_mean)[0]):
             if i<10:		
-               puffs_header=puffs_header+ " \"  Puff "+str(i)+"  \""	
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"       \""	
             elif i>=10 and i<100:		
-               puffs_header=puffs_header+ " \"  Puff "+str(i)+" \""	
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"      \""	
             elif i>=100 and i<1000:		
-               puffs_header=puffs_header+ " \" Puff "+str(i)+" \""
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"      \""
             elif i>=1000 and i<10000:		
-               puffs_header=puffs_header+ " \" Puff "+str(i)+"\""
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"     \""
             elif i>=10000 and i<100000:		
-               puffs_header=puffs_header+ " \"Puff "+str(i)+"\""				   
+               puffs_header=puffs_header+ " \"     Puff "+str(i)+"     \""				   
             else:			
                print('Warning: attempting to write ' + str(np.shape(self.number[mask])[0]) + ' ensembles to file. Program currently does not support writing more than 100000 ensembles to file.')			
             #puffs_header=puffs_header+ " \"Puff "+str(i)+"\""			
         output_file_puffs = out_dir + 'puffs_ms_' + filename	
         output_file_stats = out_dir + 'stats_ms_' + filename	
         #edit 10/07/2019: original _ms files depreciated in favor of puff files		
+        #edit 03/05/2020: moved masking of puffs array to get_mean_puff function
         np.savetxt(output_file_puffs, np.vstack((self.time[:self.min_puff_length],
-                                           np.squeeze(self.puffs_array[self.mask,:]))
+                                           np.squeeze(self.puffs_array))
                                           ).transpose(),
-                   fmt='%12.4f',
+                   fmt='%22.4f',
                    header="General concentration measurement data:" + '\n' +
                           "" + '\n' +
                           "geometric scale: 1:{}".format(float(self.scale))
                           + "" + '\n' +
-                          "Variables: x: {} [mm], y: {} [mm], z: {} [mm], "
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
+                          "distance beteween source and measurement: {} [mm],"                           
                           "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
                           " mass flow rate {:.4f} [kg/s], "
                           "reference length (model): {:.4f} [m], "
@@ -1318,6 +1469,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                           "gas factor: {:.6f}, "
 						  #calibartion curve: {:.6f}, "
                           "wtref: {:.4f} [m/s]".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,
+                                                       self.distance,                                                        
                                                        self.temperature,
                                                        self.pressure,
                                                        self.mass_flow_rate,
@@ -1328,7 +1482,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                                        #self.calibration_curve,
                                                        self.wtref_mean)
                           + "" + '\n' +
-                          puffs_header)	
+                          puffs_header,comments='')	
 						  
 
         np.savetxt(output_file_stats, np.vstack((self.number[mask],
@@ -1353,10 +1507,192 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                               self.threshold_concentration,
                               self.threshold_dosage)
                           + "" + '\n' +
-                          "\"                puff number             \" \"    arrival time [s]    \" \"     leaving time [s]     \" \"      peak time [s]       \" "
-                          "\"peak concentration [ppm_v]\" \"     ascent time [s]      \" \"     descent time [s]     \"")					  
+                          "variables = \"    puff number             \" \"    arrival time [s]    \" \"     leaving time [s]     \" \"      peak time [s]       \" "
+                          "\"peak concentration [ppm_v]\" \"     ascent time [s]      \" \"     descent time [s]     \"",comments='')					  
 						  
-        
+    def save2file_fs(self, filename, out_dir=None):
+        """ Save full scale data from PuffConcentration object to txt file.
+        filename must include '.txt' ending. If no out_dir directory is
+        provided './' is set as standard.
+        @parameter: filename, type = str
+        @parameter: out_dir, type = str"""
+		#edit 02/25/2020: new function, similar to save2file_ms, but for full-scale data 
+        if out_dir is None:
+            out_dir = './'
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+        mask=self.mask
+        puffs_header= "variables = \"  time [s] \"     "
+        self.number = np.arange(1, np.size(self.begin_release_index) + 1)		
+        for i in self.number[mask]:
+        #for i in range(np.shape(self.ensemble_mean)[0]):
+            if i<10:		
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"       \""	
+            elif i>=10 and i<100:		
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"      \""	
+            elif i>=100 and i<1000:		
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"      \""
+            elif i>=1000 and i<10000:		
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"     \""
+            elif i>=10000 and i<100000:		
+               puffs_header=puffs_header+ " \"     Puff "+str(i)+"     \""				   
+            else:			
+               print('Warning: attempting to write ' + str(np.shape(self.number[mask])[0]) + ' ensembles to file. Program currently does not support writing more than 100000 ensembles to file.')			
+            #puffs_header=puffs_header+ " \"Puff "+str(i)+"\""			
+        output_file_puffs = out_dir + 'puffs_fs_' + filename	
+        output_file_stats = out_dir + 'stats_fs_' + filename
+        #edit 03/05/2020: moved masking of puffs array to get_mean_puff function		
+        np.savetxt(output_file_puffs, np.vstack((self.time[:self.min_puff_length],
+                                           np.squeeze(self.puffs_array))
+                                          ).transpose(),
+                   fmt='%22.4f',
+                   header="General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
+                          "distance beteween source and measurement: {} [mm],"                           
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          " mass flow rate {:.4f} [kg/s], "
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}, "
+						  #calibartion curve: {:.6f}, "
+                          "wtref: {:.4f} [m/s]".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,
+                                                       self.distance,                                                        
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.mass_flow_rate,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor,
+                                                       #self.calibration_curve,
+                                                       self.wtref_mean)
+                          + "" + '\n' +
+                          puffs_header,comments='')	
+						  
+
+        np.savetxt(output_file_stats, np.vstack((self.number[mask],
+                                           self.arrival_time,
+                                           self.leaving_time,
+                                           self.peak_time,
+                                           self.peak_concentration,
+                                           self.ascent_time,
+                                           self.descent_time)
+                                          ).transpose(),
+                   fmt='%28.4f',
+                   header="General puff concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "Variables: average arrival time: {:.4f}, "
+                          "average leaving time: {:.4f}, average peak time {:.4f}, "
+                          "average peak concentration: {:.4f}, "
+                          "threshold concentration: {:.4f}, threshold_dosage: {:.4f}".format(
+                              self.avg_arrival_time,
+                              self.avg_leaving_time,
+                              self.avg_peak_time,
+                              self.avg_peak_concentration,
+                              self.threshold_concentration,
+                              self.threshold_dosage)
+                          + "" + '\n' +
+                          "variables = \"    puff number             \" \"    arrival time [s]    \" \"     leaving time [s]     \" \"      peak time [s]       \" "
+                          "\"peak concentration [ppm_v]\" \"     ascent time [s]      \" \"     descent time [s]     \"",comments='')		
+
+    def save2file_nd(self, filename, out_dir=None):
+        """ Save non-dimensional data from PuffConcentration object to txt file.
+        filename must include '.txt' ending. If no out_dir directory is
+        provided './' is set as standard.
+        @parameter: filename, type = str
+        @parameter: out_dir, type = str"""
+		#edit 02/25/2020: new function, similar to save2file_ms and save2file_fs, but for non-dimensional data     
+        if out_dir is None:
+            out_dir = './'
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+        mask=self.mask
+        puffs_header= "variables = \"  time [-] \"     "
+        self.number = np.arange(1, np.size(self.begin_release_index) + 1)		
+        for i in self.number[mask]:
+        #for i in range(np.shape(self.ensemble_mean)[0]):
+            if i<10:		
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"       \""	
+            elif i>=10 and i<100:		
+               puffs_header=puffs_header+ " \"       Puff "+str(i)+"      \""	
+            elif i>=100 and i<1000:		
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"      \""
+            elif i>=1000 and i<10000:		
+               puffs_header=puffs_header+ " \"      Puff "+str(i)+"     \""
+            elif i>=10000 and i<100000:		
+               puffs_header=puffs_header+ " \"     Puff "+str(i)+"     \""				   
+            else:			
+               print('Warning: attempting to write ' + str(np.shape(self.number[mask])[0]) + ' ensembles to file. Program currently does not support writing more than 100000 ensembles to file.')			
+            #puffs_header=puffs_header+ " \"Puff "+str(i)+"\""			
+        output_file_puffs = out_dir + 'puffs_nd_' + filename	
+        output_file_stats = out_dir + 'stats_nd_' + filename	
+        #edit 03/05/2020: moved masking of puffs array to get_mean_puff function        
+        np.savetxt(output_file_puffs, np.vstack((self.time[:self.min_puff_length],
+                                           np.squeeze(self.puffs_array))
+                                          ).transpose(),
+                   fmt='%22.4f',
+                   header="General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
+                          "distance beteween source and measurement: {} [mm],"                           
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          " mass flow rate {:.4f} [kg/s], "
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}, "
+						  #calibartion curve: {:.6f}, "
+                          "wtref: {:.4f} [m/s]".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,
+                                                       self.distance,                                                        
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.mass_flow_rate,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor,
+                                                       #self.calibration_curve,
+                                                       self.wtref_mean)
+                          + "" + '\n' +
+                          puffs_header,comments='')	
+						  
+
+        np.savetxt(output_file_stats, np.vstack((self.number[mask],
+                                           self.arrival_time,
+                                           self.leaving_time,
+                                           self.peak_time,
+                                           self.peak_concentration,
+                                           self.ascent_time,
+                                           self.descent_time)
+                                          ).transpose(),
+                   fmt='%28.4f',
+                   header="General puff concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "Variables: average arrival time: {:.4f}, "
+                          "average leaving time: {:.4f}, average peak time {:.4f}, "
+                          "average peak concentration: {:.4f}, "
+                          "threshold concentration: {:.4f}, threshold_dosage: {:.4f}".format(
+                              self.avg_arrival_time,
+                              self.avg_leaving_time,
+                              self.avg_peak_time,
+                              self.avg_peak_concentration,
+                              self.threshold_concentration,
+                              self.threshold_dosage)
+                          + "" + '\n' +
+                          "variables = \"    puff number             \" \"    arrival time [-]    \" \"     leaving time [-]     \" \"      peak time [-]       \" "
+                          "\"  peak concentration [-]  \" \"     ascent time [-]      \" \"     descent time [-]     \"",comments='')	        
     @property
     def max_puffs(self):
         """ Get maximum number of puffs. Deduced from the length of 
