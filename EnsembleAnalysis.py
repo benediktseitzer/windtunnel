@@ -35,6 +35,7 @@ class EnsembleAnalysis(pd.DataFrame):
 		#edit 10/01/2019: added attributes x, y, z, scale, calibration_curve, calibration_factor,
         #mass_flow_controller, ref_height, ref_length, scaling_factor, gas_factor, gas_name, mol_weight,
         #temperature, standard_temp_K, and pressure
+        #edit 02/21/2020: added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.        
         super().__init__()
 
         self.data = data		
@@ -57,6 +58,13 @@ class EnsembleAnalysis(pd.DataFrame):
         self.x = None
         self.y = None
         self.z = None
+        self.x_source = None
+        self.y_source = None
+        self.z_source = None 
+        self.x_measure = None
+        self.y_measure = None
+        self.z_measure = None         
+        self.distance = None                  
         self.scale = None
         self.calibration_curve = None
         self.calibration_factor = None	
@@ -106,16 +114,27 @@ class EnsembleAnalysis(pd.DataFrame):
 		
         return cls(data)	
 		
-    def ambient_conditions(self, x, y, z, pressure, temperature, calibration_curve,
+    def ambient_conditions(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],
         temperature in [°C]. """
         #edit 10/01/2019: new function, same as ambient_conditions in PuffConcentration.py,
-        #which collects ambient conditions during measurement. Pressure in [Pa]!		
+        #which collects ambient conditions during measurement. Pressure in [Pa]!	
+        #edit 02/21/2020: added handling of variables for source and measurement locations, added calcuation of distance variable (from calc_puff_statistics function)        
 
+        self.x_source = x_source
+        self.y_source = y_source
+        self.z_source = z_source
+        self.x_measure = x_measure
+        self.y_measure = y_measure
+        self.z_measure = z_measure
+        x = x_measure-y_source
+        y = y_measure-y_source
+        z = z_measure-z_source        
         self.x = x
         self.y = y
         self.z = z
+        self.distance = np.sqrt(x**2 + y**2 + z**2)        
         self.pressure = pressure
         self.temperature = temperature
         self.calibration_curve = calibration_curve
@@ -380,35 +399,50 @@ class EnsembleAnalysis(pd.DataFrame):
                    self.class_freq[i,:,k]=((self.class_min[i,:,k]<=ensemble_puffs.transpose()) & (ensemble_puffs.transpose() < self.class_max[i,:,k])).transpose().sum(axis=1)
                    self.class_freq_norm[i,:,k]=((self.class_min[i,:,k]<=ensemble_puffs.transpose()) & (ensemble_puffs.transpose() < self.class_max[i,:,k])).transpose().sum(axis=1)/i			   
 
-    def calc_puff_statistics(self,x,y,z,pressure,temperature,wtref,wdir):
+    def calc_puff_statistics(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure,temperature,wtref,wdir):
         """ Performs basic statistical analysis (mean and standard deviation) of puffs as well as puff info. Similar to 
         CalculatePuffStatistics in the original c program written by Anne Philip."""
 		#edit 08/08/2019: new function, similar to CalculatePuffStatistics in the original C program written by Anne Philip,
 		#which calculates basic statistical parameters of puff variables from output of get_puffs. See Bachelor Thesis of Anne 
 		#Philipp (2010) for more details. 
+        #edit 02/21/2020: added handling of variables for source and measurement locations, moved calculation of distance variable to ambient_conditions function       
         
         self.stat_mean = None	
         self.stat_std = None
-        self.x = None	
+        self.x_source = None
+        self.y_source = None
+        self.z_source = None
+        self.x_measure = None
+        self.y_measure = None
+        self.z_measure = None
+        self.x = None
         self.y = None
         self.z = None
         self.pressure = None
         self.temperature = None
         self.wtref = None
-        self.wdir = None
-        self.distance = None		
+        self.wdir = None	
 
         self.stat_mean=self.data.mean()		
         self.stat_std=self.data.std()
 		
-        self.x = x	
+        self.x_source = x_source
+        self.y_source = y_source
+        self.z_source = z_source
+        self.x_measure = x_measure
+        self.y_measure = y_measure
+        self.z_measure = z_measure
+        x = x_measure-y_source
+        y = y_measure-y_source
+        z = z_measure-z_source
+        self.x = x
         self.y = y
         self.z = z
         self.pressure = pressure
         self.temperature = temperature
         self.wtref = wtref
         self.wdir = wdir	
-        self.distance = np.sqrt(x**2 + y**2 + z**2)
+
 		
 		
 
@@ -462,14 +496,14 @@ class EnsembleAnalysis(pd.DataFrame):
               print('Name of dataset not specified. Plot of mean puff will not be saved to avoid confusion in the future.')	
            else:	
               if full_scale=='ms':           
-                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Model Scale.jpg')
+                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Model Scale.png')
               elif full_scale=='fs':
-                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Full Scale.jpg') 
+                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Full Scale.png') 
               elif full_scale=='nd':
-                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Non-Dimensional.jpg')          
+                 plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Non-Dimensional.png')          
               else:
                  print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")            
-              #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + '.jpg')	
+              #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + '.png')	
 
         return ret		
 
@@ -525,14 +559,14 @@ class EnsembleAnalysis(pd.DataFrame):
                       print('Name of dataset not specified. Frequency distribution plots will not be saved to avoid confusion in the future.')	
                    else:		
                       if full_scale=='ms':           
-                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Model_Scale_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.jpg')
+                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Model_Scale_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.png')
                       elif full_scale=='fs':
-                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Full_Scale_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.jpg')
+                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Full_Scale_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.png')
                       elif full_scale=='nd':
-                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Non_Dimensional_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.jpg')                         
+                         plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_Non_Dimensional_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.png')                         
                       else:
                          print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")                     
-                      #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.jpg')	
+                      #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Frequency_Distributions/Frequency_Distribution_'+string.capwords(key)+'_ensemble_size_' + str(i)+'.png')	
 
         return ret	
 
@@ -546,7 +580,9 @@ class EnsembleAnalysis(pd.DataFrame):
         #plotting the data in Tecplot. Generates a total of 2 different txt files, for convergence analysis data and class data.
 		#Note that data here is dimensional.
         #edit 10/04/2019: added proper labeling of rows and columns in txt files to make them more readable. 	
-        #edit 10/07/2019: revmoved nan values, since these won't load properly in tecplot.		
+        #edit 10/07/2019: revmoved nan values, since these won't load properly in tecplot.
+		#edit 02/21/2020: added handling of variables for source and measurement locations, added recording of distance variable	
+        #edit 02/25/2020: added compatability with tecplot 
         
         if key==None:
            print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		
@@ -556,7 +592,7 @@ class EnsembleAnalysis(pd.DataFrame):
             os.mkdir(out_dir)
         output_file_conv = out_dir + 'conv_ms_' + key.replace(" ","_") + '_' + filename	
         output_file_class = out_dir + 'class_ms_' + key.replace(" ","_") + filename
-        class_header="\"        ensemble size        \""
+        class_header="variables = \" ensemble size        \""
         for i in range(np.shape(self.ensemble_mean)[0]):
             if i+1<10:		
                class_header=class_header+ " \"  Ensemble number "+str(i+1)+"  \""	
@@ -583,16 +619,22 @@ class EnsembleAnalysis(pd.DataFrame):
                                           np.reshape(self.class_min,np.size(self.class_min))[tecplot_mask],
                                           np.reshape(self.class_max,np.size(self.class_max))[tecplot_mask],
                                           np.reshape(self.class_max-self.class_min,np.size(self.class_max))[tecplot_mask])).transpose(),								  
-                   fmt='%16.4f',
+                   fmt='%22.4f',
                    header="General concentration measurement data:" + '\n' +
                           "" + '\n' +
                           "geometric scale: 1:{}".format(float(self.scale))
                           + "" + '\n' +
-                          "Variables: x: {} [mm], y: {} [mm], z: {} [mm], "
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], "
+                          "distance beteween source and measurement: {} [mm],"                          
                           "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
                           "reference length (model): {:.4f} [m], "
                           "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
                           "gas factor: {:.6f}".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,  
+                                                       self.distance,                                                     
                                                        self.temperature,
                                                        self.pressure,
                                                        self.ref_length,
@@ -600,7 +642,7 @@ class EnsembleAnalysis(pd.DataFrame):
                                                        self.mol_weight,
                                                        self.gas_factor)
                           + "" + '\n' +
-						  "\" ensemble size \" \"ensemble number\" \"class number   \" \"   class min   \" \"   class max   \" \"  class width  \" ")	
+						  "variables = \" ensemble size \" \"   ensemble number  \" \"   class number     \" \"      class min     \" \"      class max     \" \"     class width    \" ",comments='')	
 	
 		
         np.savetxt(output_file_conv, np.vstack((n_ensembles[2:],self.ensemble_mean[2:,:].transpose())).transpose(),		
@@ -621,6 +663,182 @@ class EnsembleAnalysis(pd.DataFrame):
                                                        self.mol_weight,
                                                        self.gas_factor)
                           + "" + '\n' +
-						 class_header).format('%.4f'))						  
+						 class_header).format('%.4f'),comments='')	
+
+    def save2file_fs_ensemble(self, filename, key=None, out_dir=None):
+        """ Save full scale data from PuffConcentration object to txt file.
+        filename must include '.txt' ending. If no out_dir directory is
+        provided './' is set as standard.
+        @parameter: filename, type = str
+        @parameter: out_dir, type = str"""
+		#edit 02/25/2020: new function, similar to save2file_ms_ensemble, but for full scale data.
         
-        			
+        if key==None:
+           print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		
+        if out_dir is None:
+            out_dir = './'
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+        output_file_conv = out_dir + 'conv_fs_' + key.replace(" ","_") + '_' + filename	
+        output_file_class = out_dir + 'class_fs_' + key.replace(" ","_") + filename
+        class_header="variables = \" ensemble size        \""
+        for i in range(np.shape(self.ensemble_mean)[0]):
+            if i+1<10:		
+               class_header=class_header+ " \"  Ensemble number "+str(i+1)+"  \""	
+            elif i+1>=10 and i+1<100:		
+               class_header=class_header+ " \"  Ensemble number "+str(i+1)+" \""	
+            elif i+1>=100 and i+1<1000:		
+               class_header=class_header+ " \" Ensemble number "+str(i+1)+" \""
+            elif i+1>=1000 and i+1<10000:		
+               class_header=class_header+ " \" Ensemble number "+str(i+1)+"\""
+            elif i+1>=10000 and i+1<100000:		
+               class_header=class_header+ " \"Ensemble number "+str(i+1)+"\""				   
+            else:
+               print('Warning: attempting to write ' + str(np.shape(self.ensemble_mean)[0]) + ' ensembles to file. Program currently does not support writing more than 100000 ensembles to file.')			
+        n_ensembles=np.linspace(0,np.shape(self.ensemble_mean)[0]-1,np.shape(self.ensemble_mean)[0],dtype=np.int)	
+        ensemble_size_label=np.broadcast_to(np.linspace(0,np.shape(self.class_min)[0]-1,np.shape(self.class_min)[0]).transpose()[:,np.newaxis,np.newaxis],np.shape(self.class_min))
+        ensemble_number_label=np.broadcast_to(np.linspace(1,np.shape(self.class_min)[1],np.shape(self.class_min)[1])[np.newaxis,:,np.newaxis],np.shape(self.class_min))	
+        class_number_label=np.broadcast_to(np.linspace(1,np.shape(self.class_min)[2],np.shape(self.class_min)[2])[np.newaxis,np.newaxis,:],np.shape(self.class_min))
+        #remove nan values, since tecplot does not accept non-numerical values in input dataset. 		
+        tecplot_class_min=np.reshape(self.class_min,np.size(self.class_min))
+        tecplot_mask=~np.isnan(tecplot_class_min)	
+        np.savetxt(output_file_class, np.vstack((np.reshape(ensemble_size_label,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(ensemble_number_label,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(class_number_label,np.size(self.class_min))[tecplot_mask],										  
+                                          np.reshape(self.class_min,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(self.class_max,np.size(self.class_max))[tecplot_mask],
+                                          np.reshape(self.class_max-self.class_min,np.size(self.class_max))[tecplot_mask])).transpose(),								  
+                   fmt='%22.4f',
+                   header="General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], "
+                          "distance beteween source and measurement: {} [mm],"                          
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,  
+                                                       self.distance,                                                     
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor)
+                          + "" + '\n' +
+						  "variables = \" ensemble size \" \"   ensemble number  \" \"   class number     \" \"      class min     \" \"      class max     \" \"     class width    \" ",comments='')	
+	
+		
+        np.savetxt(output_file_conv, np.vstack((n_ensembles[2:],self.ensemble_mean[2:,:].transpose())).transpose(),		
+                   fmt='%23.4f',
+                   header=("General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x: {} [mm], y: {} [mm], z: {} [mm], "
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}".format(self.x, self.y, self.z,
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor)
+                          + "" + '\n' +
+						 class_header).format('%.4f'),comments='')						                           
+        
+    def save2file_nd_ensemble(self, filename, key=None, out_dir=None):
+        """ Save full scale data from PuffConcentration object to txt file.
+        filename must include '.txt' ending. If no out_dir directory is
+        provided './' is set as standard.
+        @parameter: filename, type = str
+        @parameter: out_dir, type = str"""
+		#edit 02/25/2020: new function, similar to save2file_ms_ensemble and save2file_fs_ensemble, but for non-dimensional data.
+        
+        if key==None:
+           print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		
+        if out_dir is None:
+            out_dir = './'
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+        output_file_conv = out_dir + 'conv_nd_' + key.replace(" ","_") + '_' + filename	
+        output_file_class = out_dir + 'class_nd_' + key.replace(" ","_") + filename
+        class_header="variables = \" ensemble size        \""
+        for i in range(np.shape(self.ensemble_mean)[0]):
+            if i+1<10:		
+               class_header=class_header+ " \"  Ensemble number "+str(i+1)+"  \""	
+            elif i+1>=10 and i+1<100:		
+               class_header=class_header+ " \"  Ensemble number "+str(i+1)+" \""	
+            elif i+1>=100 and i+1<1000:		
+               class_header=class_header+ " \" Ensemble number "+str(i+1)+" \""
+            elif i+1>=1000 and i+1<10000:		
+               class_header=class_header+ " \" Ensemble number "+str(i+1)+"\""
+            elif i+1>=10000 and i+1<100000:		
+               class_header=class_header+ " \"Ensemble number "+str(i+1)+"\""				   
+            else:
+               print('Warning: attempting to write ' + str(np.shape(self.ensemble_mean)[0]) + ' ensembles to file. Program currently does not support writing more than 100000 ensembles to file.')			
+        n_ensembles=np.linspace(0,np.shape(self.ensemble_mean)[0]-1,np.shape(self.ensemble_mean)[0],dtype=np.int)	
+        ensemble_size_label=np.broadcast_to(np.linspace(0,np.shape(self.class_min)[0]-1,np.shape(self.class_min)[0]).transpose()[:,np.newaxis,np.newaxis],np.shape(self.class_min))
+        ensemble_number_label=np.broadcast_to(np.linspace(1,np.shape(self.class_min)[1],np.shape(self.class_min)[1])[np.newaxis,:,np.newaxis],np.shape(self.class_min))	
+        class_number_label=np.broadcast_to(np.linspace(1,np.shape(self.class_min)[2],np.shape(self.class_min)[2])[np.newaxis,np.newaxis,:],np.shape(self.class_min))
+        #remove nan values, since tecplot does not accept non-numerical values in input dataset. 		
+        tecplot_class_min=np.reshape(self.class_min,np.size(self.class_min))
+        tecplot_mask=~np.isnan(tecplot_class_min)	
+        np.savetxt(output_file_class, np.vstack((np.reshape(ensemble_size_label,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(ensemble_number_label,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(class_number_label,np.size(self.class_min))[tecplot_mask],										  
+                                          np.reshape(self.class_min,np.size(self.class_min))[tecplot_mask],
+                                          np.reshape(self.class_max,np.size(self.class_max))[tecplot_mask],
+                                          np.reshape(self.class_max-self.class_min,np.size(self.class_max))[tecplot_mask])).transpose(),								  
+                   fmt='%22.4f',
+                   header="General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], "
+                          "distance beteween source and measurement: {} [mm],"                          
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,  
+                                                       self.distance,                                                     
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor)
+                          + "" + '\n' +
+						  "variables = \" ensemble size \" \"   ensemble number  \" \"   class number     \" \"      class min     \" \"      class max     \" \"     class width    \" ",comments='')	
+	
+		
+        np.savetxt(output_file_conv, np.vstack((n_ensembles[2:],self.ensemble_mean[2:,:].transpose())).transpose(),		
+                   fmt='%23.4f',
+                   header=("General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x: {} [mm], y: {} [mm], z: {} [mm], "
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          "reference length (model): {:.4f} [m], "
+                          "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}".format(self.x, self.y, self.z,
+                                                       self.temperature,
+                                                       self.pressure,
+                                                       self.ref_length,
+                                                       self.gas_name,
+                                                       self.mol_weight,
+                                                       self.gas_factor)
+                          + "" + '\n' +
+						 class_header).format('%.4f'),comments='')        			
