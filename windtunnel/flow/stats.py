@@ -211,116 +211,128 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     return data
 
 
-def calc_lux_data(dt,u_comp):
+def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
     from an equidistant time series of the u component using time step dt.
     @parameter: t_eq, type = int or float
     @parameter: u_comp, type = np.array or list """
-    
+
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
 
     mask = np.where(~np.isnan(u_comp))
-    
+
     u = u_comp[mask]
 
-    lag_eq = np.arange(1,np.size(u)+1) * dt# array of time lags
-    u_eq_acorr = calc_acorr(u,np.size(u))# autocorrelation (one sided) of time 
-                                         # series u_eq
-       
+    initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
+    if initial_guess >= len(u):
+        initial_guess = int(len(u) / 2)
+    lag_eq = np.arange(1, np.size(u) + 1) * dt  # array of time lags
+
+    for lag in range(int(initial_guess), len(lag_eq), int(initial_guess)):
+        u_eq_acorr = calc_acorr(u, lag)  # autocorrelation (one sided) of time series u_eq
+        if np.any(np.diff(u_eq_acorr) > 0):  # if a single value of the derivation autocorrelation is smaller than 0
+            # the iteration of the autocorrelation stops
+            break
+
+    lag_eq = lag_eq[:len(u_eq_acorr)]
+
     Lux = 0.
     # see dissertation R.Fischer (2011) for calculation method
-    for i in range(np.size(u)-2):
+    for i in range(np.size(u_eq_acorr) - 2):
 
         autc1 = u_eq_acorr[i]
-    
-        autc2 = u_eq_acorr[i+1]
-    
-        Lux = Lux + (autc1 + autc2)*0.5
 
-        if autc2>autc1:
-            acorr_fit = np.polyfit(lag_eq[:i],np.log(abs(u_eq_acorr[:i])),deg=1)
-            acorr_fit = np.exp(acorr_fit[0]*lag_eq+acorr_fit[1])
-        
-            if np.min(acorr_fit)<0.001:
-                ix = np.where(acorr_fit<0.001)[0][0]
-        
+        autc2 = u_eq_acorr[i + 1]
+
+        Lux = Lux + (autc1 + autc2) * 0.5
+
+        if autc2 > autc1:
+            acorr_fit = np.polyfit(lag_eq[:i], np.log(abs(u_eq_acorr[:i])), deg=1)
+            acorr_fit = np.exp(acorr_fit[0] * lag_eq + acorr_fit[1])
+
+            if np.min(acorr_fit) < 0.001:
+                ix = np.where(acorr_fit < 0.001)[0][0]
+
             else:
                 ix = acorr_fit.size
-                
-            Lux = Lux+(np.sum(acorr_fit[i+1:ix])+
-                       np.sum(acorr_fit[i+2:ix+1]))*0.5
+
+            Lux = Lux + (np.sum(acorr_fit[i + 1:ix]) +
+                         np.sum(acorr_fit[i + 2:ix + 1])) * 0.5
             break
 
         elif autc1 <= 0:
             break
-        
-    Lux = abs(Lux*np.mean(u_comp)*dt)
-    
+
+    Lux = abs(Lux * np.mean(u_comp) * dt)
     return Lux
 
 
-def calc_lux_data_wght(transit_time,dt,u_comp):
-    """ Calculates the integral length scale according to R. Fischer (2011) 
+def calc_lux_data_wght(transit_time, dt, u_comp):
+    """ Calculates the integral length scale according to R. Fischer (2011)
     from an equidistant time series of the u component using time step dt.
     @parameter: t_eq, type = int or float
     @parameter: u_comp, type = np.array or list """
-    
+
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
 
     mask = np.where(~np.isnan(u_comp))
-    
+
     u = u_comp[mask]
 
-    lag_eq = np.arange(1,np.size(u)+1) * dt# array of time lags
-    u_eq_acorr = calc_acorr(u,np.size(u))# autocorrelation (one sided) of time 
-                                         # series u_eq
-       
+    initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
+    if initial_guess >= len(u):
+        initial_guess = int(len(u) / 2)
+    lag_eq = np.arange(1, np.size(u) + 1) * dt  # array of time lags
+
+    for lag in range(int(initial_guess), len(lag_eq), int(initial_guess)):
+        u_eq_acorr = calc_acorr(u, lag)  # autocorrelation (one sided) of time series u_eq
+        if np.any(np.diff(u_eq_acorr) > 0):  # if a single value of the derivation autocorrelation is smaller than 0
+            # the iteration of the autocorrelation stops
+            break
+
+    lag_eq = lag_eq[:len(u_eq_acorr)]
+
     Lux = 0.
     # see dissertation R.Fischer (2011) for calculation method
-    for i in range(np.size(u)-2):
+    for i in range(np.size(u_eq_acorr) - 2):
 
         autc1 = u_eq_acorr[i]
-    
-        autc2 = u_eq_acorr[i+1]
-    
-        Lux = Lux + (autc1 + autc2)*0.5
 
-        if autc2>autc1:
-            acorr_fit = np.polyfit(lag_eq[:i],np.log(abs(u_eq_acorr[:i])),deg=1)
-            acorr_fit = np.exp(acorr_fit[0]*lag_eq+acorr_fit[1])
-        
-            if np.min(acorr_fit)<0.001:
-                ix = np.where(acorr_fit<0.001)[0][0]
-        
+        autc2 = u_eq_acorr[i + 1]
+
+        Lux = Lux + (autc1 + autc2) * 0.5
+
+        if autc2 > autc1:
+            acorr_fit = np.polyfit(lag_eq[:i], np.log(abs(u_eq_acorr[:i])), deg=1)
+            acorr_fit = np.exp(acorr_fit[0] * lag_eq + acorr_fit[1])
+
+            if np.min(acorr_fit) < 0.001:
+                ix = np.where(acorr_fit < 0.001)[0][0]
+
             else:
                 ix = acorr_fit.size
-                
-            Lux = Lux+(np.sum(acorr_fit[i+1:ix])+
-                       np.sum(acorr_fit[i+2:ix+1]))*0.5
+
+            Lux = Lux + (np.sum(acorr_fit[i + 1:ix]) +
+                         np.sum(acorr_fit[i + 2:ix + 1])) * 0.5
             break
 
         elif autc1 <= 0:
             break
-        
-    Lux = abs(Lux*wt.transit_time_weighted_mean(transit_time,u_comp)*dt)
-    
+
+    Lux = abs(Lux * wt.transit_time_weighted_mean(transit_time, u_comp) * dt)
+
     return Lux
 
 
-def calc_acorr(timeseries,maxlags):
+def calc_acorr(timeseries, maxlags):
     """ Full autocorrelation of time series for lags up to maxlags.
     @parameter timeseries: np.array or list
     @parameter maxlags: int"""
-    
+
     timeseries = timeseries[~np.isnan(timeseries)]
-    acorr = np.zeros(maxlags)
-    for lag in range(maxlags):
-        if lag > timeseries.size:
-            break
-        acorr[lag] = calc_autocorr(timeseries,lag)
-        
+    acorr = np.asarray([1. if x == 0 else np.corrcoef(timeseries[x:], timeseries[:-x])[0][1] for x in range(maxlags)])
     return acorr
 
 
@@ -328,11 +340,11 @@ def calc_autocorr(timeseries, lag=1):
     """ Autocorrelation of time series with lag.
     @parameter tiemseries: np.array or list
     @parameter lag: int"""
-    
+
     timeseries = timeseries[~np.isnan(timeseries)]
-    autocorr = np.corrcoef(timeseries[0:np.size(timeseries)-lag],
-                     timeseries[lag:])[1,0]
-    
+    autocorr = np.corrcoef(timeseries[0:np.size(timeseries) - lag],
+                           timeseries[lag:])[1, 0]
+
     return autocorr
 
 
@@ -354,20 +366,20 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
 
     #  S == E/dn ; dn == 1
     if np.size(u_comp)%2==0:
-        E_uu = np.hstack((np.abs(fft_u[1:nyquist_freq])**2 * 
+        E_uu = np.hstack((np.abs(fft_u[0:nyquist_freq])**2 *
                           2.,np.abs(fft_u[nyquist_freq])**2))
         
         # frequency transformation (n to f as referenced in Stull, 
         # p.314) P = N * dt; n=f/P
         S_uu = E_uu * len(t_eq)*(t_eq[1]-t_eq[0])
-        E_vv = np.hstack((np.abs(fft_v[1:nyquist_freq])**2 *
+        E_vv = np.hstack((np.abs(fft_v[0:nyquist_freq])**2 *
                           2.,np.abs(fft_v[nyquist_freq])**2))
         
         # frequency transformation (n to f as referenced in Stull, p.314) 
         # P = N * dt; n=f/P
         S_vv = E_vv * len(t_eq)*(t_eq[1]-t_eq[0])
-        E_uv = np.hstack((np.abs(fft_u[1:nyquist_freq])*
-                          np.abs(fft_v[1:nyquist_freq]) * 2.,
+        E_uv = np.hstack((np.abs(fft_u[0:nyquist_freq])*
+                          np.abs(fft_v[0:nyquist_freq]) * 2.,
                           np.abs(fft_u[nyquist_freq])*
                           np.abs(fft_v[nyquist_freq])))
         
@@ -375,26 +387,26 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
         # P = N * dt; n=f/P
         S_uv = E_uv * len(t_eq)*(t_eq[1]-t_eq[0])
     else:
-        E_uu = np.abs(fft_u[1:nyquist_freq+1])**2 * 2.
+        E_uu = np.abs(fft_u[0:nyquist_freq+1])**2 * 2.
         
         # frequency transformation (n to f as referenced in Stull, p.314) 
         # P = N * dt; n=f/P
         S_uu = E_uu * len(t_eq)*(t_eq[1]-t_eq[0])
-        E_vv = np.abs(fft_v[1:nyquist_freq+1])**2 * 2.
+        E_vv = np.abs(fft_v[0:nyquist_freq+1])**2 * 2.
         
         # frequency transformation (n to f as referenced in Stull, p.314) 
         # P = N * dt; n=f/P
         S_vv = E_vv * len(t_eq)*(t_eq[1]-t_eq[0])
-        E_uv = np.abs(fft_u[1:nyquist_freq+1])*np.abs(fft_v[1:nyquist_freq+1])*2.
+        E_uv = np.abs(fft_u[0:nyquist_freq+1])*np.abs(fft_v[0:nyquist_freq+1])*2.
         
         # frequency transformation (n to f as referenced in Stull, p.314)
         # P = N * dt; n=f/P
         S_uv = E_uv * len(t_eq)*(t_eq[1]-t_eq[0])
 
     # dimensionless
-    S_uu = np.abs(freq[1:nyquist_freq+1])*S_uu/(np.nanstd(u_comp)**2)
-    S_vv = np.abs(freq[1:nyquist_freq+1])*S_vv/(np.nanstd(v_comp)**2)
-    S_uv = np.abs(freq[1:nyquist_freq+1])*S_uv/np.abs(u_comp.std()*v_comp.std())
+    S_uu = np.abs(freq[0:nyquist_freq+1])*S_uu/(np.nanstd(u_comp)**2)
+    S_vv = np.abs(freq[0:nyquist_freq+1])*S_vv/(np.nanstd(v_comp)**2)
+    S_uv = np.abs(freq[0:nyquist_freq+1])*S_uv/np.abs(u_comp.std()*v_comp.std())
 
     ##  REDUCED FREQUENCY (PLOT and reference spectra)
     reduced_freq = freq*height/np.mean(u_comp)
@@ -455,21 +467,21 @@ def calc_spectra_nc(u_comp, t_eq, height):
 
     #  S == E/dn ; dn == 1
     if np.size(u_comp) % 2 == 0:
-        E_uu = np.hstack((np.abs(fft_u[1:nyquist_freq]) ** 2 *
+        E_uu = np.hstack((np.abs(fft_u[0:nyquist_freq]) ** 2 *
                           2., np.abs(fft_u[nyquist_freq]) ** 2))
 
         # frequency transformation (n to f as referenced in Stull,
         # p.314) P = N * dt; n=f/P
         S_uu = E_uu * len(t_eq) * (t_eq[1] - t_eq[0])
     else:
-        E_uu = np.abs(fft_u[1:nyquist_freq + 1]) ** 2 * 2.
+        E_uu = np.abs(fft_u[0:nyquist_freq + 1]) ** 2 * 2.
 
         # frequency transformation (n to f as referenced in Stull, p.314)
         # P = N * dt; n=f/P
         S_uu = E_uu * len(t_eq) * (t_eq[1] - t_eq[0])
 
     # dimensionless
-    S_uu = np.abs(freq[1:nyquist_freq + 1]) * S_uu / (np.nanstd(u_comp) ** 2)
+    S_uu = np.abs(freq[0:nyquist_freq + 1]) * S_uu / (np.nanstd(u_comp) ** 2)
 
     ##  REDUCED FREQUENCY (PLOT and reference spectra)
     reduced_freq = freq * height / np.mean(u_comp)
