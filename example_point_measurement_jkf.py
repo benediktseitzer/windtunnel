@@ -12,12 +12,17 @@ import numpy as np
 # open_rate, where release signal will be ignored.
 
 # Path to your data
-path = '//ewtl2/projects/CERN/concentration/'
+path = '/home/jkfischer/Desktop/Uni_Hamburg/Home_Office/Puff_Beispiele/'
+#edit 05/20/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
+#is not found in the given file, the program resosrts to the default values specified below. 
+csv_file='Q2_Ambient_Conditions.csv'
 
 # Name of your measurement
-namelist = ['Cern_C_ANE_LC_002_V2.txt.TS#0']
+namelist = ['Q2_170_P09.txt.ts#0','Q2_170_P11.txt.ts#0','Q2_170_P12.txt.ts#0']
 #edit 09/19/2019: moved a priori information to beginning of script. Potential for GUI usage
 #at a futuretime
+#edit 05/20/2020: the proposed GUI is well under development, but has been moved to a separate
+#script, titled "PAPE_GUI_code_puff.py."
 x=855.16
 y=176.29
 z=162
@@ -49,11 +54,11 @@ data_dict = {}
 data_dict.fromkeys(namelist)
 for name in namelist:
     #edit 10/21/2019:added option to read ambient conditions from csv file    
-    ambient_conditions=wt.PointConcentration.get_ambient_conditions(path=path,name=name,input_file=path+'Cern_Ambient_Conditions.csv')  
+    ambient_conditions=wt.PointConcentration.get_ambient_conditions(path=path,name=name,input_file=path+csv_file)  
     if ambient_conditions is None:
       []
     else:
-      x,y,z,pressure,temperature,calibration_curve,mass_flow_controller,calibration_factor,scaling_factor,scale,ref_length,\
+      x_source,y_source,z_source,x_measure,y_measure,z_measure,pressure,temperature,calibration_curve,mass_flow_controller,calibration_factor,scaling_factor,scale,ref_length,\
       ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,full_scale_flow_rate=wt.PointConcentration.read_ambient_conditions(ambient_conditions,name)    
     files = wt.get_files(path,name)
     conc_ts[name] = {}
@@ -66,7 +71,7 @@ for name in namelist:
                                                #calibration_curve=0.3,#0.3 oder 3
                                                #mass_flow_controller='X',
                                                #calibration_factor=1)
-        conc_ts[name][file].ambient_conditions(x=x,y=y,z=z,pressure=pressure,
+        conc_ts[name][file].ambient_conditions(x_source=x_source,y_source=y_source,z_source=z_source,x_measure=x_measure,y_measure=y_measure,z_measure=z_measure,pressure=pressure,
                                                temperature=temperature,
                                                calibration_curve=callibration_curve,
                                                mass_flow_controller=mass_flow_controller,

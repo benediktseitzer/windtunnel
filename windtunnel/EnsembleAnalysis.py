@@ -1,5 +1,7 @@
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 import numpy as np
+import numpy.matlib
 import math
 import logging
 import os
@@ -260,10 +262,11 @@ class EnsembleAnalysis(pd.DataFrame):
                puff_numbers=self.get_ensembles(ensemble_size=i)	
                self.ensemble_std[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].std(axis=1)		
 			   
-    def calc_n_classes(self,ensemble_size):
+    def calc_n_classes(self,ensemble_size,n=None):
         """Calculate number of classes, based on ensemble size. Method based on original C Program by Anne Philip."""
         #edit 08/12/2019: new function, which calculates the number of classes for each ensemble size. Similar to subsection of CalculationAndWritingFrequencyDistribution
         #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
+        print(n)
 
         if ensemble_size>np.size(self.data):
            print('Error: ensemble size greater than number of data points! Use smaller ensemble size and/or check the dataset. Also consider checking any thershold applying algorithms.')
@@ -272,14 +275,18 @@ class EnsembleAnalysis(pd.DataFrame):
            print('Error: ensemble size less than two, which make no sense. Check ensemble size!')
            return 	
 
-        n_classes_raw=np.int(1+math.log10(ensemble_size)/math.log10(2))	
-        n_classes=np.int((n_classes_raw-1)*2)
-		
+        if n==None:
+           n_classes_raw=np.int(1+math.log10(ensemble_size)/math.log10(2))	
+           n_classes=np.int((n_classes_raw-1)*2)
+        else:
+           n_classes_raw=n
+           n_classes=np.int((n_classes_raw-1)*2)           		
         self.n_classes.astype(int)		
+
 
         return n_classes		
 		
-    def calc_class_width(self):
+    def calc_class_width(self,n_classes=None):
         """Compute class width for each ensemble size and number"""
         #edit 08/12/2019: new function, which calculates the width of the classes. Similar to subsection of CalculationAndWritingFrequencyDistribution
         #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
@@ -296,7 +303,7 @@ class EnsembleAnalysis(pd.DataFrame):
                self.n_classes[i,:]=np.nan
                self.n_classes_raw[i,:]=np.nan			   
             else: 
-               n_classes=self.calc_n_classes(ensemble_size=i)
+               n_classes=self.calc_n_classes(ensemble_size=i,n=n_classes)
                self.n_classes[i,:]=np.int(n_classes)
                self.n_classes_raw[i,:]=(np.int(n_classes)/2)+1			   
                for j in range(np.shape(self.ensemble_min)[1]):
@@ -327,7 +334,7 @@ class EnsembleAnalysis(pd.DataFrame):
 
         if (np.int(np.nanmax(self.n_classes_raw)) - (np.nanmax(self.n_classes_raw))) != 0:	
             print('Error: number of classes must be an integer. Aborting Script.' )
-            return        
+            return         
         self.class_min=np.zeros((np.shape(self.ensemble_min)[0],np.shape(self.ensemble_min)[1],np.int(np.nanmax(self.n_classes_raw))))
         self.class_max=np.zeros((np.shape(self.ensemble_min)[0],np.shape(self.ensemble_min)[1],np.int(np.nanmax(self.n_classes_raw))))
         self.class_center=np.zeros((np.shape(self.ensemble_min)[0],np.shape(self.ensemble_min)[1],np.int(np.nanmax(self.n_classes_raw))))
@@ -460,7 +467,8 @@ class EnsembleAnalysis(pd.DataFrame):
            print('Error: ensemble means not found. Make sure that get_ensemble_mean is called before calling plot_convergence_ensemble')
            return		   
 
-        ensemble_size_array = np.linspace(0,np.shape(self.data)[0]-1,np.shape(self.data)[0])		
+        ensemble_size_array = np.linspace(0,np.shape(self.data)[0]-1,np.shape(self.data)[0])	
+        plt.ioff()	
         ret=plt.figure(200)
         plt.clf()		
         for j in range(0,np.shape(self.ensemble_mean)[0],conv_step):
@@ -503,7 +511,9 @@ class EnsembleAnalysis(pd.DataFrame):
                  plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + ', Non-Dimensional.png')          
               else:
                  print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")            
-              #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + '.png')	
+              #plt.savefig(path + 'Puff_Plots/' + name[:-9] + '/Convergence Analysis of ' + string.capwords(key) + '.png')
+
+        plt.close()	
 
         return ret		
 
@@ -525,7 +535,8 @@ class EnsembleAnalysis(pd.DataFrame):
         for i in range(np.shape(self.class_freq_norm)[0]):		   
             if i<2:
                continue
-            else:		
+            else:
+                plt.ioff()		
                 plt.clf()				
                 plt.bar(np.linspace(1,np.shape(self.class_freq_norm[i,:,:])[1],np.shape(self.class_freq_norm[i,:,:])[1]),np.nanmean(self.class_freq_norm[i,:,:],0),width=1,align='center')	
                 ax=plt.gca()
@@ -540,7 +551,7 @@ class EnsembleAnalysis(pd.DataFrame):
                 				
                 ret.set_figwidth(26)	
                 ret.set_figheight(16)								
-                n=self.n_classes_raw[i,0]		
+                n=np.int(self.n_classes_raw[i,0])		
                 plt.xticks(np.linspace(1,n,n),np.linspace(1,n,n,dtype=np.int))	
                 plt.tick_params(axis='both', labelsize=30)
 
