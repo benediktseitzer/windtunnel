@@ -385,5 +385,10 @@ in plot_puff:
 in get_ambient_conditions:
         variable input_file now contains the full path of the csv file, not just the file name.
         
+05/13/2020: 
+
+in read_ambient_conditions:
+        fixed incorrect variable labeling of source and measurment locations.  
+        
 
 

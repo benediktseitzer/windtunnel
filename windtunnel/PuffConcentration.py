@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
@@ -158,7 +159,7 @@ class PuffConcentration(pd.DataFrame):
 		
     def to_full_scale(self):
         """ Converts all quantities to full scale, overwriting model scale variables."""
-		#edit 09/19/2019: new function, based on to_full_scale in PointConcentration.py,
+        #edit 09/19/2019: new function, based on to_full_scale in PointConcentration.py,
         #which converts data to full scale. Note that this function, unlike the analogous 
         #function in PointConcentration.py, overwrites the variables in the dictionary. 
         #edit 02/21/2020: added scaling of source and measurement locations
@@ -280,14 +281,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
         #full_scale_flow_rate. 
         #edit 02/21/2020: changed position variables to source and measurement locations, also fixed previously 
-        #incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none            
+        #incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none  
+        #edit 05/13/2020: fixed incorrect variable labeling of source and measurment locations.           
  	   
-        x=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
-        y=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
-        z=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
-        x=None if ambient_conditions[name]['x_measure'] =='None' else np.float(ambient_conditions[name]['x_measure'])
-        y=None if ambient_conditions[name]['y_measure'] =='None' else np.float(ambient_conditions[name]['y_measure'])
-        z=None if ambient_conditions[name]['z_measure'] =='None' else np.float(ambient_conditions[name]['z_measure'])          
+        x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
+        y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
+        z_source=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
+        x_measure=None if ambient_conditions[name]['x_measure'] =='None' else np.float(ambient_conditions[name]['x_measure'])
+        y_measure=None if ambient_conditions[name]['y_measure'] =='None' else np.float(ambient_conditions[name]['y_measure'])
+        z_measure=None if ambient_conditions[name]['z_measure'] =='None' else np.float(ambient_conditions[name]['z_measure'])          
         pressure=None if ambient_conditions[name]['pressure'] =='None' else np.float(ambient_conditions[name]['pressure'])		
         temperature=None if ambient_conditions[name]['temperature'] =='None' else np.float(ambient_conditions[name]['temperature'])
         wdir=None if ambient_conditions[name]['wdir'] =='None' else np.float(ambient_conditions[name]['wdir'])	
@@ -304,7 +306,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         full_scale_wtref=None if ambient_conditions[name]['full_scale_wtref'] =='None' else np.float(ambient_conditions[name]['full_scale_wtref'])
         full_scale_flow_rate=None if ambient_conditions[name]['full_scale_flow_rate'] =='None' else np.float(ambient_conditions[name]['full_scale_flow_rate'])	
 		
-        return x,y,z,pressure,temperature,wdir,calibration_curve,mass_flow_controller,\
+        return x_source,y_source,z_source,x_measure,y_measure,z_measure,pressure,temperature,wdir,calibration_curve,mass_flow_controller,\
         calibration_factor, scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,\
         gas_factor,full_scale_wtref,full_scale_flow_rate
            		
@@ -1145,7 +1147,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ))		
 				
 		
-    def plot_puff(self,var1='net_concentration',n_puffs=5,path=None,name=None,full_scale=None):
+    def plot_puff(self,var1='net_concentration',n_puffs=5,path=None,name=None,full_scale=None,axis_range='auto'):
 	
         """ Plot time series of selected variable for first n_puffs puffs.
         Default configuration plots net_concentration for first 5 puffs""" 
@@ -1212,8 +1214,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                #datasets. 
                   continue        
             ret=plt.figure(100+i)
-            plt.clf()
             plt.ioff()
+            plt.clf()
             plt.plot(time_puffs,ts_puffs,label=var1,linewidth=5,color='#1f77b4')
             print('Assumes 4.5V as signal threshold, same as in function "from_file"')
             plt.plot(time_puffs,(self.peak_concentration[index]/2)*signal_n_puffs,label='signal',linewidth=5,color='#ff7f0e')
@@ -1233,7 +1235,11 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             #edit 10/25/2019: fix error in x-axis tickmark labeling. Previously only tickmark labels converted to np.int, which led to incorrect tickmark labeling.				
             plt.xticks(np.arange(np.min(time_puffs),np.max(time_puffs),xtick_step,dtype=np.int),np.arange(np.min(time_puffs),np.max(time_puffs),xtick_step,dtype=np.int))
             plt.tick_params(axis='both', labelsize=30)   
-            plt.xlim(np.min(time_puffs),np.max(time_puffs))	   			
+            plt.xlim(np.min(time_puffs),np.max(time_puffs))
+            if axis_range=='auto':
+               []
+            elif axis_range=='same':
+               plt.ylim(0,1.05*np.asarray(getattr(self,var1).max()))   			
             #edit 07/26/2019: display arrival and leaving time in plot			
             if i >= 0:		           
                plt.axvline(x=self.begin_release_period[i]+self.arrival_time[index],linewidth=5,color='b',linestyle='--')
@@ -1242,11 +1248,11 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             #edit 07/26/2019: no puff before start of data aquisiton
             #edit 09/26/2019: added units to dosage        
             if full_scale=='ms':
-               ax.set_title('Puff ' + str(i+1)+' (Model Scale), Dosage of '+str(np.round(self.dosage[index],1)) + ' ppm$\mathrm{_v}$s',fontsize=40)
+               ax.set_title('Puff ' + str(np.int(self.begin_release_period[i]))+' (Model Scale), Dosage of '+str(np.round(self.dosage[index],1)) + ' ppm$\mathrm{_v}$s',fontsize=40)
             elif full_scale=='fs':
-               ax.set_title('Puff ' + str(i+1)+' (Full Scale), Dosage of '+str(np.round(self.dosage[index],1)) + ' ppm$\mathrm{_v}$s',fontsize=40)
+               ax.set_title('Puff ' + str(np.int(self.begin_release_period[i]))+' (Full Scale), Dosage of '+str(np.round(self.dosage[index],1)) + ' ppm$\mathrm{_v}$s',fontsize=40)
             elif full_scale=='nd':
-               ax.set_title('Puff ' + str(i+1)+' (Non-dimensional), Dosage of '+str(np.round(self.dosage[index],1)) ,fontsize=40)               
+               ax.set_title('Puff ' + str(np.int(self.begin_release_period[i]))+' (Non-dimensional), Dosage of '+str(np.round(self.dosage[index],1)) ,fontsize=40)               
             else:
                print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")                
             plt.legend(fontsize=40)
@@ -1269,11 +1275,11 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                   print('Name of dataset not specified. Plots will not be saved to avoid confusion in the future.')	
                else:
                   if full_scale=='ms':           
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Model_Scale.png')
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(np.int(self.begin_release_period[i]))+'_Model_Scale.png')
                   elif full_scale=='fs':
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Full_Scale.png') 
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(np.int(self.begin_release_period[i]))+'_Full_Scale.png') 
                   elif full_scale=='nd':
-                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(i+1)+'_Non_Dimensional.png')                     
+                     plt.savefig(path+'Puff_Plots/'+name[:-9]+'/Puff_'+str(np.int(self.begin_release_period[i]))+'_Non_Dimensional.png')                     
                   else:
                      print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale='nd')")                
                   if n_puffs > 10: 
