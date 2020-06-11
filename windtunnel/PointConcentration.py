@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import numpy as np
 import math
 import logging
@@ -32,6 +33,7 @@ class PointConcentration(pd.DataFrame):
         #convert temperatures between °C and K, and has been replaced by adjustments
         #to the convert_temperature function.   Also removed duplicate variables
         #full_scale_time and scale. 
+        #edit 05/13/2020: added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.        
         """ Initialise PointConcentration object. """
         super().__init__()
 
@@ -41,6 +43,13 @@ class PointConcentration(pd.DataFrame):
         self.x = None
         self.y = None
         self.z = None
+        self.x_source = None
+        self.y_source = None
+        self.z_source = None 
+        self.x_measure = None
+        self.y_measure = None
+        self.z_measure = None         
+        self.distance = None         
         self.scale = None
         self.wtref_mean = None
         self.open_rate = open_rate
@@ -99,8 +108,9 @@ class PointConcentration(pd.DataFrame):
     def to_full_scale(self):
         """ Return all quantities to full scale. Requires XXXXXX to be
         specified."""
-		#edit 07/26/2019: changed clear_zeros to a standalone funciton, which is now called from 
-		#outside calc_net_concentration
+	#edit 07/26/2019: changed clear_zeros to a standalone funciton, which is now called from 
+	#outside calc_net_concentration
+	#edit 05/13/2020: added scaling of source and measurement locations 
         if self.__check_sum >= 8:
 
             quantities = ['x', 'y', 'z', 'time', 'concentration', 'flow rate']
@@ -110,6 +120,13 @@ class PointConcentration(pd.DataFrame):
             your_measurement['x'] = self.x = self.x * self.scale / 1000  # [m]
             your_measurement['y'] = self.y = self.y * self.scale / 1000  # [m]
             your_measurement['z'] = self.z = self.z * self.scale / 1000  # [m]
+            your_measurement['x_source'] = self.x_source = self.x_source * self.scale / 1000  # [m]
+            your_measurement['y_source'] = self.y_source = self.y_source * self.scale / 1000  # [m]
+            your_measurement['z_source'] = self.z_source = self.z_source * self.scale / 1000  # [m]  
+            your_measurement['x_measure'] = self.x_measure = self.x_measure * self.scale / 1000  # [m]
+            your_measurement['y_measure'] = self.y_measure = self.y_measure * self.scale / 1000  # [m]
+            your_measurement['z_measure'] = self.z_measure = self.z_measure * self.scale / 1000  # [m]  
+            your_measurement['distance'] = self.distance = self.distance * self.scale / 1000  # [m]                                  
             your_measurement['flow rate'] = self.calc_full_scale_flow_rate()
 
             self.calc_full_scale_time()			
@@ -145,12 +162,12 @@ to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
-        elif not os.path.exists(path+input_file):
+        elif not os.path.exists(input_file):
            print('Error: Cannont find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
 conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   
         else:	
-           ambient_conditions=pd.read_csv(path+input_file,sep=',',index_col=0) 
+           ambient_conditions=pd.read_csv(input_file,sep=',',index_col=0) 
         
         if name not in ambient_conditions.keys():
            print('Error: Dataset not found in csv file. Check to make sure that csv file to make sure that the csv file contains all necessary \
@@ -158,7 +175,7 @@ data and is properly formatted. Resorting to input data in example_puff_measurem
            return	
 
         #list of all variables output by read_ambient_conditions fuction.  
-        necessary_keys={'x','y','z','pressure','temperature','calibration_curve','mass_flow_controller','calibration_factor', \
+        necessary_keys={'x_source','y_source','z_source','x_measure','y_measure','z_measure','pressure','temperature','calibration_curve','mass_flow_controller','calibration_factor', \
         'scaling_factor','scale','ref_length','ref_height','gas_name','mol_weight','gas_factor','full_scale_wtref','full_scale_flow_rate' }
         if not all(name2 in ambient_conditions[name] for name2 in necessary_keys):
            print('Error: csv file does not contain all necessary ambient conditions data. Check to make sure that csv file to make sure that \
@@ -180,10 +197,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         #the variables x,y,z,pressure,temperature,calibration_curve,mass_flow_controller, calibration_factor,
         #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
         #full_scale_flow_rate.
+        #edit 05/13/2020: added seperate handling of source and measurement locations. 
  	   
-        x=None if ambient_conditions[name]['y'] =='None' else np.float(ambient_conditions[name]['x'])
-        y=None if ambient_conditions[name]['y'] =='None' else np.float(ambient_conditions[name]['y'])
-        z=None if ambient_conditions[name]['x'] =='None' else np.float(ambient_conditions[name]['z'])
+        x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
+        y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
+        z_source=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
+        x_measure=None if ambient_conditions[name]['x_measure'] =='None' else np.float(ambient_conditions[name]['x_measure'])
+        y_measure=None if ambient_conditions[name]['y_measure'] =='None' else np.float(ambient_conditions[name]['y_measure'])
+        z_measure=None if ambient_conditions[name]['z_measure'] =='None' else np.float(ambient_conditions[name]['z_measure']) 
         pressure=None if ambient_conditions[name]['pressure'] =='None' else np.float(ambient_conditions[name]['pressure'])		
         temperature=None if ambient_conditions[name]['temperature'] =='None' else np.float(ambient_conditions[name]['temperature'])
         calibration_curve=None if ambient_conditions[name]['calibration_curve'] =='None' else np.float(ambient_conditions[name]['calibration_curve'])
@@ -199,19 +220,30 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         full_scale_wtref=None if ambient_conditions[name]['full_scale_wtref'] =='None' else np.float(ambient_conditions[name]['full_scale_wtref'])
         full_scale_flow_rate=None if ambient_conditions[name]['full_scale_flow_rate'] =='None' else np.float(ambient_conditions[name]['full_scale_flow_rate'])	
 		
-        return x,y,z,pressure,temperature,calibration_curve,mass_flow_controller,\
+        return x_source,y_source,z_source,x_measure,y_measure,z_measure,pressure,temperature,calibration_curve,mass_flow_controller,\
         calibration_factor, scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,\
         gas_factor,full_scale_wtref,full_scale_flow_rate							
 
-    def ambient_conditions(self, x, y, z, pressure, temperature, calibration_curve,
+    def ambient_conditions(self, x_source, y_source, z_source, x_measure,y_measure,z_measure,pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],
         temperature in [°C]. """
+        #edit 05/13/2020: added seperate handling of source and measurement locations.
         self.__check_sum = self.__check_sum + 1
 
+        self.x_source = x_source
+        self.y_source = y_source
+        self.z_source = z_source
+        self.x_measure = x_measure
+        self.y_measure = y_measure
+        self.z_measure = z_measure
+        x = x_measure-y_source
+        y = y_measure-y_source
+        z = z_measure-z_source
         self.x = x
         self.y = y
         self.z = z
+        self.distance = np.sqrt(x**2 + y**2 + z**2)           
         self.pressure = pressure
         self.temperature = temperature
         self.calibration_curve = calibration_curve
@@ -454,6 +486,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         provided './' is set as standard.
         @parameter: filename, type = str
         @parameter: out_dir, type = str"""
+        #edit 05/13/2020: added seperate handling of source and measurement locations
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
@@ -469,13 +502,17 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                           "" + '\n' +
                           "geometric scale: 1:{}".format(float(self.scale))
                           + "" + '\n' +
-                          "Variables: x: {} [mm], y: {} [mm], z: {} [mm], "
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
                           "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
                           " mass flow rate {:.4f} [kg/s], "
                           "reference length (model): {:.4f} [m], "
                           "Tracer gas: {}, mol. weight tracer: {:.4f} [mol/kg], "
                           "gas factor: {:.6f}, calibartion curve: {:.6f}, "
                           "wtref: {:.4f} [m/s]".format(self.x, self.y, self.z,
+                                                       self.x_source, self.y_source, self.z_source,
+                                                       self.x_measure, self.y_measure, self.z_measure,
                                                        self.temperature,
                                                        self.pressure,
                                                        self.mass_flow_rate,
@@ -493,7 +530,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         to txt file. filename must include '.txt' ending. If no out_dir
         directory is provided './' is set as standard.
         @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
+        @parameter: out_dir, type = str"""#
+        #edit 05/13/2020: added seperate handling of source and measurement locations        
         if self.__check_sum < 8:
             raise Exception('Please enter or calculate all full scale data '
                             'necessary!')
@@ -514,17 +552,18 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                           "" + '\n' +
                           "geometric scale: 1:{}".format(float(self.scale))
                           + "" + '\n' +
-                          "Variables: x: {} [m], y: {} [m], z: {} [m], "
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
                           "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
                           " mass flow rate {:.4f} [kg/s], "
                           "reference length (model): {:.4f} [m], "
                           "reference length (full-scale): {:.4f} [m], Tracer gas: {}, "
                           "mol. weight tracer: {:.4f} [mol/kg], "
                           "gas factor: {:.6f}, calibartion curve: {:.6f}, "
-                          "wtref: {:.4f} [m/s], full scale flow rate: {:.4f} [m^3/s]".format(
-                              self.x,
-                              self.y,
-                              self.z,
+                          "wtref: {:.4f} [m/s], full scale flow rate: {:.4f} [m^3/s]".format(self.x, self.y, self.z,
+                              self.x_source, self.y_source, self.z_source,
+                              self.x_measure, self.y_measure, self.z_measure,
                               self.temperature,
                               self.pressure,
                               self.mass_flow_rate,
@@ -546,6 +585,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ending. If no out_dir directory is provided './' is set as standard.
         @parameter: filename, type = str
         @parameter: out_dir, type = str"""
+        #edit 05/13/2020: added seperate handling of source and measurement locations
         if self.__check_sum < 8:
             raise Exception('Please enter or calculate all full scale data '
                             'necessary!')
@@ -567,16 +607,18 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                           "" + '\n' +
                           "geometric scale: 1:{}".format(float(self.scale))
                           + "" + '\n' +
-                          "Variables: x: {} [m], y: {} [m], z: {} [m], ambient temperature: {:.1f} [°C], "
-                          "ambient pressure: {:.2f} [Pa], mass flow rate {:.4f} [kg/s], "
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm],"
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          "mass flow rate {:.4f} [kg/s], "
                           "reference length (model): {:.4f} [m], "
                           "reference length (full-scale): {:.4f} [m], Tracer gas: {}, "
                           "mol. weight tracer: {:.4f} [mol/kg], "
                           "gas factor: {:.6f}, calibartion curve: {:.6f}, "
-                          "wtref: {:.4f} [m/s], full scale flow rate: {:.4f} [m^3/s]".format(
-                              self.x,
-                              self.y,
-                              self.z,
+                          "wtref: {:.4f} [m/s], full scale flow rate: {:.4f} [m^3/s]".format(self.x, self.y, self.z,
+                              self.x_source, self.y_source, self.z_source,
+                              self.x_measure, self.y_measure, self.z_measure,
                               self.temperature,
                               self.pressure,
                               self.mass_flow_rate,
