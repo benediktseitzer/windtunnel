@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import numpy as np
 import logging
 import os
@@ -105,9 +106,12 @@ class Timeseries(pd.DataFrame):
             all_wtrefs = np.genfromtxt(wtreffile,usecols=(3),skip_header=1)
         except OSError:
             print(' ATTENTION: wtref-file not found at ' + wtreffile + '!')
+<<<<<<< HEAD:windtunnel/timeseries.py
             
             
 
+=======
+>>>>>>> johannes:timeseries.py
         if np.size(all_wtrefs) == 1:
             self.wtref = float(all_wtrefs) * vscale
         else:

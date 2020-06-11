@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """ Plotting tools for boundary layer assessment. """
 import matplotlib.pyplot as plt

@@ -128,7 +128,25 @@ in plot_convergence_ensemble:
 in plot_class_statistics:
        added support for non-dimensional data
 
-      
+02/21/2020:
+
+in __init__:
+       added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.
+in ambient_conditions:
+       added handling of variables for source and measurement locations, added calcuation of distance variable (from calc_puff_statistics function)
+in calc_puff_statistics:
+       added handling of variables for source and measurement locations, moved calculation of distance variable to ambient_conditions function   
+in save2file_ms_ensemble:
+       added handling of variables for source and measurement locations, added recording of distance variable
+
+02/25/2020:
+
+in save2file_ms_ensemble:
+       added compatability with tecplot	 
+in save2file_fs_ensemble:
+       new function, similar to save2file_ms_ensemble, but for full scale data.   
+in save2file_nd_ensemble:
+       new function, similar to save2file_ms_ensemble and save2file_fs_ensemble, but for non-dimensional data.
 	
 
 

@@ -303,4 +303,92 @@ in plot_puff:
 in plot_mean_puff:
         set x_tick_step to 500 for non-dimensional data. 
 
-       	
+02/18/2020:
+
+in plot_puff:
+        increase index by 1, even if puff is skipped. Previous version caused incorrect plotting of arrival and leaving times.      
+
+02/21/2020:
+
+in __init__:
+        added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.
+in to_full_scale:
+        added scaling of source and measurement locations
+in to_non_dimensional:
+        added scaling of source and measurement locations     
+in get_ambient_conditions:
+        added variables for source and measurement locations  
+in read_ambient_conditions:
+        changed position variables to source and measurement locations, also fixed previously 
+        incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none	
+in ambient_conditions:
+        added handling of variables for source and measurement locations, added calculation of distance variable
+in save2file_ms:
+        added handling of variables for source and measurement locations, added recording of distance variable	
+
+02/25/2020:
+        
+in save2file_ms:
+        added compatability with tecplot
+in save2file_fs:
+        new function, similar to save2file_ms, but for full-scale data
+in save2file_nd:
+        new function, similar to save2file_ms and save2file_fs, but for non-dimensional data   		
+		
+03/10/2020:
+
+in plot_puff:
+        determine tickmark spacing automatically based on length of time series, added plotting of more puffs
+        by enabling a fallback to minimum puff length if no puff length can be determined. 
+in  plot_mean_puff:
+        determine tickmark spacing automatically based on length of time series
+
+03/16/2020:
+
+in calc_norm_distribution:
+        new function, calculates normal distribution based on mean and
+        standard deviation of a given input variable.
+
+03/17/2020:
+
+in get_mask:
+        apply masking of data above maximum dosage and peak concentration, defined to be the dosage/peak concentration
+        of the top five measurements if the data were normally distributed with a mean and standard deviation equal
+        to that of the actual measured data. This is effectively a method to remove outliers. Note that at present 
+        the logger still logs only the puffs which are below the threshold dosage/concentration, not above the maximum
+        dosage/concentration. 
+in apply_threshold_concentration:
+        added masking of data above maximum dosage, defined to be the dosage of the top five measurements
+        if the data were normally distributed with a mean and standard  deviation equal to that of the actual
+        measured data. This is effectively a method to remove outliers. Note that at present the logger still
+        logs only the puffs which are below the threshold dosage, not above the maximum dosage.
+in apply_threshold_dosage:
+        added masking of data above maximum dosage, defined to be the dosage of the top five measurements
+        if the data were normally distributed with a mean and standard deviation equal to that of the actual
+        measured data. This is effectively a method to remove outliers. Note that at present the logger still
+        logs only the puffs which are below the threshold dosage, not above the maximum dosage.
+
+03/18/2020:
+
+in get_mask:
+        add variable n_exclude which sets number of puffs at top of measurements to exclude as outliers.
+        Default option (n_exclude=None) determines number of puffs to be  excluded based on the sample size. 
+
+03/26/2020:
+
+in plot_puff:
+        skip puffs where length of puff is greater than previously determined minimum puff length. This
+        occurs mainly towwards the end of puff datasets. 
+
+04/02/2020:
+
+in get_ambient_conditions:
+        variable input_file now contains the full path of the csv file, not just the file name.
+        
+05/13/2020: 
+
+in read_ambient_conditions:
+        fixed incorrect variable labeling of source and measurment locations.  
+        
+
+

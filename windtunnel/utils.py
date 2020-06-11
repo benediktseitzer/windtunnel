@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """ Utilities for basic boundary layer analysis and time series manipulation.
 """
