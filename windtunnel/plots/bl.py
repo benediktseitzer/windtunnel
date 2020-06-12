@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """ Plotting tools for boundary layer assessment. """
 import matplotlib.pyplot as plt
@@ -6,6 +5,8 @@ import numpy as np
 from scipy import signal
 import windtunnel as wt
 
+plt.rcParams["figure.figsize"] = (9,6)
+plt.rcParams.update({'font.size': 15})
 
 __all__ = [
     'plot_scatter',
@@ -18,6 +19,7 @@ __all__ = [
     'plot_lux',
     'plot_spectra',
     'plot_Re_independence',
+    'plot_repeat',
     'plot_convergence_test',
     'plot_convergence',
     'plot_JTFA_STFT',
@@ -125,17 +127,19 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
 
     
 def plot_hist(data,ax=None,**kwargs):
-    """Creates a historgram plot of x and y.
+    """Creates a scatter plot of x and y.
     @parameter: data, type = list or np.array
     @parameter ax: axis passed to function
     @parameter kwargs : additional keyword arguments passed to plt.plot() """
-    #edit 08/12/2019: Corrected program description to specify that function plots histogram, not scatter plot. 
+	#edit 08/01/2019: convert data from times series to array manually, to avoid
+    #compatibility issues with python 3.6 & pandas 0.24
     
     # Get current axis
     if ax is None:
        ax = plt.gca()
        
     #  Calculate bin size and normalise count
+    data=np.asarray(data)
     count,bins = np.histogram(data[~np.isnan(data)],
                               bins=np.linspace(np.nanmin(data),np.nanmax(data),
                               np.max([np.nanmin([25,(int(np.nanmax(data)-
@@ -158,7 +162,7 @@ def plot_hist(data,ax=None,**kwargs):
     return ret
 
 
-def plot_turb_int(data,heights,yerr=0,component='I_u',lat=False,
+def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                   ref_path=None, ax=None,**kwargs):
     """ Plots turbulence intensities from data with VDI reference data for 
     their respective height. yerr specifies the uncertainty. Its default value
@@ -215,13 +219,13 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',lat=False,
     else:
         ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
                                                                   fontsize=14)
-        ax.set_xlabel('y full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'turbulence intensity '+component)
     
     return ret
 
 
-def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None, 
+def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, ax=None, 
                 **kwargs):
     """ Plots fluxes from data for their respective height with a 10% range of
     the low point mean. yerr specifies the uncertainty. Its default value is 0.
@@ -269,7 +273,7 @@ def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None,
         ax.set_ylabel('z full-scale [m]')
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel('y full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
         
     return ret
@@ -316,7 +320,7 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     return ret
 
 
-def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, lat=False,
+def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None, lat=False,
                   ax=None, **kwargs):
     """ Plots wind components and wind magnitude for their respective height.
     yerr specifies the uncertainty. Its default value is 0. If lat is True then
@@ -370,8 +374,9 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, lat=False,
             ax.grid(True)
             lgd = ax.legend([M,U,V],labels,bbox_to_anchor=(0.5,1.05),
                       loc='lower center',borderaxespad=0.,ncol=3,fontsize=16)
-            ax.set_xlabel('y full-scale [m]')
+            ax.set_xlabel(var_lat+' full-scale [m]')
             ax.set_ylabel(r'velocity $[-]$')
+            ax.set_ylim(-0.1,0.7)
     
             ret.append(M + U + V)
     
@@ -413,7 +418,7 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     return ret, lgd
 
 
-def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
+def plot_lux(Lux, heights, err=0, var_lat=None, lat=False, ref_path=None, ax=None,
              **kwargs):
     """Plots Lux data on a double logarithmic scale with reference data. yerr
     specifies the uncertainty. Its default value is 0. If lat
@@ -425,6 +430,7 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
     @parameter: ref_path = string
     @parameter ax: axis passed to function
     @parameter kwargs : additional keyword arguments passed to plt.plot() """
+	#edit 08/02/2019: moved labels to ax.plot, to ensure proper plotting of legend, and removing need for extra labels variable.
     if ax is None:
        ax = plt.gca()
 
@@ -434,29 +440,31 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
 
     ret = []
     if lat == False:
-        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',)
-        ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1)
-        ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1)
-        ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1)
-        ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1,)
+        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',label='wind tunnel')
+        ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1,label=r'$z_0=10\ m$ (theory)')
+        ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1,label=r'$z_0=1\ m$ (theory)')
+        ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
+        ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1,label=r'$z_0=0.01\ m$ (theory)')
         ref5 = ax.plot(Lux_obs_smooth[1,:],Lux_obs_smooth[0,:],'k+',
-                       linewidth=1)
-        ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1)
+                       linewidth=1,label='observations smooth surface')
+        ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1,label='observations rough surface')
     
-        labels = ['wind tunnel',r'$z_0=10\ m$ (theory)',r'$z_0=1\ m$ (theory)',
-                  r'$z_0=0.1\ m$ (theory)',r'$z_0=0.01\ m$ (theory)',
-                  'observations smooth surface','observations rough surface']
+        #labels = ['wind tunnel',r'$z_0$=10\ m$ (theory)',r'$z_0=1\ m$ (theory)',
+                  #r'$z_0=0.1\ m$ (theory)',r'$z_0=0.01\ m$ (theory)',
+                  #'observations smooth surface','observations rough surface']
         
+
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.grid(True,'both','both')
     
-        ax.legend([Lux,ref1,ref2,ref3,ref4,ref5,ref6],labels,
-                  bbox_to_anchor=(0.5,1.05),loc='lower center',
-                  borderaxespad=0.,ncol=2,fontsize=16)
+        #ax.legend([Lux,ref1,ref2,ref3,ref4,ref5,ref6],labels,
+                  #bbox_to_anchor=(0.5,1.05),loc='lower center',
+                  #borderaxespad=0.,ncol=2,fontsize=16)
+        ax.legend(loc='upper center',bbox_to_anchor=(0.5,1.5),borderaxespad=0.,ncol=2,fontsize=12)
         
         ax.set_xlim([10,1000])
-        ax.set_ylim([10,1000])
+        ax.set_ylim([min(heights),1000])
         ax.set_xlabel(r'$L_{u}^{x}$ full-scale [m]')
         ax.set_ylabel(r'$z$ full-scale [m]')    
         
@@ -464,9 +472,9 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
         labels = ['wind tunnel']
         ax.grid(True)
-        ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='lower center',
+        ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='upper center',
                   borderaxespad=0.,ncol=2,fontsize=16)
-        ax.set_xlabel(r'$z$ full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'$L_{u}^{x}$ full-scale [m]')    
         
     return ret
@@ -489,7 +497,8 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
 #    xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
     ref_specs = wt.get_reference_spectra(height,ref_path)
-        
+    
+    print('Spectra')    
     h1 = ax.loglog(f_sm[:u_aliasing],S_uu_sm[:u_aliasing],'ro',markersize=3,
                label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
     h2 = ax.loglog(f_sm[u_aliasing:],S_uu_sm[u_aliasing:],'ro',markersize=3,
@@ -526,8 +535,68 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     
     return h1,h2,h3,h4
 
+def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
+                 comp1_aliasing,comp2_aliasing,wind_comps, height, ref_path=None, set_limits=True):
+    """Plots spectra using INPUT with reference data.
+    @parameter: ???
+    @parameter: ref_path, type = string
+    @parameter ax: axis passed to function
+    @parameter kwargs : additional keyword arguments passed to plt.plot() """
 
-def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
+
+    f_sm = [f_comp1_sm,f_comp2_sm][np.argmin([np.nanmax(f_comp1_sm),np.nanmax(f_comp2_sm)])]
+
+    xsmin = np.nanmin(f_sm[np.where(f_sm > 0)])
+    xsmax = np.nanmax(f_sm[np.where(f_sm > 0)])
+
+    S_comp1_sm = S_comp1_sm[:np.min((len(S_comp1_sm),len(S_comp2_sm)))]
+    S_comp2_sm = S_comp2_sm[:np.min((len(S_comp1_sm), len(S_comp2_sm)))]
+    #    xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
+    #    xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
+    ref_x = np.logspace(np.log10(xsmin), np.log10(xsmax), 50)
+    ref_specs = wt.get_reference_spectra(height, ref_path)
+    #f_sm = f_sm[:len(S_uu_sm)]
+    ax = plt.gca()
+    h1 = ax.loglog(f_sm[:comp1_aliasing], S_comp1_sm[:comp1_aliasing], 'ro', markersize=3,
+                   label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
+    h2 = ax.loglog(f_sm[comp1_aliasing:], S_comp1_sm[comp1_aliasing:], 'ro', markersize=3,
+                   fillstyle='none')
+    h3 =  ax.loglog(f_sm[:comp2_aliasing], S_comp2_sm[:comp2_aliasing], 'bo', markersize=3,
+                   label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[1])+'$')
+    h4 = ax.loglog(f_sm[comp2_aliasing:], S_comp2_sm[comp2_aliasing:], 'bo', markersize=3,
+                   fillstyle='none')
+    if  'u' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[0, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[1, :]),
+                        facecolor=(1., 0.6, 0.6), edgecolor='none', alpha=0.2,
+                        label=r'reference range $uu$')
+
+    if  'v' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[2, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[3, :]),
+                        facecolor=(0.6, 0.6, 1.), edgecolor='none', alpha=0.2,
+                        label=r'reference range $vv$')
+
+    if  'w' in wind_comps:
+        ax.fill_between(ref_x, wt.calc_ref_spectra(ref_x, *ref_specs[4, :]),
+                        wt.calc_ref_spectra(ref_x, *ref_specs[5, :]),
+                        facecolor=(0.6, 0.6, 1.), edgecolor='none', alpha=0.2,
+                        label=r'reference range $ww$')
+
+    if set_limits:
+        ax.set_xlim([10**-3,10**1])
+    else:
+        ax.set_xlim(xsmin,xsmax)
+    ax.set_ylim([10 ** -6, 10])
+    ax.set_xlabel(r"$f\cdot z\cdot U^{-1}$")
+    ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
+    ax.legend(loc='lower right', fontsize=11)
+    ax.grid(True)
+
+    return h1, h2
+
+
+def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
@@ -538,7 +607,10 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
     if ax is None:
         ax=plt.gca()
-
+    if ymin is None:
+       ymin=np.min(data)
+    if ymax is None:
+       ymax=np.max(data)
     # Sort wtref and data to correspond to increasing wtref values
     data = [wtref for _,wtref in sorted(zip(wtref,data))]
     wtref = sorted(wtref)
@@ -548,6 +620,7 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     for i,value in enumerate(data):
         l = ax.errorbar(wtref[i],value,yerr=yerr,fmt='o',markersize=4,
                         ls='None',color='navy',**kwargs)
+        ax.set_ylim((ymin,ymax))
         ret.append(l)
         
     ax.set_xlabel(r'$U_{0}$ $[ms^{-1}]$')
@@ -556,9 +629,9 @@ def plot_Re_independence(data,wtref,yerr=0,ax=None,**kwargs):
     ax.grid(True)
     
     return ret
-    
-def plot_repeat(mean_magnitude,yerr=0,ax=None,**kwargs):
-    """ Plots the results for a Reynolds Number Independence test from a non-
+
+def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
+    """ Plots the results for a Repeatability test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
     @parameter: data, type = np.array or list
@@ -569,28 +642,24 @@ def plot_repeat(mean_magnitude,yerr=0,ax=None,**kwargs):
     if ax is None:
         ax=plt.gca()
 
-    # Sort wtref and data to correspond to increasing wtref values
-    data = [wtref for _,wtref in sorted(zip(wtref,data))]
-    wtref = sorted(wtref)
-    
     # Plot
     ret = []
-    for j in np.shape(mean_magnitude)[1]
-        for i,value in enumerate(data[:,j]):
-            l = ax.errorbar(wtref[i],value,yerr=yerr,fmt='o',markersize=4,
+    for j in range(np.shape(mean_magnitude)[1]):
+        for i,value in enumerate(mean_magnitude[:,j]):
+            l = ax.errorbar(j,value/wtref[i,j],yerr=yerr,fmt='o',markersize=4,
                         ls='None',color='navy',**kwargs)
             ret.append(l)
-        
-    ax.set_xlabel(r'$U_{0}$ $[ms^{-1}]$')
+            
+    labels=[str(heights)]    
+    ax.set_xlabel('Measurement Number')
     ax.set_ylabel(r'$M\cdot U_{0}^{-1}$')
-    ax.legend(loc='lower right',fontsize=14)
+    ax.legend(labels,loc='lower right',fontsize=14)
     ax.grid(True)
    
     
-    return ret    
+    return ret   
 
-
-def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',ax=None,
+def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
                           **kwargs):
     """Plots results of convergence tests  from data. This is a very limited 
     function and is only intended to give a brief overview of the convergence
@@ -606,26 +675,28 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',ax=None,
 
     if ax is None:
         ax = plt.gca()
-    
-    handles = []   
-    keys = [key for key in data.keys()]
-    keys.sort()
-    for i, key in enumerate(keys):
-        l, = ax.plot([i] * len(data[key]), data[key], color='navy',
-                      linestyle='None',marker='o', markersize=15)                  
+    handles = []
+    print(['ylabel ='+ylabel])
+    for i, key in enumerate([key for key in sorted(data.keys())]):
+        l, = ax.plot([key]*len(data[key]), data[key], color='navy',
+        #l, = ax.plot(key, data[key], color='navy',
+		linestyle='None',marker='o', markersize=15) 		  
         ax.grid(True)
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel('Interval Size')
         handles.append(l)
     
-    xticklabels=[key for key in data.keys()]
-    xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
-    ax.set(xticks=np.arange(0,len(data.keys())+1),
-                  xticklabels=xticklabels[::10],
-                  xlim=(-0.5, len(data.keys())-0.5))
-    ax.locator_params(axis='x', nbins=10)
-    ax.tick_params(labelsize=12)
-    ax.set_ylabel(ylabel, fontsize=18)
-    ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
-                  fontsize=18)
+    #xticklabels=[key for key in data.keys()]
+    #xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
+    #ax.set(xticks=np.arange(0,len(data.keys())+1),
+                  #xticklabels=xticklabels,
+                  #xlim=(-0.5, len(data.keys())-0.5))
+    #ax.locator_params(axis='x', nbins=10)
+    #ax.tick_params(labelsize=12)
+    #ax.set_ylabel(ylabel, fontsize=18)
+    #ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
+                  #fontsize=18)
 
     return handles
     
@@ -639,11 +710,11 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
     @parameter: data_dict, type = dictionary
     @parameter: ncols, type = int
     @parameter: kwargs keyword arguments passed to plot_convergence_test"""
-    
+
     fig, axes = plt.subplots(ncols,int(np.ceil(len(data_dict.keys())/ncols)),
                              figsize=(24,14))
     for (key,data), ax in zip(data_dict.items(), axes.flat):
-        plot_convergence_test(data,ylabel=key,ax=ax,**kwargs)        
+        plot_convergence_test(data,ylabel=key,ax=ax,**kwargs)
 
     return axes
 
