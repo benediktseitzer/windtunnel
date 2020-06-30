@@ -316,37 +316,37 @@ def get_turb_referencedata(component, ref_path=None):
     ###  READ turbulence intensity - reference: VDI
     if component == 'I_u':
         I_u_slight = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=11,
-                                   skip_footer=367, usecols=(0, 1), unpack=True)
+                                   skip_footer=367, usecols=(0, 1), unpack=True, encoding='latin1')
         I_u_moderate = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=41,
-                                     skip_footer=337, usecols=(0, 1), unpack=True)
+                                     skip_footer=337, usecols=(0, 1), unpack=True, encoding='latin1')
         I_u_rough = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=69,
-                                  skip_footer=310, usecols=(0, 1), unpack=True)
+                                  skip_footer=310, usecols=(0, 1), unpack=True, encoding='latin1')
         I_u_very = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=103,
-                                 skip_footer=269, usecols=(0, 1), unpack=True)
+                                 skip_footer=269, usecols=(0, 1), unpack=True, encoding='latin1')
 
         return I_u_slight, I_u_moderate, I_u_rough, I_u_very
 
     if component == 'I_v':
         I_v_slight = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=7,
-                                   skip_footer=40, usecols=(0, 1), unpack=True)
+                                   skip_footer=40, usecols=(0, 1), unpack=True, encoding='latin1')
         I_v_moderate = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=20,
-                                     skip_footer=29, usecols=(0, 1), unpack=True)
+                                     skip_footer=29, usecols=(0, 1), unpack=True, encoding='latin1')
         I_v_rough = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=31,
-                                  skip_footer=15, usecols=(0, 1), unpack=True)
+                                  skip_footer=15, usecols=(0, 1), unpack=True, encoding='latin1')
         I_v_very = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=45,
-                                 skip_footer=0, usecols=(0, 1), unpack=True)
+                                 skip_footer=0, usecols=(0, 1), unpack=True, encoding='latin1')
 
         return I_v_slight, I_v_moderate, I_v_rough, I_v_very
 
     if component == 'I_w':
         I_w_slight = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=11,
-                                   skip_footer=347, usecols=(0, 1), unpack=True)
+                                   skip_footer=347, usecols=(0, 1), unpack=True, encoding='latin1')
         I_w_moderate = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=37,
-                                     skip_footer=321, usecols=(0, 1), unpack=True)
+                                     skip_footer=321, usecols=(0, 1), unpack=True, encoding='latin1')
         I_w_rough = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=63,
-                                  skip_footer=295, usecols=(0, 1), unpack=True)
+                                  skip_footer=295, usecols=(0, 1), unpack=True, encoding='latin1')
         I_w_very = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=89,
-                                 skip_footer=269, usecols=(0, 1), unpack=True)
+                                 skip_footer=269, usecols=(0, 1), unpack=True, encoding='latin1')
 
         return I_w_slight, I_w_moderate, I_w_rough, I_w_very
 
