@@ -497,7 +497,6 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
     ref_specs = wt.get_reference_spectra(height,ref_path)
     
-    print('Spectra')    
     h1 = ax.loglog(f_sm[:u_aliasing],S_uu_sm[:u_aliasing],'ro',markersize=3,
                label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
     h2 = ax.loglog(f_sm[u_aliasing:],S_uu_sm[u_aliasing:],'ro',markersize=3,
