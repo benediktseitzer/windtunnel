@@ -271,6 +271,10 @@ def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None,
         ax.legend([l],labels,loc='best',fontsize=16)
         ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
         ax.set_ylabel('z full-scale [m]')
+        if np.nanmax(data)<0:
+            ax.set_xlim([np.nanmin(data) * 1.1, 0])
+        else:
+            ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
         ax.set_xlabel('y full-scale [m]')
@@ -316,7 +320,10 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     ax.legend([l],labels,loc='best',fontsize=16)
     ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
     ax.set_ylabel('z full-scale [m]')
-    
+    if np.nanmax(data) < 0:
+        ax.set_xlim([np.nanmin(data) * 1.1, 0])
+    else:
+        ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data) * 1.1])
     return ret
 
 

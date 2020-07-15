@@ -116,11 +116,24 @@ class Timeseries(pd.DataFrame):
         """ Get wind components from filename.
         @parameter: filename, type = str """
         with open(filename) as file:
-            for i, line in enumerate(file):
-                if i == 5:
-                    self.wind_comp1 = line.split()[-4][-1].lower()
-                    self.wind_comp2 = line.split()[-2][-1].lower()
-                    break
+            try:
+                name = filename.upper().split('/',-1)[-1]
+                if name.find('_UV_')>0:
+                    pos = name.find('_UV_')
+                elif name.find('_UW_')>0:
+                    pos = name.find('_UW_')
+                elif name.find('_VW_')>0:
+                    pos = name.find('_VW_')
+                self.wind_comp_1 = name[pos+1].lower()
+                self.wind_comp_2 = name[pos+2].lower()
+            except:
+                print('Make sure the columns for wind speed components are names correctly.')
+                for i, line in enumerate(file):
+                    if i == 5:
+                        self.wind_comp1 = line.split()[-4][-1].lower()
+                        self.wind_comp2 = line.split()[-2][-1].lower()
+                        break
+
 
     def nondimensionalise(self):
         """ Nondimensionalise the data. wtref is set to 1 if no wtref is

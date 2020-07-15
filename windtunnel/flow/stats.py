@@ -141,6 +141,7 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
                           ~np.isnan(v_comp))
     u = u_comp[mask]
     v = v_comp[mask]
+    transit_time=transit_time[mask]
     
     # TODO: test ways of applying TT weighting to Magnitude
     Magnitude = np.mean(np.sqrt(u**2+v**2))
