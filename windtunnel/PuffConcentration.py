@@ -559,21 +559,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                #self.dosage.append(self.net_concentration[beginnings[i]:].sum())
 		
 		#original algorithm
-        for i, value in enumerate(beginnings):
-            begin = value
+        for i, begin in enumerate(beginnings):
+
             if i == np.size(beginnings) - 1:
                 self.dosage.append(self.net_concentration[begin:].sum())				
 
             if i < np.size(beginnings) - 1:
                 end = beginnings[i + 1]
                 self.dosage.append(self.net_concentration[begin:end].sum())
-                #if i<20:
-                   #plt.figure(1000 + i)
-                   #plt.plot(self.net_concentration[begin:end])
-                   #ax=plt.gca()
-                   #plt.title('Dosage=' + str(self.dosage[i]) + ' ppm$\mathrm{_v}$s')
-                   #plt.show()
-                                      
 
         #edit 09/27/2019: compute dt, which is the sampling time interval, and multiply by dt to fix units of dosage. 
         self.dt = np.mean(np.asarray(self.time[1:])-np.asarray(self.time[:-1]))
@@ -607,32 +600,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         for i in range(np.shape(puffs_start)[0]-1):
             self.puffs_array[i,:]=self.net_concentration[puffs_start[i]:puffs_start[i]+self.min_puff_length]
             self.signal_array[i,:]=self.signal[puffs_start[i]:puffs_start[i]+self.min_puff_length]			
-		
-		#edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.  
-        for i in range(np.shape(self.puffs_array)[1]):
-            self.mean_puff=np.append(self.mean_puff,self.puffs_array[:,i].mean())
-            self.mean_signal=np.append(self.mean_signal,self.signal_array[:,i].mean())
-            self.pct10_puff=np.append(self.pct10_puff,np.percentile(self.puffs_array[:,i],10))
-            self.pct90_puff=np.append(self.pct90_puff,np.percentile(self.puffs_array[:,i],90))			
-            self.pct10_signal=np.append(self.pct10_signal,np.percentile(self.signal_array[:,i],90))
-            self.pct90_signal=np.append(self.pct90_signal,np.percentile(self.signal_array[:,i],10))				
-			
-        #plt.figure(1)
-        #plt.plot(self.time[:np.shape(self.puffs_array)[1]],self.mean_puff)
-        #plt.plot(self.time[:np.shape(self.puffs_array)[1]],(np.max(self.mean_puff))*self.mean_signal)	
-        #plt.show()
-		    
 
-        #for i, value in enumerate(beginnings):
-            #begin = value
-            #if i == np.size(beginnings) - 1:
-                #self.dosage.append(self.net_concentration[begin:].sum())				
+        self.mean_puff = np.nanmean(self.puffs_array,axis=0)
+        self.mean_signal = np.nanmean(self.signal_array,axis=0)
+        self.pct10_puff = np.percentile(self.puffs_array, 10, axis=0)
+        self.pct90_puff = np.percentile(self.puffs_array, 90, axis=0)
+        self.pct10_signal= np.percentile(self.signal_array, 10, axis=0)
+        self.pct90_signal = np.percentile(self.signal_array, 90, axis=0)
 
-            #if i < np.size(beginnings) - 1:
-                #end = beginnings[i + 1]
-                #puff_length=end-begin
-                      
-                        
+    #edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.
 
         
 
