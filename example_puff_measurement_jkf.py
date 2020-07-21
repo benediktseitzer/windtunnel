@@ -15,13 +15,13 @@ import time
 
 start = time.time()
 # Path to your data
-path = '/home/jkfischer/Desktop/Uni_Hamburg/Home_Office/Puff_Beispiele/'
+path = 'G:/concentration/'
 #edit 02/18/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
 #is not found in the given file, the program resosrts to the default values specified below. 
-csv_file='Q2_Ambient_Conditions.csv'
+csv_file='S02_Ambient_Conditions.csv'
 
 # Name of your measurement
-namelist = ['Q2_170_P09.txt.ts#0']
+namelist = ['S2_P001_P_01.dat.ts#0']
             
 #Define user input variables
 #Set theshold peak concentration (ppm, model scale). All puffs with a peak concentration
@@ -254,24 +254,24 @@ for name in namelist:
                 dict_ensemble_ts[name][file][key].calc_class_width(n_classes=5)
                 dict_ensemble_ts[name][file][key].calc_class_boundaries()
                 #edit 08/13/2019: added functions get_class_frequency and plot_class_statistics
-                dict_ensemble_ts[name][file][key].get_class_frequency() 
+                dict_ensemble_ts[name][file][key].get_class_frequency()
 
                 #edit 02/25/2020: added saving of full scale and non-dimensional data        
-                if full_scale == 'ms':           
+                if full_scale == 'ms':
                     dict_ensemble_ts[name][file][key].save2file_ms_ensemble(file,key)
-                elif full_scale == 'fs':    
-                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key)                
+                elif full_scale == 'fs':
+                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key)
                 elif full_scale == 'nd':
-                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key)  
+                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key)
                 else:
                     print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")
-                dict_ensemble_ts[name][file][key].plot_class_statistics(key=key,name=name,path=path,full_scale=full_scale)    
+                dict_ensemble_ts[name][file][key].plot_class_statistics(key=key,name=name,path=path,full_scale=full_scale)
             else:
-                print("Error: invalid input for functions_mode. Program can only be run in basic mode (functions_mode='basic') or full mode (functions_mode='full').")                
+                print("Error: invalid input for functions_mode. Program can only be run in basic mode (functions_mode='basic') or full mode (functions_mode='full').")
                       
             #edit 08/08/2019: added calculation of statistical values
-            dict_statistics[name][file][key]=wt.EnsembleAnalysis.from_results(results[key])  
-            dict_statistics[name][file][key].calc_puff_statistics(x_source=x_source,y_source=y_source,z_source=z_source,x_measure=x_measure,y_measure=y_measure,z_measure=z_measure,pressure=pressure,temperature=temperature,wtref=full_scale_wtref,wdir=wdir) 
+            dict_statistics[name][file][key]=wt.EnsembleAnalysis.from_results(results[key])
+            dict_statistics[name][file][key].calc_puff_statistics(x_source=x_source,y_source=y_source,z_source=z_source,x_measure=x_measure,y_measure=y_measure,z_measure=z_measure,pressure=pressure,temperature=temperature,wtref=full_scale_wtref,wdir=wdir)
             
                          
             
