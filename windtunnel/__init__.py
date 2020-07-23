@@ -14,6 +14,7 @@ from .timeseries_nc import *
 from .PuffConcentration import *
 from .PointConcentration import *
 from .EnsembleAnalysis import *
+from .StandardAnalysis import *
 
 # set standards for Logging module
 logging.basicConfig(level=logging.DEBUG,

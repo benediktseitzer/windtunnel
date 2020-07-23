@@ -245,7 +245,8 @@ to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
-        elif not os.path.exists(input_file):  
+        elif not os.path.exists(input_file): 
+           print(input_file)        
            print('Error: Cannot find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
 conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   

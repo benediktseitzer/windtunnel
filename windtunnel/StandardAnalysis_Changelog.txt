@@ -1,0 +1,14 @@
+Changelog for StandardAnalysis.py
+
+07/23/2020:
+
+in standard_puff_analysis:
+	edit 07/23/2020: new function, performs routine data analysis of puff data. Runs essentially all
+	analysis routines available in windtunnel package. Based largely on example_puff_analysis.py script.
+	Improved and more secure communication with GUI. Makes PAPE_GUI_code_puff.py redundant. Largely
+	replaces example_puff_analysis.py. 
+in standard_point_analysis:
+	edit 07/23/2020: new function, performs routine data analysis of puff data. Runs essentially all analysis
+	routines available in windtunnel package. Based largely on example_puff_analysis.py script. Improved and
+	more secure communication with GUI. Makes PAPE_GUI_code_puff.py redundant. Largely replaces
+	example_puff_analysis.py. 
