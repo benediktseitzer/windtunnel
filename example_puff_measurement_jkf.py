@@ -256,13 +256,15 @@ for name in namelist:
                 #edit 08/13/2019: added functions get_class_frequency and plot_class_statistics
                 dict_ensemble_ts[name][file][key].get_class_frequency() 
 
-                #edit 02/25/2020: added saving of full scale and non-dimensional data        
+                #edit 02/25/2020: added saving of full scale and non-dimensional data
+                #edit 07/23/2020: check to make sure that directory where data is to be saved exists
+                wt.check_directory(path+'Puff_Data\\'+name[:name.find('.')]+'\\')                
                 if full_scale == 'ms':           
-                    dict_ensemble_ts[name][file][key].save2file_ms_ensemble(file,key)
+                    dict_ensemble_ts[name][file][key].save2file_ms_ensemble(file,key,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')
                 elif full_scale == 'fs':    
-                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key)                
+                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')                
                 elif full_scale == 'nd':
-                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key)  
+                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')  
                 else:
                     print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")
                 dict_ensemble_ts[name][file][key].plot_class_statistics(key=key,name=name,path=path,full_scale=full_scale)    
@@ -278,12 +280,14 @@ for name in namelist:
         # Save DataFrame to txt file
         #dict_conc_ts[name][file].save2file(file)
         #edit 02/25/2020: added saving of full scale and non-dimensional data
+        #edit 07/23/2020: check to make sure that directory where data is to be saved exists
+        wt.check_directory(path+'Puff_Data\\'+name[:name.find('.')]+'\\')          
         if full_scale == 'ms':           
-           dict_conc_ts[name][file].save2file_ms(file)
+           dict_conc_ts[name][file].save2file_ms(file,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')
         elif full_scale == 'fs':    
-           dict_conc_ts[name][file].save2file_fs(file)                
+           dict_conc_ts[name][file].save2file_fs(file,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')                
         elif full_scale == 'nd':
-           dict_conc_ts[name][file].save2file_nd(file)  
+           dict_conc_ts[name][file].save2file_nd(file,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')  
         else:
            print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")        
         # Save DataFrame to excel file
