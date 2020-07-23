@@ -11,6 +11,7 @@ import logging
 import os
 import scipy.stats as sc
 import windtunnel as wt
+from math import e
 
 logger = logging.getLogger()
 __all__ = [
@@ -77,6 +78,7 @@ def trunc_at(string, delimiter, n=3):
     delimiter."""
 
     return delimiter.join(string.split(delimiter, n)[:n])
+    
 
 
 def get_files(path, filename):
@@ -388,10 +390,11 @@ def transit_time_weighted_mean(transit_time, component):
     bias towards higher wind velocities. Returns the weighted component mean.
     @parameter: transit_time, type = np.arrray([])
     @parameter: component,  type = np.arrray([])"""
+    #edit 05/27/2020: removed nan values from transit time array    
 
-    transit_time_sum = np.sum(transit_time)
+    transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
 
-    weighted_mean = np.sum((component * transit_time) / transit_time_sum)
+    weighted_mean = np.sum((component * transit_time[~np.isnan(transit_time)]) / transit_time_sum)
 
     return float(weighted_mean)
 
@@ -404,11 +407,12 @@ def transit_time_weighted_var(transit_time, component):
     component variance.
     @parameter: transit_time, type = np.arrray([])
     @parameter: component,  type = np.arrray([])"""
+    #edit 05/27/2020: removed nan values from transit time array    
 
-    transit_time_sum = np.sum(transit_time)
+    transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
 
     tmp = (((component - np.mean(component)) ** 2) * \
-          (transit_time)) / transit_time_sum
+          (transit_time[~np.isnan(transit_time)])) / transit_time_sum
 
     weighted_var = np.sum(tmp)
 

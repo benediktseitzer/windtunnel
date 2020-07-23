@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """ Plotting tools for boundary layer assessment. """
 import matplotlib.pyplot as plt
@@ -19,7 +20,7 @@ __all__ = [
     'plot_lux',
     'plot_spectra',
     'plot_Re_independence',
-    'plot_repeat',
+    'plot_repeat',    
     'plot_convergence_test',
     'plot_convergence',
     'plot_JTFA_STFT',
@@ -225,6 +226,7 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     return ret
 
 
+
 def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, ax=None, 
                 **kwargs):
     """ Plots fluxes from data for their respective height with a 10% range of
@@ -381,7 +383,6 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
             ret.append(M + U + V)
     
     return ret, lgd
-
 
 def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
                       **kwargs):
@@ -629,7 +630,8 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     ax.grid(True)
     
     return ret
-
+    
+    
 def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Repeatability test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
@@ -657,7 +659,8 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     ax.grid(True)
    
     
-    return ret   
+    return ret         
+
 
 def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
                           **kwargs):

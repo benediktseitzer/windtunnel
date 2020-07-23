@@ -15,7 +15,7 @@ import time
 
 start = time.time()
 # Path to your data
-path = '/home/jkfischer/Desktop/Uni_Hamburg/Home_Office/Puff_Beispiele/'
+path = '\\\\ewtl2\\work\\Johannes\Puff_Beispiele\\'
 #edit 02/18/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
 #is not found in the given file, the program resosrts to the default values specified below. 
 csv_file='Q2_Ambient_Conditions.csv'
@@ -251,7 +251,7 @@ for name in namelist:
             if functions_mode == 'basic':
                 []
             elif functions_mode == 'full':
-                dict_ensemble_ts[name][file][key].calc_class_width(n_classes=5)
+                dict_ensemble_ts[name][file][key].calc_class_width(n=5)
                 dict_ensemble_ts[name][file][key].calc_class_boundaries()
                 #edit 08/13/2019: added functions get_class_frequency and plot_class_statistics
                 dict_ensemble_ts[name][file][key].get_class_frequency() 
