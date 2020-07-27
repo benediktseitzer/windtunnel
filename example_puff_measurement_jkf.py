@@ -18,7 +18,7 @@ path = '\\\\ewtl2\\work\\Johannes\Puff_Beispiele\\'
 csv_file='Q2_Ambient_Conditions.csv'
 
 # Name of your measurement
-namelist = ['Q2_170_P09.txt.ts#0']
+namelist = ['Q2_170_P09.txt.ts#0','Q2_170_P10.txt.ts#0']
             
 #Define user input variables
 #Set theshold peak concentration (ppm, model scale). All puffs with a peak concentration
@@ -42,7 +42,7 @@ time_threshold=0.05
 if time_threshold != 0.05:
     print('Warning: threshold dosage used to compute characteristic start and end times set to '+str(100*time_threshold)+'%, which does not equal the default value of 5%. Consider using default value!')
 #edit 02/04/2020: added non-dimensional mode
-full_scale='nd'
+full_scale='ms'
 #edit 09/19/2019: added a priori information necessary for full scale analysis. Potential for GUI usage
 #at a futuretime
 #edit 02/21/2020: added seperate input of source location (x_source, y_source, z_source) and measurement location (x_measure, y_measure, z_measure)
@@ -76,7 +76,7 @@ gas_factor=0.5
 full_scale_wtref=6
 full_scale_flow_rate=0.5
 
-#edit 02/25/2020: added ability to run script in basic mode (if 'functions_mode' variable is set to 'basic'), which runs only the core features of the scipr,
+#edit 02/25/2020: added ability to run script in basic mode (if 'functions_mode' variable is set to 'basic'), which runs only the core features of the script,
 #but much faster than full mode (if 'functions_mode' variable is set to 'full'), which runs all functions of the script. 
 functions_mode='full'
 
@@ -87,7 +87,7 @@ axis_range='auto'
 
 #todo: add units (09/18/2019)
 
-wt.standard_puff_analysis(path,csv_file,namelist,threshold_concentration,threshold_dosage,
+dict_conc_ts, dict_conc_ms=wt.standard_puff_analysis(path,csv_file,namelist,threshold_concentration,threshold_dosage,
 n_exclude,time_threshold,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
 pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
 scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,

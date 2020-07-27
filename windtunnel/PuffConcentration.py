@@ -245,8 +245,7 @@ to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
-        elif not os.path.exists(input_file): 
-           print(input_file)        
+        elif not os.path.exists(input_file):        
            print('Error: Cannot find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
 conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   
@@ -413,7 +412,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def calc_non_dimensional_flow_rate(self):
         """ Convert flow rate to non-dimensional flow rate in [m^3/s]. """
         #edit 01/14/2020: new function, based on calc_full_scale_mass_flow_rate in PointConcentration.py,
-        #which calculates the non-dimensional mass flow rate in [-]			
+        #which calculates the non-dimensional mass flow rate in [-]		
+        #TODO: fix function!!        
         self.full_scale_flow_rate = (self.full_scale_flow_rate * self.R *
                                      self.standard_temp_K) / \
                                     (self.standard_pressure * self.mol_weight)
@@ -469,14 +469,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def calc_non_dimensional_time(self):
         """ Calculate non-dimensional time step [-]. """
         #edit 01/14/2020: new function, based on calc_full_scale_time, which
-        #calculates the non-dimensional time step [-]			
+        #calculates the non-dimensional time step [-]
+        #edit 07/27/2020: fix function output (function previously aoutput full
+        #scale time instead of non-dimensional time).        
         if self.wtref_mean is None:
             self.wtref_mean = PointConcentration.calc_wtref_mean()
 
         self.non_dimensional_time = self.wtref_mean / self.ref_length * \
                                self.time
 
-        return self.full_scale_time		        
+        return self.non_dimensional_time		        
 		
 
     def calc_net_concentration(self):

@@ -110,38 +110,71 @@ class PointConcentration(pd.DataFrame):
         specified."""
 	#edit 07/26/2019: changed clear_zeros to a standalone funciton, which is now called from 
 	#outside calc_net_concentration
-	#edit 05/13/2020: added scaling of source and measurement locations 
+	#edit 05/13/2020: added scaling of source and measurement locations
+    #edit 07/27/2020: adapted code to conventions established in puff_concentration.py    
         if self.__check_sum >= 8:
 
-            quantities = ['x', 'y', 'z', 'time', 'concentration', 'flow rate']
-            your_measurement = {}
-            your_measurement.fromkeys(quantities)
+            #quantities = ['x', 'y', 'z', 'time', 'concentration', 'flow rate']
+            #your_measurement = {}
+            #your_measurement.fromkeys(quantities)
 
-            your_measurement['x'] = self.x = self.x * self.scale / 1000  # [m]
-            your_measurement['y'] = self.y = self.y * self.scale / 1000  # [m]
-            your_measurement['z'] = self.z = self.z * self.scale / 1000  # [m]
-            your_measurement['x_source'] = self.x_source = self.x_source * self.scale / 1000  # [m]
-            your_measurement['y_source'] = self.y_source = self.y_source * self.scale / 1000  # [m]
-            your_measurement['z_source'] = self.z_source = self.z_source * self.scale / 1000  # [m]  
-            your_measurement['x_measure'] = self.x_measure = self.x_measure * self.scale / 1000  # [m]
-            your_measurement['y_measure'] = self.y_measure = self.y_measure * self.scale / 1000  # [m]
-            your_measurement['z_measure'] = self.z_measure = self.z_measure * self.scale / 1000  # [m]  
-            your_measurement['distance'] = self.distance = self.distance * self.scale / 1000  # [m]                                  
-            your_measurement['flow rate'] = self.calc_full_scale_flow_rate()
+            self.x = self.x * self.scale / 1000  # [m]
+            self.y = self.y * self.scale / 1000  # [m]
+            self.z = self.z * self.scale / 1000  # [m]
+            self.x_source = self.x_source * self.scale / 1000  # [m]
+            self.y_source = self.y_source * self.scale / 1000  # [m]
+            self.z_source = self.z_source * self.scale / 1000  # [m]  
+            self.x_measure = self.x_measure * self.scale / 1000  # [m]
+            self.y_measure = self.y_measure * self.scale / 1000  # [m]
+            self.z_measure = self.z_measure * self.scale / 1000  # [m]  
+            self.distance = self.distance * self.scale / 1000  # [m]                                  
+            self.calc_full_scale_flow_rate()
 
             self.calc_full_scale_time()			
             self.calc_full_scale_concentration()
+            self.calc_full_scale_flow_rate()	            
 
-            your_measurement['time'] = self.full_scale_time
+            self.time = self.full_scale_time
 
-            your_measurement['concentration'] = \
-                self.full_scale_concentration
+            self.net_concentration = self.full_scale_concentration
 
             return your_measurement
 
         else:
             raise Exception('Please enter or calculate all full scale data '
                             'necessary!')
+                            
+    def to_non_dimensional(self):
+        """ Converts all quantities to non-dimensional, overwriting model scale variables."""
+		#edit 07/27/2020: new function, which converts data to non-dimensional values. Virtually identical to
+        #to_non_dimensional function in puff_concentration.py
+        
+        if self.__check_sum >= 8:
+
+           #quantities = ['x', 'y', 'z', 'time', 'concentration', 'flow rate']
+           #your_measurement = {}
+           #your_measurement.fromkeys(quantities)
+
+           self.x = self.x / self.ref_length  # [-]
+           self.y = self.y / self.ref_length  # [-]
+           self.z = self.z / self.ref_length  # [-]
+           self.x_source = self.x_source / self.ref_length  # [-]
+           self.y_source = self.y_source / self.ref_length  # [-]
+           self.z_source = self.z_source / self.ref_length  # [-]    
+           self.x_measure = self.x_measure / self.ref_length  # [-]
+           self.y_measure = self.y_measure / self.ref_length  # [-]
+           self.z_measure = self.z_measure / self.ref_length  # [-]                
+
+           self.calc_non_dimensional_time()
+           self.calc_c_star()	
+           self.calc_non_dimensional_flow_rate()		   
+
+           self.time = self.non_dimensional_time
+           self.net_concentration = self.c_star
+
+        else: 
+           raise Exception('Please enter or calculate all full scale data '
+                            'necessary!')                               
 							
     def get_ambient_conditions(path=None,name=None,input_file=None):
         """Read ambient conditions from csv file. If no such file exists, function
@@ -310,6 +343,17 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                     (self.standard_pressure * self.mol_weight)
 
         return self.full_scale_flow_rate
+        
+    def calc_non_dimensional_flow_rate(self):
+        """ Convert flow rate to non-dimensional flow rate [-]. """
+        #edit 01/14/2020: new function, based on calc_non_dimensional_flow_rate in PuffConcentration.py,
+        #which calculates the non-dimensional mass flow rate in [-]		
+        #TODO: fix function!!        
+        self.full_scale_flow_rate = (self.full_scale_flow_rate * self.R *
+                                     self.standard_temp_K) / \
+                                    (self.standard_pressure * self.mol_weight)
+
+        return self.full_scale_flow_rate            
 
     def calc_net_concentration(self):
         """ Calculate net concentration in [ppmV]. """
@@ -361,6 +405,19 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
 
         return self.full_scale_time
+        
+    def calc_non_dimensional_time(self):
+        """ Calculate non-dimensional time step [-]. """
+        #edit 07/27/2020: new function, based on calc_full_scale_time, which
+        #calculates the non-dimensional time step [-]. Based on calc_non_dimensional_time
+        #function in puff_concentration.py.        
+        if self.wtref_mean is None:
+            self.wtref_mean = PointConcentration.calc_wtref_mean()
+
+        self.non_dimensional_time = self.wtref_mean / self.ref_length * \
+                               self.time
+
+        return self.non_dimensional_time	        
 
     def clear_zeros(self):
 	    
@@ -578,6 +635,58 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                           + "" + '\n' +
                           "\"full scale time [s]\" \"c_star [-]\" "
                           "\"net_concentration [ppmV]\" \"full_scale_concentration [ppmV]\"")
+                          
+    def save2file_nd(self, filename, out_dir=None):
+        """ Save non-dimensional data from PointConcentration object
+        to txt file. filename must include '.txt' ending. If no out_dir
+        directory is provided './' is set as standard.
+        @parameter: filename, type = str
+        @parameter: out_dir, type = str"""#
+        #edit 05/13/2020: new function to save non-dimensional data, similar to save2file_fs and save2file_ms      
+        if self.__check_sum < 8:
+            raise Exception('Please enter or calculate all full scale data '
+                            'necessary!')
+
+        if out_dir is None:
+            out_dir = './'
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+
+        output_file = out_dir + '_nd_' + filename		
+        np.savetxt(output_file, np.vstack((self.time,
+                                           self.net_concentration)
+                                          ).transpose(),
+                   fmt='%.4f',
+                   header="General concentration measurement data:" + '\n' +
+                          "" + '\n' +
+                          "geometric scale: 1:{}".format(float(self.scale))
+                          + "" + '\n' +
+                          "Variables: x (measurement relativ to source): {} [mm], y (measurement relativ to source): {} [mm], z (measurement relativ to source): {} [mm], "
+                          "x_source: {} [mm], y_source: {} [mm], z_source: {} [mm], "
+                          "x_measure: {} [mm], y_measure: {} [mm], z_measure: {} [mm], " 
+                          "ambient temperature: {:.1f} [°C], ambient pressure: {:.2f} [Pa],"
+                          " mass flow rate {:.4f} [kg/s], "
+                          "reference length (model): {:.4f} [m], "
+                          "reference length (full-scale): {:.4f} [m], Tracer gas: {}, "
+                          "mol. weight tracer: {:.4f} [mol/kg], "
+                          "gas factor: {:.6f}, calibartion curve: {:.6f}, "
+                          "wtref: {:.4f} [m/s], full scale flow rate: {:.4f} [m^3/s]".format(self.x, self.y, self.z,
+                              self.x_source, self.y_source, self.z_source,
+                              self.x_measure, self.y_measure, self.z_measure,
+                              self.temperature,
+                              self.pressure,
+                              self.mass_flow_rate,
+                              self.ref_length,
+                              self.full_scale_ref_length,
+                              self.gas_name,
+                              self.mol_weight,
+                              self.gas_factor,
+                              self.calibration_curve,
+                              self.wtref_mean,
+                              self.full_scale_flow_rate)
+                          + "" + '\n' +
+                          "\"non-dimensional time [s]\" "
+                          "\"net_concentration [-]]\"")                          
 
     def save2file_avg(self, filename, out_dir=None):
         """ Save average full scale and model scale data from

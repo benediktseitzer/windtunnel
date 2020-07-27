@@ -4,7 +4,7 @@
 """
 import numpy as np
 from scipy.interpolate import interp1d
-from skimage.measure import label
+#from skimage.measure import label
 import pandas as pd
 import fnmatch
 import logging
@@ -38,6 +38,7 @@ __all__ = [
     'transit_time_weighted_var',
     'transit_time_weighted_flux',
     'get_percentiles',
+	'calc_profile',
 ]
 
 
@@ -455,3 +456,19 @@ def get_percentiles(data_dict, percentile_list):
                 percentile)
 
     return percentile_dict
+	
+def calc_profile(mean_mag, heights, wtref, z_ref, d_0=0):
+    """Calculate profile exponent α and roughness length z_0"""
+    print("Warning: Assuming that wind data is non-dimensional, and that heights are full-scale.")
+    #Note: heights should be in (m) full-scale. Change code if this is not the case! 
+    z_norm = (np.array(heights)-d_0)/(z_ref-d_0)
+    #Note: the wind data in this script is already non-dimensional.
+    #If the code is edited to allow for dimensional plotting, change 
+    #function to non-dimensionalise data if necessary!
+
+    z_norm=np.vstack([np.log(z_norm),np.zeros(len(z_norm))]).transpose()
+    print(z_norm)
+    alpha=np.linalg.lstsq(z_norm,np.log(np.array(mean_mag)))
+    print(alpha)
+
+    return alpha

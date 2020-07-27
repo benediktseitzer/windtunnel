@@ -128,6 +128,7 @@ full_scale_flow_rate,functions_mode,axis_range):
             elif full_scale == 'nd':     
                #edit 01/14/2020: added option to perform data anlysis in non-dimensional mode            
                dict_conc_ts=conc_ts_nd
+               print(dict_conc_ts[name][file].keys())               
                dict_conc_ts[name][file].to_non_dimensional()          
                dict_ensemble_ts=ensemble_ts_fs            
     #           dict_ensemble_ts[name][file].to_full_scale()             
@@ -268,6 +269,7 @@ full_scale_flow_rate,functions_mode,axis_range):
     results['ascent time'].plot.hist(title='Ascent Time')
     plt.figure(5)
     results['descent time'].plot.hist(title='Descent Time')
+   
     
 def standard_point_analysis(path,csv_file,namelist,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
 pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
@@ -291,6 +293,11 @@ full_scale_flow_rate,axis_range):
     #
     conc_ts = {}
     conc_ts.fromkeys(namelist)
+    conc_ts_fs=conc_ts
+    conc_ts_nd=conc_ts    
+    dict_conc_ts=conc_ts    
+    dict_conc_nd=conc_ts
+    dict_conc_fs=conc_ts    
     data_dict = {}
     data_dict.fromkeys(namelist)
     for name in namelist:
@@ -305,6 +312,8 @@ full_scale_flow_rate,axis_range):
         conc_ts[name] = {}
         conc_ts[name].fromkeys(files)
         for file in files:
+        
+        
             conc_ts[name][file] = wt.PointConcentration.from_file(path + file) 
             #edit 09/19/2019: edited code to avvound for moving a priori information to beginning of script. 
             #conc_ts[name][file].ambient_conditions(x=855.16,y=176.29,z=162,pressure=1009.38,
@@ -338,16 +347,37 @@ full_scale_flow_rate,axis_range):
             #edit 07/24/2019: clear all data points with a negative net_concentration. Function can be turned on or off
             conc_ts[name][file].clear_zeros()         
             conc_ts[name][file].calc_c_star()
-            conc_ts[name][file].plot_hist_conc(path=path,name=name)       
+       
+            #edit 07/27/2020: added options for outputting data in full-scale, model scale, and non-dimensionally. 
+            if full_scale == 'ms':           
+               dict_conc_ts=conc_ts
+            elif full_scale == 'fs':     
+               dict_conc_ts=conc_ts_fs
+               dict_conc_ts[name][file].to_full_scale()          
+            elif full_scale == 'nd':              
+               dict_conc_ts=conc_ts_nd
+               dict_conc_ts[name][file].to_non_dimensional()                    
+            else:
+               print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")            
+            dict_conc_ts[name][file].plot_hist_conc(path=path,name=name)       
             # Save full scale results in a variable.
             # to_full_scale() will only work if all
             # information necessary has already been
             # given and computed.
-            data_dict[name] = conc_ts[name][file].to_full_scale()       
+            #data_dict[name] = conc_ts[name][file].to_full_scale()       
             # Save full scale results. Requires to_full_scale()
             #edit 10/21/2019. Save to path of data, not to installation path of windtunnel!
-            conc_ts[name][file].save2file_fs(file,out_dir=path)
+            wt.check_directory(path+'Point_Data\\'+name[:name.find('.')]+'\\')              
+            #dict_conc_ts[name][file].save2file_fs(file,out_dir=path+'Point_Data\\'+name[:name.find('.')]+'\\')
+            if full_scale == 'ms':           
+               dict_conc_ts[name][file].save2file_ms(file,out_dir=path+'Point_Data\\'+name[:name.find('.')]+'\\')
+            elif full_scale == 'fs':    
+               dict_conc_ts[name][file].save2file_fs(file,out_dir=path+'Point_Data\\'+name[:name.find('.')]+'\\')                
+            elif full_scale == 'nd':
+               dict_conc_ts[name][file].save2file_nd(file,out_dir=path+'Point_Data\\'+name[:name.find('.')]+'\\')  
+            else:
+               print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")               
             # Save model scale results
-            conc_ts[name][file].save2file_ms(file,out_dir=path)
+            #conc_ts[name][file].save2file_ms(file,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')
             # Save average values. Requires to_full_scale()
-            conc_ts[name][file].save2file_avg(file,out_dir=path)
+            #conc_ts[name][file].save2file_avg(file,out_dir=path+'Puff_Data\\'+name[:name.find('.')]+'\\')

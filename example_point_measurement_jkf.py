@@ -12,13 +12,13 @@ import numpy as np
 # open_rate, where release signal will be ignored.
 
 # Path to your data
-path = '/home/jkfischer/Desktop/Uni_Hamburg/Home_Office/Puff_Beispiele/'
+path = '\\\\ewtl2\\work\\Johannes\Puff_Beispiele\\'
 #edit 05/20/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
 #is not found in the given file, the program resosrts to the default values specified below. 
 csv_file='Q2_Ambient_Conditions.csv'
 
 # Name of your measurement
-namelist = ['Q2_170_P09.txt.ts#0','Q2_170_P11.txt.ts#0','Q2_170_P12.txt.ts#0']
+namelist = ['Q2_170_P09.txt.ts#0']
             
 #edit 07/23/2020: added variable full_scale. Reserved for future implementation of full_scale, model scale, and
 #non-dimensional mode, analogously to puff mode             

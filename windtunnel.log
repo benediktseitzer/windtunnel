@@ -1,58 +1,179 @@
-
-07-23 15:36 root         INFO     Values below 0: 423185 or 23.5103%
-07-23 15:38 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 15:38 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 10:32 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 10:32 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 15:38 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 10:32 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 15:38 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 10:32 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 15:40 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 15:40 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 10:42 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 10:43 root         INFO     Values below 0: 513343 or 28.5191%
+07-27 10:44 root         INFO     Values below 0: 1067612 or 59.3118%
+07-27 10:50 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 10:50 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 15:40 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 10:50 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 15:40 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 10:50 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 15:51 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 15:51 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 10:52 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 10:52 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 15:52 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 10:52 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 15:52 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
-
-07-23 11:21 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 11:21 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
- Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 11:21 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
- Puffs below theshold concentration: 16 or 6.4777%
-07-23 11:21 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 10:52 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 11:37 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 11:37 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 10:54 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 10:54 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 11:37 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 10:54 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 11:37 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 10:54 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 11:49 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 11:49 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 11:01 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:01 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 11:49 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 11:01 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 11:49 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 11:01 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 11:53 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 11:53 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 11:13 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:13 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 11:13 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 11:13 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 11:15 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:15 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 11:53 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 11:15 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 11:53 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 11:15 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
-07-23 12:05 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
-07-23 12:05 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+07-27 11:26 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:26 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 11:26 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 11:26 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 11:28 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:28 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
  Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
-07-23 12:05 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+07-27 11:28 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
  Puffs below theshold concentration: 16 or 6.4777%
-07-23 12:05 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+07-27 11:28 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
  Puffs below theshold dosage: 9 or 3.6437%
+07-27 11:30 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:30 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 11:30 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 11:30 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 11:41 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:41 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 11:43 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:43 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 11:44 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:44 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 11:44 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 11:44 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 11:55 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 11:55 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 11:55 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 11:55 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 12:18 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 19 or 8.7558%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 12:18 root         INFO     Total values removed by applying threshold concentration and dosage: 319280 or 17.7378% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 26 or 11.9816%
+07-27 12:18 root         INFO     Values below threshold concentration: 319280 or 17.7378% 
+ Puffs below theshold concentration: 26 or 11.9816%
+07-27 12:18 root         INFO     Values below threshold dosage: 319280 or 17.7378% 
+ Puffs below theshold dosage: 19 or 8.7558%
+07-27 12:29 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 12:29 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 12:29 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 12:29 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 12:41 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 12:41 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 12:41 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 12:41 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 13:04 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 13:04 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 13:04 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 13:04 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 13:15 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 13:15 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 13:15 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 13:15 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 13:38 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 13:38 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 13:38 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 13:38 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 13:50 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 13:50 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 13:50 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 13:50 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 14:16 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 14:16 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 14:17 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 14:17 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 14:28 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 14:28 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 14:28 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 14:28 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 14:53 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 9 or 3.6437%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 14:53 root         INFO     Total values removed by applying threshold concentration and dosage: 132427 or 7.3571% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 18 or 7.2874%
+07-27 14:53 root         INFO     Values below threshold concentration: 132427 or 7.3571% 
+ Puffs below theshold concentration: 16 or 6.4777%
+07-27 14:53 root         INFO     Values below threshold dosage: 132427 or 7.3571% 
+ Puffs below theshold dosage: 9 or 3.6437%
+07-27 15:05 root         INFO     Puffs with concentration before arrival time or after leaving time greater than peak concentration: 136 or 22.9342%. Note that peak concentration is calculated only between arrival and leaving time.
+07-27 15:05 root         INFO     Total values removed by applying threshold concentration and dosage: 929541 or 25.8206% 
+ Total puffs removed by applying threshold concentration and theshold dosage: 137 or 23.1029%
+07-27 15:05 root         INFO     Values below threshold concentration: 929541 or 25.8206% 
+ Puffs below theshold concentration: 137 or 23.1029%
+07-27 15:05 root         INFO     Values below threshold dosage: 929541 or 25.8206% 
+ Puffs below theshold dosage: 136 or 22.9342%
+07-27 15:37 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:40 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:45 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:46 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:49 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:52 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:55 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 15:59 root         INFO     Values below 0: 423185 or 23.5103%
+07-27 16:01 root         INFO     Values below 0: 423185 or 23.5103%
