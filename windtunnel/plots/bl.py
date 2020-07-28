@@ -343,7 +343,7 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
     v_mean = np.asarray(v_mean)
     heights = np.asarray(heights)
     
-    ret = []
+    ret = []  
     for i in range(np.size(mean_magnitude)):
         if lat == False:
             M = ax.errorbar(mean_magnitude[i],heights[i],yerr=yerr,marker='s',
@@ -381,7 +381,7 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
             ax.set_ylim(-0.1,0.7)
     
             ret.append(M + U + V)
-    
+    print(lgd)
     return ret, lgd
 
 def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
