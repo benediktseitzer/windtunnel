@@ -269,12 +269,12 @@ def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None,
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
+        ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
         ax.set_ylabel('z full-scale [m]')
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
         ax.set_xlabel('y full-scale [m]')
-        ax.set_ylabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
+        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
         
     return ret
 
@@ -304,7 +304,8 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
         labels= [r'wind tunnel flux']
         
         ret.append(l)
-        
+    # xlim is user-defined
+    # plt.xlim(-0.0025,0.)
     plt.yscale('log')
     ax.grid(True,'both','both')
     sfc_layer = np.where(heights<60)
@@ -314,7 +315,7 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
     ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
     ax.set_ylabel('z full-scale [m]')
     
     return ret
