@@ -1,6 +1,0 @@
-Changelog for bl.py
-
-08/12/2019
-
-in plot_hist:
-	Corrected program description to specify that function plots histogram, not scatter plot. 

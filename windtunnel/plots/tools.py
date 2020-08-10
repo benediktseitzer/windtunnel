@@ -196,7 +196,7 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
     plt.show()
     
 
-def plot_rose_karte(inFF, inDD, ff_steps, dd_range, ax, alpha):
+def plot_rose_map(inFF, inDD, ff_steps, dd_range, ax, alpha):
     """ Plots windrose according to user specified input from ff_steps and
     dd_Range.
     @parameter: inFF, type = np.array
@@ -237,10 +237,6 @@ def plot_rose_karte(inFF, inDD, ff_steps, dd_range, ax, alpha):
     ax.set_yticklabels([])
     ax.set_theta_zero_location("W")
     ax.set_theta_direction(-1)
-    # ax.legend(bbox_to_anchor=(1.14, 0.5), loc='center left',
-    #          borderaxespad=0.,fontsize=12)
-    # plt.tight_layout()
-    # plt.show()
     return labels
 
 def plot_pdfs(sets,lablist,ax=None, **kwargs):
