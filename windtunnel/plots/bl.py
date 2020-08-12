@@ -20,6 +20,7 @@ __all__ = [
     'plot_lux',
     'plot_spectra',
     'plot_Re_independence',
+    'plot_repeat',    
     'plot_convergence_test',
     'plot_convergence',
     'plot_JTFA_STFT',
@@ -162,7 +163,7 @@ def plot_hist(data,ax=None,**kwargs):
     return ret
 
 
-def plot_turb_int(data,heights,yerr=0,component='I_u',lat=False,
+def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                   ref_path=None, ax=None,**kwargs):
     """ Plots turbulence intensities from data with VDI reference data for 
     their respective height. yerr specifies the uncertainty. Its default value
@@ -219,13 +220,14 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',lat=False,
     else:
         ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
                                                                   fontsize=14)
-        ax.set_xlabel('y full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'turbulence intensity '+component)
     
     return ret
 
 
-def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None, 
+
+def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, ax=None, 
                 **kwargs):
     """ Plots fluxes from data for their respective height with a 10% range of
     the low point mean. yerr specifies the uncertainty. Its default value is 0.
@@ -277,7 +279,7 @@ def plot_fluxes(data, heights, yerr=0, component='v', lat=False, ax=None,
             ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel('y full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
         
     return ret
@@ -327,7 +329,7 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     return ret
 
 
-def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, lat=False,
+def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None, lat=False,
                   ax=None, **kwargs):
     """ Plots wind components and wind magnitude for their respective height.
     yerr specifies the uncertainty. Its default value is 0. If lat is True then
@@ -348,7 +350,7 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, lat=False,
     v_mean = np.asarray(v_mean)
     heights = np.asarray(heights)
     
-    ret = []
+    ret = []  
     for i in range(np.size(mean_magnitude)):
         if lat == False:
             M = ax.errorbar(mean_magnitude[i],heights[i],yerr=yerr,marker='s',
@@ -381,13 +383,13 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, lat=False,
             ax.grid(True)
             lgd = ax.legend([M,U,V],labels,bbox_to_anchor=(0.5,1.05),
                       loc='lower center',borderaxespad=0.,ncol=3,fontsize=16)
-            ax.set_xlabel('y full-scale [m]')
+            ax.set_xlabel(var_lat+' full-scale [m]')
             ax.set_ylabel(r'velocity $[-]$')
+            ax.set_ylim(-0.1,0.7)
     
             ret.append(M + U + V)
-    
+    print(lgd)
     return ret, lgd
-
 
 def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
                       **kwargs):
@@ -424,7 +426,7 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     return ret, lgd
 
 
-def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
+def plot_lux(Lux, heights, err=0, var_lat=None, lat=False, ref_path=None, ax=None,
              **kwargs):
     """Plots Lux data on a double logarithmic scale with reference data. yerr
     specifies the uncertainty. Its default value is 0. If lat
@@ -480,7 +482,7 @@ def plot_lux(Lux, heights, err=0, lat=False, ref_path=None, ax=None,
         ax.grid(True)
         ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='upper center',
                   borderaxespad=0.,ncol=2,fontsize=16)
-        ax.set_xlabel(r'$z$ full-scale [m]')
+        ax.set_xlabel(var_lat+' full-scale [m]')
         ax.set_ylabel(r'$L_{u}^{x}$ full-scale [m]')    
         
     return ret
@@ -635,6 +637,36 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     ax.grid(True)
     
     return ret
+    
+    
+def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
+    """ Plots the results for a Repeatability test from a non-
+    dimensionalised timeseries. yerr specifies the uncertainty. Its default 
+    value is 0.
+    @parameter: data, type = np.array or list
+    @parameter: wtref, type = np.array or list
+    @parameter: yerr, type = int or float
+    @parameter: ax: axis passed to function
+    @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
+    if ax is None:
+        ax=plt.gca()
+
+    # Plot
+    ret = []
+    for j in range(np.shape(mean_magnitude)[1]):
+        for i,value in enumerate(mean_magnitude[:,j]):
+            l = ax.errorbar(j,value/wtref[i,j],yerr=yerr,fmt='o',markersize=4,
+                        ls='None',color='navy',**kwargs)
+            ret.append(l)
+            
+    labels=[str(heights)]    
+    ax.set_xlabel('Measurement Number')
+    ax.set_ylabel(r'$M\cdot U_{0}^{-1}$')
+    ax.legend(labels,loc='lower right',fontsize=14)
+    ax.grid(True)
+   
+    
+    return ret         
 
 
 def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,

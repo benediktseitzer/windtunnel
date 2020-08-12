@@ -4,6 +4,7 @@ import logging
 import os
 import pandas as pd
 import windtunnel as wt
+from math import e
 
 logger = logging.getLogger()
 __all__ = ['Timeseries']
@@ -155,7 +156,18 @@ class Timeseries(pd.DataFrame):
         self.z = self.z * self.scale/1000           #[m]
         self.t_arr = self.t_arr * self.scale/1000   #[s]
         #edit 06/20/19: t_eq now generated after adapt_scale
-        #self.t_eq = self.t_eq * self.scale/1000   #[s]        
+        #self.t_eq = self.t_eq * self.scale/1000   #[s]  
+
+    def rotate_coordinates(self,wdir):
+        """Rotates u and v components according to wind direction"""       
+        self.wind_vector=self.u+1j*self.v
+        self.position_vector=self.x+1j*self.y        
+        self.wind_vector=self.wind_vector*e**((np.pi*-wdir/180)*1j)
+        self.position_vector=self.position_vector*e**((np.pi*-wdir/180)*1j)        
+        self.u=self.wind_vector.real
+        self.v=self.wind_vector.imag  
+        self.x=self.position_vector.real
+        self.y=self.position_vector.imag         
 
     def calc_equidistant_timesteps(self):
         """ Create equidistant time series. """

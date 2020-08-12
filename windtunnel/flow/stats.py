@@ -636,6 +636,10 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     @parameter: d0, type = float
     @parameter: sfc_height, type = float
     @parameter: BL_height, type = float"""
+    #note 07/28/2020: extremely questionable assumptions for calculating
+    #alpha. In particular, it is unknown why uref and zref are not constant
+    #with height. Different approach used in 'calc_profile' function. To be
+    #verified with Bernd Leitl and/or Frank Harms !!
     
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
@@ -649,8 +653,11 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     if np.size(heights[BL]) > 2:
         ref = 999.
         for ui,zi in enumerate(heights[BL]):
-            zref = zi
-            uref = u_mean[BL][ui]    
+            zref=zi
+            zref = 867.5
+            uref = u_mean[BL][ui]
+            uref = 1            
+            print(zref)            
             B,covtemp = curve_fit(tempf, (heights[BL]-d0)/(zref-d0),
                                   u_mean[BL]/uref)        
             diff = power_law(u_mean[BL],heights[BL],uref,zref,B[0],d0)
