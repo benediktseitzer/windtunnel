@@ -4,6 +4,8 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib.projections import get_projection_class
 
 
 __all__ = [
@@ -14,7 +16,7 @@ __all__ = [
     'plot_pdfs',
     'plot_pdfs_err',
     'plot_cdfs',
-    'plot_rose_karte',
+    'plot_rose_map',
 ]
 
 class Windrose:
@@ -196,48 +198,70 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
     plt.show()
     
 
-def plot_rose_map(inFF, inDD, ff_steps, dd_range, ax, alpha):
+def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap=plt.cm.viridis):
     """ Plots windrose according to user specified input from ff_steps and
     dd_Range.
-    @parameter: inFF, type = np.array
-    @parameter: inDD, type = np.array
-    @parameter: ff_steps, type = list or np.array
-    @parameter: dd_range, type = int or float"""
-    # print(ff_steps)
-    labels = []
-    for i, f in enumerate(ff_steps[:-2]):
-        labels.append(r'$' + '{0:.2f}-{1:.2f}'.format(f, ff_steps[i + 1]) + '\ [-]$')
-    labels.append(r'$' + '>{0:.2f}'.format(ff_steps[-2]) + '\ [-]$')
-    # print(labels)
-    ##  DATA PROCESSING
-    dd, ff = Windrose(inDD, inFF).pack(dd_range, ff_steps)
-    dd = dd * np.pi / 180.
+    @parameter: inFF, type = np.array, contains the windspeeds
+    @parameter: inDD, type = np.array, contains the winddirections
+    @parameter: x_coor, type = np.array, contains the x coordinates of the measurements
+    @parameter: y_coor, type = np.array, contains the x coordinates of the measurements
+    @parameter: ff_steps, type = list or np.array, specifies the steps of the windspeeds for the windrose
+    @parameter: dd_range, type = int or float, specifies the direction ranges
+    @parameter: ax, type = pyplot axes object
+    @parameter: alpha, type = float
+    @parameter: cmap, type = `~matplotlib.colors.Colormap`"""
 
-    ##  PLOT
-    width = (np.pi) * dd_range / 180  # (2*np.pi)/dd_range
-    cmap = plt.cm.jet
-    # ax = plt.subplot(111,polar=True)
-    ax.bar(dd, ff[:, 0],
-           width=width,
-           bottom=0.,
-           facecolor=cmap(0),
-           label=labels[0],
-           align='edge',
-           edgecolor='none', alpha=alpha, linewidth=0.05)
 
-    for i in range(ff[0].size - 1):
-        ax.bar(dd, ff[:, i + 1],
-               width=width,
-               bottom=ff[:, i],
-               facecolor=cmap(np.linspace(0, 1, ff[0].size)[i + 1]),
-               label=labels[i + 1],
-               align='edge',
-               edgecolor='none', alpha=alpha, linewidth=0.05)
-        ff[:, i + 1] = ff[:, i + 1] + ff[:, i]
-    ax.set_yticklabels([])
-    ax.set_theta_zero_location("W")
-    ax.set_theta_direction(-1)
-    return labels
+    # this dummy image will only be generated to create a colorbar
+    dummy_img = ax.imshow(np.meshgrid(np.asarray(ff_steps)),extent= (10000,10000,10010,10010),
+                          cmap=cmap)
+    cbar = plt.colorbar(dummy_img,fraction=0.046,pad=0.04)
+    cbar.set_label('Windspeed in (-)')
+
+    ax.set_xlim([np.min(x_coor)-(np.abs(np.min(x_coor))+np.max(x_coor))/10,
+                 np.max(x_coor)+(np.abs(np.min(x_coor))+np.max(x_coor))/10])
+    ax.set_ylim([np.min(y_coor)-(np.abs(np.min(y_coor))+np.max(y_coor))/10,
+                 np.max(y_coor)+(np.abs(np.min(y_coor))+np.max(y_coor))/10])
+    
+    for rose in range(inFF.shape[1]):
+
+        ##  DATA PROCESSING
+        dd, ff = Windrose(inDD[rose], inFF[rose]).pack(dd_range, ff_steps)
+        dd = dd * np.pi / 180.
+
+        ##  PLOT
+        width = (np.pi) * dd_range / 180  # (2*np.pi)/dd_range
+
+        ax_sub= inset_axes(ax, width=0.55, height=0.55, loc=10,
+                       bbox_to_anchor=(x_coor[rose],y_coor[rose]),
+                       bbox_transform=ax.transData,
+                       borderpad=0.0, axes_class=get_projection_class("polar"))
+
+        ax_sub.bar(dd, ff[:, 0],
+                width=width,
+                bottom=0.,
+                facecolor=cmap(0),
+                align='edge',
+                edgecolor='none', alpha=alpha, linewidth=0.05)
+
+        for i in range(ff[0].size - 1):
+            ax_sub.bar(dd, ff[:, i + 1],
+                width=width,
+                bottom=ff[:, i],
+                facecolor=cmap(np.linspace(0, 1, ff[0].size)[i + 1]),
+                align='edge',
+                edgecolor='none', alpha=alpha, linewidth=0.05)
+            ff[:, i + 1] = ff[:, i + 1] + ff[:, i]
+
+        ax_sub.set_theta_zero_location("W")
+        ax_sub.set_theta_direction(1)
+        ax_sub.set_xticklabels([])
+        ax_sub.set_yticklabels([])
+        ax_sub.grid(False)
+        ax_sub.set_yticks([])
+        ax_sub.set_xticks([])
+        ax_sub.axis('off')
+    return ax, cbar
 
 def plot_pdfs(sets,lablist,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist.
