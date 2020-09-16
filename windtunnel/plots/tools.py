@@ -14,6 +14,7 @@ __all__ = [
     'plot_pdfs',
     'plot_pdfs_err',
     'plot_cdfs',
+    'plot_rose_karte',
 ]
 
 class Windrose:
@@ -194,6 +195,49 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
     plt.tight_layout()
     plt.show()
     
+
+def plot_rose_map(inFF, inDD, ff_steps, dd_range, ax, alpha):
+    """ Plots windrose according to user specified input from ff_steps and
+    dd_Range.
+    @parameter: inFF, type = np.array
+    @parameter: inDD, type = np.array
+    @parameter: ff_steps, type = list or np.array
+    @parameter: dd_range, type = int or float"""
+    # print(ff_steps)
+    labels = []
+    for i, f in enumerate(ff_steps[:-2]):
+        labels.append(r'$' + '{0:.2f}-{1:.2f}'.format(f, ff_steps[i + 1]) + '\ [-]$')
+    labels.append(r'$' + '>{0:.2f}'.format(ff_steps[-2]) + '\ [-]$')
+    # print(labels)
+    ##  DATA PROCESSING
+    dd, ff = Windrose(inDD, inFF).pack(dd_range, ff_steps)
+    dd = dd * np.pi / 180.
+
+    ##  PLOT
+    width = (np.pi) * dd_range / 180  # (2*np.pi)/dd_range
+    cmap = plt.cm.jet
+    # ax = plt.subplot(111,polar=True)
+    ax.bar(dd, ff[:, 0],
+           width=width,
+           bottom=0.,
+           facecolor=cmap(0),
+           label=labels[0],
+           align='edge',
+           edgecolor='none', alpha=alpha, linewidth=0.05)
+
+    for i in range(ff[0].size - 1):
+        ax.bar(dd, ff[:, i + 1],
+               width=width,
+               bottom=ff[:, i],
+               facecolor=cmap(np.linspace(0, 1, ff[0].size)[i + 1]),
+               label=labels[i + 1],
+               align='edge',
+               edgecolor='none', alpha=alpha, linewidth=0.05)
+        ff[:, i + 1] = ff[:, i + 1] + ff[:, i]
+    ax.set_yticklabels([])
+    ax.set_theta_zero_location("W")
+    ax.set_theta_direction(-1)
+    return labels
 
 def plot_pdfs(sets,lablist,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist.

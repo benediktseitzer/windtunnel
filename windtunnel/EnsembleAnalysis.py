@@ -266,7 +266,6 @@ class EnsembleAnalysis(pd.DataFrame):
         """Calculate number of classes, based on ensemble size. Method based on original C Program by Anne Philip."""
         #edit 08/12/2019: new function, which calculates the number of classes for each ensemble size. Similar to subsection of CalculationAndWritingFrequencyDistribution
         #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
-        print(n)
 
         if ensemble_size>np.size(self.data):
            print('Error: ensemble size greater than number of data points! Use smaller ensemble size and/or check the dataset. Also consider checking any thershold applying algorithms.')
@@ -286,7 +285,7 @@ class EnsembleAnalysis(pd.DataFrame):
 
         return n_classes		
 		
-    def calc_class_width(self,n_classes=None):
+    def calc_class_width(self,n=None):
         """Compute class width for each ensemble size and number"""
         #edit 08/12/2019: new function, which calculates the width of the classes. Similar to subsection of CalculationAndWritingFrequencyDistribution
         #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
@@ -303,7 +302,7 @@ class EnsembleAnalysis(pd.DataFrame):
                self.n_classes[i,:]=np.nan
                self.n_classes_raw[i,:]=np.nan			   
             else: 
-               n_classes=self.calc_n_classes(ensemble_size=i,n=n_classes)
+               n_classes=self.calc_n_classes(ensemble_size=i,n=n)
                self.n_classes[i,:]=np.int(n_classes)
                self.n_classes_raw[i,:]=(np.int(n_classes)/2)+1			   
                for j in range(np.shape(self.ensemble_min)[1]):
@@ -832,7 +831,6 @@ class EnsembleAnalysis(pd.DataFrame):
                                                        self.gas_factor)
                           + "" + '\n' +
 						  "variables = \" ensemble size \" \"   ensemble number  \" \"   class number     \" \"      class min     \" \"      class max     \" \"     class width    \" ",comments='')	
-	
 		
         np.savetxt(output_file_conv, np.vstack((n_ensembles[2:],self.ensemble_mean[2:,:].transpose())).transpose(),		
                    fmt='%23.4f',

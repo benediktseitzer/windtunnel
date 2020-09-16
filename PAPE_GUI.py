@@ -377,14 +377,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         namelist=np.array(self.namelist)
         functions_mode=self.functions_mode.get()
         path = self.path+'/'
-        csv_file = None if self.csv_file==None else self.csv_file.name
+        csv_file = None if self.csv_file==None else os.path.split(self.csv_file.name)[1]
         threshold_concentration=self.threshold_concentration.get()
         threshold_dosage=self.threshold_dosage.get() 
         #n_exclude=self.n_exclude.get()
         #print(self.n_exclude.get())
-        n_exclude=None if self.n_exclude.get()=='Auto-Select' else np.float(self.n_exclude.get()) 
-        axis_range=self.axis_range.get()     
-        time_threshold=self.time_threshold.get()/100
+        n_exclude=None if self.n_exclude.get()=='Auto-Select' else np.float(self.n_exclude.get())         
+        axis_range=self.axis_range.get()  
+        time_threshold=self.time_threshold.get()/100        
         full_scale=self.full_scale.get() 
         x_source=self.x_source.get()
         y_source=self.y_source.get()
@@ -416,11 +416,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             tkinter.messagebox.showerror("Error","No file selected! Please select at least one file from the list to analyze.")
             return
         if self.puff.get()=="puff":
-           f=open('PAPE_GUI_code_puff.py')   
+            wt.standard_puff_analysis(path,csv_file,namelist,threshold_concentration,threshold_dosage,
+            n_exclude,time_threshold,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
+            pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
+            scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,
+            full_scale_flow_rate,functions_mode,axis_range) 
         elif self.puff.get()=="point":
-           f=open('PAPE_GUI_code_point.py')          
-        exec(f.read(),globals(),locals())
-        f.close()
+            wt.standard_point_analysis(path,csv_file,namelist,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
+            pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
+            scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref, 
+            full_scale_flow_rate,axis_range)
         
     def quit_pape(self):
         self.master.destroy()
