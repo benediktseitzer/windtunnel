@@ -138,19 +138,20 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     @parameter: wdir: int"""
     
     mask = mask = np.logical_and(~np.isnan(u_comp),
-                          ~np.isnan(v_comp))
+                          ~np.isnan(v_comp),~np.isnan(transit_time))
     u = u_comp[mask]
     v = v_comp[mask]
-    
+    tt = transit_time[mask]
+
     # TODO: test ways of applying TT weighting to Magnitude
     Magnitude = np.mean(np.sqrt(u**2+v**2))
-    u_mean = wt.transit_time_weighted_mean(transit_time,u)
-    v_mean = wt.transit_time_weighted_mean(transit_time,v)       
+    u_mean = wt.transit_time_weighted_mean(tt,u)
+    v_mean = wt.transit_time_weighted_mean(tt,v)       
     Direction = wdir-np.arctan2(v_mean,u_mean)*180/np.pi
     if Direction>360: Direction-=360
     if Direction<0: Direction+=360    
-    u_std = np.sqrt(wt.transit_time_weighted_var(transit_time,u))
-    v_std = np.sqrt(wt.transit_time_weighted_var(transit_time,v))
+    u_std = np.sqrt(wt.transit_time_weighted_var(tt,u))
+    v_std = np.sqrt(wt.transit_time_weighted_var(tt,v))
 
     data = np.array([Magnitude,u_mean,v_mean,u_std,v_std,Direction])
 
