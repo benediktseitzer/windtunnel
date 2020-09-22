@@ -7,6 +7,7 @@ import numpy as np
 import scipy.stats as sc
 import math as m
 from scipy.optimize import curve_fit
+from sklearn.neighbors import KernelDensity
 
 import windtunnel as wt
 
@@ -30,6 +31,9 @@ __all__ = [
     'calc_alpha',
     'calc_z0',
     'calc_normalization_params',
+    'calc_theo_arrival_law',
+    'calc_arrival_law',
+    'calc_transit_time_distribution',
 ]
 
 def calc_intervalmean(indata,intervals,DD=False):    
@@ -63,7 +67,6 @@ def calc_intervalmean(indata,intervals,DD=False):
             
     return outdata
 
-
 def calc_stats(sets,DD=False):
     """Returns mean, standard deviation and variance of data in sets. If DD is 
     true then the circular equivalents are calculated. TO BE USED WITH CAUTION
@@ -90,7 +93,6 @@ def calc_stats(sets,DD=False):
         
     return means,var,stds
 
-
 def calc_exceedance_prob(data,threshold):
     """ Calculates exceedance probability of threshold in data. Returns 
     threshold and exceedance probability in percent.
@@ -101,7 +103,6 @@ def calc_exceedance_prob(data,threshold):
     exceed_prob = (np.size(tmp)/np.size(data))*100
     
     return threshold, exceed_prob
-
 
 def calc_wind_stats(u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
@@ -127,8 +128,7 @@ def calc_wind_stats(u_comp,v_comp,wdir=0.):
     data = np.array([Magnitude,u_mean,v_mean,u_std,v_std,Direction])
 
     return data
-   
-    
+       
 def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
@@ -156,7 +156,6 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     data = np.array([Magnitude,u_mean,v_mean,u_std,v_std,Direction])
 
     return data
-
 
 def calc_turb_data(u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
@@ -186,7 +185,6 @@ def calc_turb_data(u_comp,v_comp):
     
     return data
 
-
 def calc_turb_data_wght(transit_time,u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components using transit time weighted statistics.
@@ -211,7 +209,6 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     data = np.array([I_u,I_v,flux])
     
     return data
-
 
 def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
@@ -268,7 +265,6 @@ def calc_lux_data(dt, u_comp):
 
     Lux = abs(Lux * np.mean(u_comp) * dt)
     return Lux
-
 
 def calc_lux_data_wght(transit_time, dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011)
@@ -327,7 +323,6 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
 
     return Lux
 
-
 def calc_acorr(timeseries, maxlags):
     """ Full autocorrelation of time series for lags up to maxlags.
     @parameter timeseries: np.array or list
@@ -336,7 +331,6 @@ def calc_acorr(timeseries, maxlags):
     timeseries = timeseries[~np.isnan(timeseries)]
     acorr = np.asarray([1. if x == 0 else np.corrcoef(timeseries[x:], timeseries[:-x])[0][1] for x in range(maxlags)])
     return acorr
-
 
 def calc_autocorr(timeseries, lag=1):
     """ Autocorrelation of time series with lag.
@@ -348,7 +342,6 @@ def calc_autocorr(timeseries, lag=1):
                            timeseries[lag:])[1, 0]
 
     return autocorr
-
 
 def calc_spectra(u_comp,v_comp,t_eq,height):
     """ Calculate dimensionless energy density spectra from an equidistant 
@@ -451,7 +444,6 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
                                          np.diff(S_uv_sm[-10:])>=0.)[0],[9]))[0]
 
     return f_sm,S_uu_sm,S_vv_sm,S_uv_sm,u_aliasing,v_aliasing,uv_aliasing
-
 
 def calc_spectra_nc(u_comp, t_eq, height):
     """ Calculate dimensionless energy density spectra from an equidistant
@@ -568,7 +560,6 @@ def calc_ref_spectra(reduced_freq,a,b,c,d,e):
 
    return a*reduced_freq/np.abs(e+b*reduced_freq**c)**d
 
-
 def convergence_test_1(data,blocksize=100):
     """ Conducts a block-wise convergence test on non circular data using 
     blocksize for the size of each increment. Returns a dictionary block_data.
@@ -585,7 +576,6 @@ def convergence_test_1(data,blocksize=100):
     block_data = wt.calc_intervalmean(data,intervals)
     
     return intervals, block_data
-
 
 def convergence_test_2(data,interval=100,blocksize=100):
     """ Conducts a block-wise convergence test on non circular data using 
@@ -616,7 +606,6 @@ def convergence_test_2(data,interval=100,blocksize=100):
     
     return intervals, block_data
 
-
 def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     """ Estimate power law profile.
     @parameter: u_comp, type = int or float
@@ -627,7 +616,6 @@ def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     @parameter: d0, type = int or float """
    
     return np.abs(u_comp / u_ref - ((height-d0)/(z_ref-d0))**alpha)
-
 
 def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     """Estimate the power law exponent alpha.
@@ -656,8 +644,7 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
             zref=zi
             zref = 867.5
             uref = u_mean[BL][ui]
-            uref = 1            
-            print(zref)            
+            uref = 1                
             B,covtemp = curve_fit(tempf, (heights[BL]-d0)/(zref-d0),
                                   u_mean[BL]/uref)        
             diff = power_law(u_mean[BL],heights[BL],uref,zref,B[0],d0)
@@ -675,7 +662,6 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
          ref = np.nan
         
     return alpha, ref
-
 
 def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     """ Estimate the roughness length z0.
@@ -766,3 +752,59 @@ def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x,
 #                          reduced_transform[-10:])>=0.)[0],[9]))[0]
 #    
 #    return reduced_transform, reduced_freq, aliasing
+
+def calc_theo_arrival_law(t_arr, data_rate):
+    """ 
+    calculate theoretical particle arrival law. 
+    if exponential, there is temporally uniform seeding.
+    
+    @parameter: t_arr, type = list or np.array, arrival times
+    @parameter: data_rate, type = float, data rate from mean file 
+    """
+
+    # allocate
+    delta_t_arr = []
+    # calculate inter arrival times for each burst
+    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
+    delta_t_arr = np.asarray(delta_t_arr)
+    # calculate particle arrival law: p(t_arr) = dN/dt * exp(- dN/dt * t_arr)
+    particle_arrival_law = data_rate * np.exp(-data_rate * delta_t_arr/1000.)
+
+    return delta_t_arr, particle_arrival_law
+
+def calc_arrival_law(t_arr):
+    """ 
+    calculate particle arrival distribution using a KDE. 
+    if exponential, there is temporally uniform seeding.
+    
+    @parameter: t_arr, type = list or np.array, arrival times
+    """
+
+    # allocate
+    delta_t_arr = []
+    # calculate inter arrival times for each burst
+    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
+    delta_t_arr = np.asarray(delta_t_arr)
+    # calculate KDE-model
+    model = KernelDensity(bandwidth=0.15, kernel='exponential')
+    delta_t_arr = delta_t_arr.reshape((len(delta_t_arr),1))
+    model.fit(delta_t_arr)
+    # allocate values
+    values = np.asarray([value for value in np.arange(0., max(delta_t_arr),0.01)])
+    values = values.reshape((len(values), 1))
+    # calculate probabilities
+    probabilities = model.score_samples(values)
+    probabilities = np.exp(probabilities)
+
+    return values, probabilities
+
+def calc_transit_time_distribution(transit_time):
+    """ 
+    calculate particle arrival law. 
+    if exponential, there is temporally uniform seeding.
+    
+    @parameter: transit_time, type = list or np.array, inter arrival times
+    @parameter: data_rate, type = float, data rate from mean file 
+    """
+
+    return sc.skew(transit_time, nan_policy='omit')
