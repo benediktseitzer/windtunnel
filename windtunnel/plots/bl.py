@@ -4,7 +4,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
+from scipy.stats import expon 
+from scipy.optimize import curve_fit
 import windtunnel as wt
+from sklearn.neighbors import KernelDensity
 
 plt.rcParams["figure.figsize"] = (9,6)
 plt.rcParams.update({'font.size': 15})
@@ -26,6 +29,8 @@ __all__ = [
     'plot_JTFA_STFT',
     'plot_stdevs',
     'plot_perturbation_rose',
+    'plot_arrival_law',
+    'plot_transit_time_distribution',
 ]
 
 def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
@@ -51,7 +56,6 @@ def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
     ordinate.set_label_text('y-data')
     
     return ret
-
 
 def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
@@ -84,7 +88,6 @@ def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     ax.grid()
     
     return ret
-
 
 def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y using time transit time weighted 
@@ -125,7 +128,6 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     ax.grid()
     
     return ret
-
     
 def plot_hist(data,ax=None,**kwargs):
     """Creates a scatter plot of x and y.
@@ -161,7 +163,6 @@ def plot_hist(data,ax=None,**kwargs):
     ax.grid('on')
     
     return ret
-
 
 def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                   ref_path=None, ax=None,**kwargs):
@@ -225,8 +226,6 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     
     return ret
 
-
-
 def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, ax=None, 
                 **kwargs):
     """ Plots fluxes from data for their respective height with a 10% range of
@@ -280,7 +279,6 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
         
     return ret
 
-
 def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     """ Plots fluxes from data for their respective height on a log scale with
     a 10% range of the low point mean. yerr specifies the uncertainty. Its 
@@ -321,7 +319,6 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     ax.set_ylabel('z full-scale [m]')
     
     return ret
-
 
 def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None, lat=False,
                   ax=None, **kwargs):
@@ -419,7 +416,6 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     
     return ret, lgd
 
-
 def plot_lux(Lux, heights, err=0, var_lat=None, lat=False, ref_path=None, ax=None,
              **kwargs):
     """Plots Lux data on a double logarithmic scale with reference data. yerr
@@ -481,7 +477,6 @@ def plot_lux(Lux, heights, err=0, var_lat=None, lat=False, ref_path=None, ax=Non
         
     return ret
 
-
 def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
                  uv_aliasing, wind_comps, height, ref_path=None,
                  ax=None, **kwargs):
@@ -495,8 +490,8 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     
     xsmin = np.nanmin(np.nanmin(f_sm[np.where(f_sm>0)]))
     xsmax = np.nanmax(np.nanmax(f_sm[np.where(f_sm>0)]))
-#    xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
-#    xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
+    # xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
+    # xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
     ref_specs = wt.get_reference_spectra(height,ref_path)
     
@@ -596,7 +591,6 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
 
     return h1, h2
 
-
 def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
@@ -630,8 +624,7 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     ax.grid(True)
     
     return ret
-    
-    
+       
 def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Repeatability test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
@@ -660,7 +653,6 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
    
     
     return ret         
-
 
 def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
                           **kwargs):
@@ -703,7 +695,6 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
 
     return handles
     
-
 def plot_convergence(data_dict,ncols=3,**kwargs):
     """ Plots results of convergence tests performed on any number of 
     quantities in one plot. ncols specifies the number of columns desired in
@@ -720,7 +711,6 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
         plot_convergence_test(data,ylabel=key,ax=ax,**kwargs)
 
     return axes
-
 
 def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v', 
                    window_length = 3500, fixed_limits = (None, None), 
@@ -868,7 +858,6 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
     plt.tight_layout()
     
     return fig
-
  
 def plot_stdevs(data, t_eq, tau, comp='u', ax=None, **kwargs):
     """ This function plots the spread of an array based on how many standard 
@@ -919,7 +908,6 @@ def plot_stdevs(data, t_eq, tau, comp='u', ax=None, **kwargs):
     ax.bar(range(len(stds_from_mean)), list(stds_from_mean.values()),
            align='center')
     ax.set_xticks(range(len(stds_from_mean)), list(stds_from_mean.keys()))
-
   
 def plot_perturbation_rose(u1, v1, total_mag, total_direction, 
                            bar_divider = 3000, second_comp = 'v'):
@@ -957,3 +945,54 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
 
     axarr[0].set_position([0.2, 0.125, 0.4, 0.4])
     axarr[1].set_position([0.6, 0.125, 0.4, 0.4])
+
+def plot_arrival_law(delta_t_arr, particle_arrival_law, kde_val, kde_prob, data_rate, logplot = None, **kwargs):
+    """ 
+    Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
+
+    @parameter: u1: array of u-component perturbations
+    @parameter: v1: array of second-component perturbations
+    @parameter: additional keywords arguments passed to plt.semilogy().
+    """
+    if logplot == None:
+        logplot = True
+
+    particle_arrival_law = [delta_t_arr for _,delta_t_arr in sorted(zip(delta_t_arr,particle_arrival_law))]
+    delta_t_arr = sorted(delta_t_arr)
+
+    if logplot:
+        # plot KDE model
+        plt.semilogy(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE fit')
+        # plot particle arrival low
+        plt.semilogy(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
+        plt.xlim(0.,max(delta_t_arr))
+        plt.ylim(0,10**4.)
+    else:
+        # plot KDE model
+        plt.plot(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE fit')
+        # plot particle arrival low
+        plt.plot(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
+
+    plt.xlabel(r'$\delta t$ [ms]')
+    plt.ylabel(r'$P(\delta t)$ [1/s]')
+    plt.grid()
+    plt.legend()
+
+def plot_transit_time_distribution(transit_time, skew, ax=None):
+    """ 
+    Plots transit-time distribution.
+
+    @parameter: u1: array of u-component perturbations
+    @parameter: v1: array of second-component perturbations
+    @parameter: additional keywords arguments passed to plt.semilogy().
+    """
+
+    if ax is None:
+       ax = plt.gca()
+
+    plt.hist(transit_time, density=False, 
+            bins='auto')
+    plt.ylabel('Number of Particles')
+    plt.xlabel(r'$t_{transit}$ $[\mu s]$')
+    plt.grid()
+    plt.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), transform=ax.transAxes)
