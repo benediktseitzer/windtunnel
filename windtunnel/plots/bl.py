@@ -969,7 +969,7 @@ def plot_arrival_law(delta_t_arr, particle_arrival_law, kde_val, kde_prob, data_
         plt.ylim(10**(-3.),10**4.)
     else:
         # plot KDE model
-        plt.plot(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE fit')
+        plt.plot(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE model - PDF')
         # plot particle arrival low
         plt.plot(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
 
