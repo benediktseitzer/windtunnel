@@ -772,7 +772,7 @@ def calc_theo_arrival_law(t_arr, data_rate):
 
     return delta_t_arr, particle_arrival_law
 
-def calc_arrival_law(t_arr):
+def calc_arrival_law(t_arr, bandwidth = None):
     """ 
     calculate particle arrival distribution using a KDE. 
     if exponential, there is temporally uniform seeding.
@@ -782,11 +782,14 @@ def calc_arrival_law(t_arr):
 
     # allocate
     delta_t_arr = []
+    if bandwidth == None:
+        bandwidth = 0.15
     # calculate inter arrival times for each burst
     delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
     delta_t_arr = np.asarray(delta_t_arr)
-    # calculate KDE-model
-    model = KernelDensity(bandwidth=0.15, kernel='exponential')
+    # calculate KDE-model 
+    # choose bandwidth wisely! If too high, PDF is oversmoothed, if too low, PDF gets edgy
+    model = KernelDensity(bandwidth=bandwidth, kernel='exponential')
     delta_t_arr = delta_t_arr.reshape((len(delta_t_arr),1))
     model.fit(delta_t_arr)
     # allocate values

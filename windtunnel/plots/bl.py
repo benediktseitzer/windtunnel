@@ -962,11 +962,11 @@ def plot_arrival_law(delta_t_arr, particle_arrival_law, kde_val, kde_prob, data_
 
     if logplot:
         # plot KDE model
-        plt.semilogy(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE fit')
+        plt.semilogy(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE model - PDF')
         # plot particle arrival low
         plt.semilogy(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
         plt.xlim(0.,max(delta_t_arr))
-        plt.ylim(0,10**4.)
+        plt.ylim(10**(-3.),10**4.)
     else:
         # plot KDE model
         plt.plot(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE fit')
