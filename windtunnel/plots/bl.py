@@ -946,37 +946,56 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
     axarr[0].set_position([0.2, 0.125, 0.4, 0.4])
     axarr[1].set_position([0.6, 0.125, 0.4, 0.4])
 
-def plot_arrival_law(delta_t_arr, particle_arrival_law, kde_val, kde_prob, data_rate, logplot = None, **kwargs):
+def plot_arrival_law(delta_t_arr, arrival_law, binscenters, 
+                        data_entries, popt, logplot = None, **kwargs):
     """ 
     Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
 
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: additional keywords arguments passed to plt.semilogy().
+    @parameter: delta_t_arr: inter arrival times
+    @parameter: arrival law: theoretical data rates
+    @parameter: binscenters: distribution inter arrival times
+    @parameter: data_entries: distribution data rates
+    @parameter: popt: fitted data rate
     """
     if logplot == None:
         logplot = True
 
-    particle_arrival_law = [delta_t_arr for _,delta_t_arr in sorted(zip(delta_t_arr,particle_arrival_law))]
+    # zip-sort 
+    arrival_law = [delta_t_arr for _,
+                    delta_t_arr in sorted(zip(delta_t_arr, arrival_law))]
     delta_t_arr = sorted(delta_t_arr)
 
+    # particle arrival law
+    def fit_function(x, A):
+        return (A * np.exp(-x * A) )
+
+    # Generate enough x values to make the curves look smooth.
+    xspace = np.linspace(0, max(binscenters), 10000)
+    data_entries[ data_entries==0 ] = np.nan
+
     if logplot:
-        # plot KDE model
-        plt.semilogy(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE model - PDF')
-        # plot particle arrival low
-        plt.semilogy(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
+        # Plot the histogram,the fitted function and the expected law
+        plt.semilogy(binscenters, data_entries, label=r'pdf($\delta t$)')
+        plt.semilogy(xspace, fit_function(xspace, *popt), 
+                    label=r'fit: $\frac{N}{T_{mes}}=$' + '{}'.format(np.around(popt[0],2)))
+        plt.semilogy(delta_t_arr, arrival_law, 
+                    label = 'particle arrival law', linestyle = ':')
         plt.xlim(0.,max(delta_t_arr))
         plt.ylim(10**(-3.),10**4.)
     else:
-        # plot KDE model
-        plt.plot(kde_val, kde_prob*data_rate/max(kde_prob), label = 'KDE model - PDF')
-        # plot particle arrival low
-        plt.plot(delta_t_arr, particle_arrival_law, label = 'particle arrival law', linestyle = ':')
+        # Plot the histogram,the fitted function and the expected law
+        plt.plot(binscenters, data_entries, label=r'pdf($\delta t$)')
+        plt.plot(xspace, fit_function(xspace, *popt), 
+                    label=r'fit: $\frac{N}{T_{mes}}=$' + '{}'.format(np.around(popt[0],2)))            
+        plt.plot(delta_t_arr, arrival_law, 
+                    label = 'particle arrival law', linestyle = ':')
+        plt.xlim(0.,max(delta_t_arr))
+        plt.ylim(10**(-3.),10**4.)
 
     plt.xlabel(r'$\delta t$ [ms]')
     plt.ylabel(r'$P(\delta t)$ [1/s]')
     plt.grid()
-    plt.legend()
+    plt.legend(loc='best')
 
 def plot_transit_time_distribution(transit_time, skew, ax=None):
     """ 
@@ -995,4 +1014,5 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     plt.ylabel('Number of Particles')
     plt.xlabel(r'$t_{transit}$ $[\mu s]$')
     plt.grid()
-    plt.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), transform=ax.transAxes)
+    plt.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
+                transform=ax.transAxes)
