@@ -768,46 +768,48 @@ def calc_theo_arrival_law(t_arr, data_rate):
     delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
     delta_t_arr = np.asarray(delta_t_arr)
     # calculate particle arrival law: p(t_arr) = dN/dt * exp(- dN/dt * t_arr)
-    particle_arrival_law = data_rate * np.exp(-data_rate * delta_t_arr/1000.)
+    particle_arrival_law = data_rate * np.exp(-data_rate * delta_t_arr)
 
     return delta_t_arr, particle_arrival_law
 
-def calc_arrival_law(t_arr, bandwidth = None):
+def calc_arrival_law(t_arr, data_rate):
     """ 
-    calculate particle arrival distribution using a KDE. 
+    calculate particle arrival law and fit the distribution. 
     if exponential, there is temporally uniform seeding.
     
     @parameter: t_arr, type = list or np.array, arrival times
+    @parameter: data_rate, type = float, data rate N/T
     """
 
     # allocate
     delta_t_arr = []
-    if bandwidth == None:
-        bandwidth = 0.15
     # calculate inter arrival times for each burst
     delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
     delta_t_arr = np.asarray(delta_t_arr)
-    # calculate KDE-model 
-    # choose bandwidth wisely! If too high, PDF is oversmoothed, if too low, PDF gets edgy
-    model = KernelDensity(bandwidth=bandwidth, kernel='exponential')
-    delta_t_arr = delta_t_arr.reshape((len(delta_t_arr),1))
-    model.fit(delta_t_arr)
-    # allocate values
-    values = np.asarray([value for value in np.arange(0., max(delta_t_arr),0.01)])
-    values = values.reshape((len(values), 1))
-    # calculate probabilities
-    probabilities = model.score_samples(values)
-    probabilities = np.exp(probabilities)
 
-    return values, probabilities
+    data_entries, bins = np.histogram(delta_t_arr, bins='auto',density=True)
+    binscenters = np.array([0.5 * (bins[i] + bins[i+1]) for i in range(len(bins)-1)])
+
+    def fit_function(x, A):
+        return (A * np.exp(-x * A) )
+
+    popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries)
+    print('     fitted data rate = {}'.format(popt))
+    print('     expected data rate = {}'.format(data_rate))
+    # scale
+    # data_entries = data_entries * popt
+
+    return binscenters, data_entries, popt
 
 def calc_transit_time_distribution(transit_time):
     """ 
     calculate particle arrival law. 
     if exponential, there is temporally uniform seeding.
     
-    @parameter: transit_time, type = list or np.array, inter arrival times
-    @parameter: data_rate, type = float, data rate from mean file 
+    @parameter: transit_time, type = list or np.array, 
+                                    time particle moves 
+                                    through measurement volume
     """
 
     return sc.skew(transit_time, nan_policy='omit')
+
