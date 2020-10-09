@@ -5,6 +5,15 @@ import matplotlib.patches as patches
 import csv
 from tsp_solver.greedy import solve_tsp
 
+__all__ = [
+    'building',
+    'configuration',
+    'intersects',
+    'get_metangle',
+    'cost_func',
+    'optimize_grid'
+]
+
 class building():
     """
     Class used to describe the properties of a building. Used to easier plot the different buildings in a flow or
@@ -37,6 +46,10 @@ class building():
         self.boundaries.append([[self.x_pos, self.y_pos + self.y_extent],
                                 [self.x_pos, self.y_pos]])  # left
 
+    def refresh_patches(self):
+        if type == 'rect':
+            self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
+                                            edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
 class configuration():
     '''
     Takes positions, extents and types of buildings from a .csv file and generates a configuration which can be used for
@@ -61,7 +74,9 @@ class configuration():
     def plot_configuration(self,figure_size):
         fig, ax = plt.subplots(1,figsize=figure_size)
         ax.grid(linewidth=0.5)
+
         for struct in self.buildings:
+            struct.refresh_patches()
             ax.add_patch(struct.patch)
 
         ax.set_xlim(self.domain_extents[0:2])
@@ -97,8 +112,30 @@ class configuration():
 
         return boundaries
 
+    def gen_polar_grid(self,angles,dists,height,avoid_buildings=True):
 
+        a, d = np.meshgrid(angles, dists)
 
+        x = np.outer(d, np.cos(np.radians(a)))
+        y = np.outer(d, np.sin(np.radians(a)))
+        if avoid_buildings:
+            x,y = self.filter_points(x, y)
+        x=np.diag(x)
+        y=np.diag(y)
+        z = np.ones_like(x)*height
+        grid = np.stack([x, y, z], axis=1)
+        return grid
+
+    def gen_cart_grid(self,x,y,height,avoid_buidlings=True):
+        x,y = np.meshgrid(x,y)
+        if avoid_buidlings:
+            x,y= self.filter_points(x, y)
+        x=np.diag(x)
+        y=np.diag(y)
+        z = np.ones_like(x)*height
+
+        grid = np.stack([x, y, z], axis=1)
+        return grid
 
 def intersects(s0,s1):
     # assumes line segments are stored in the format [(x0,y0),(x1,y1)]

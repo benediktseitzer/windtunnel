@@ -15,6 +15,7 @@ from .PuffConcentration import *
 from .PointConcentration import *
 from .EnsembleAnalysis import *
 from .StandardAnalysis import *
+from .grid.tools import *
 
 # set standards for Logging module
 logging.basicConfig(level=logging.DEBUG,
