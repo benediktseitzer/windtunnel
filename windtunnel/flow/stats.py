@@ -7,7 +7,6 @@ import numpy as np
 import scipy.stats as sc
 import math as m
 from scipy.optimize import curve_fit
-from sklearn.neighbors import KernelDensity
 
 import windtunnel as wt
 

@@ -4,10 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
-from scipy.stats import expon 
-from scipy.optimize import curve_fit
 import windtunnel as wt
-from sklearn.neighbors import KernelDensity
 
 plt.rcParams["figure.figsize"] = (9,6)
 plt.rcParams.update({'font.size': 15})
@@ -947,7 +944,7 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
     axarr[1].set_position([0.6, 0.125, 0.4, 0.4])
 
 def plot_arrival_law(delta_t_arr, arrival_law, binscenters, 
-                        data_entries, popt, logplot = None, **kwargs):
+                        data_entries, popt, logplot = None, ax = None, **kwargs):
     """ 
     Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
 
@@ -959,6 +956,9 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
     """
     if logplot == None:
         logplot = True
+    if ax is None:
+       ax = plt.gca()
+    ret = []
 
     # zip-sort 
     arrival_law = [delta_t_arr for _,
@@ -975,27 +975,31 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
 
     if logplot:
         # Plot the histogram,the fitted function and the expected law
-        plt.semilogy(binscenters, data_entries, label=r'pdf($\delta t$)')
-        plt.semilogy(xspace, fit_function(xspace, *popt), 
+        b = ax.semilogy(binscenters, data_entries, label=r'pdf($\delta t$)')
+        f = ax.semilogy(xspace, fit_function(xspace, *popt), 
                     label=r'fit: $\frac{N}{T_{mes}}=$' + '{}'.format(np.around(popt[0],2)))
-        plt.semilogy(delta_t_arr, arrival_law, 
+        a = ax.semilogy(delta_t_arr, arrival_law, 
                     label = 'particle arrival law', linestyle = ':')
         plt.xlim(0.,max(delta_t_arr))
         plt.ylim(10**(-3.),10**4.)
     else:
         # Plot the histogram,the fitted function and the expected law
-        plt.plot(binscenters, data_entries, label=r'pdf($\delta t$)')
-        plt.plot(xspace, fit_function(xspace, *popt), 
+        b = ax.plot(binscenters, data_entries, label=r'pdf($\delta t$)')
+        f = ax.plot(xspace, fit_function(xspace, *popt), 
                     label=r'fit: $\frac{N}{T_{mes}}=$' + '{}'.format(np.around(popt[0],2)))            
-        plt.plot(delta_t_arr, arrival_law, 
+        a = ax.plot(delta_t_arr, arrival_law, 
                     label = 'particle arrival law', linestyle = ':')
         plt.xlim(0.,max(delta_t_arr))
         plt.ylim(10**(-3.),10**4.)
 
-    plt.xlabel(r'$\delta t$ [ms]')
-    plt.ylabel(r'$P(\delta t)$ [1/s]')
-    plt.grid()
-    plt.legend(loc='best')
+    ret.append(b+f+a)
+
+    ax.set_xlabel(r'$\delta t$ [ms]')
+    ax.set_ylabel(r'$P(\delta t)$ [1/s]')
+    ax.grid()
+    lgd = plt.legend(loc='best')
+
+    return ret, lgd
 
 def plot_transit_time_distribution(transit_time, skew, ax=None):
     """ 
@@ -1009,10 +1013,13 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     if ax is None:
        ax = plt.gca()
 
-    plt.hist(transit_time, density=False, 
+    ret = ax.hist(transit_time, density=False, 
             bins='auto')
-    plt.ylabel('Number of Particles')
-    plt.xlabel(r'$t_{transit}$ $[\mu s]$')
-    plt.grid()
-    plt.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
+    ax.set_ylabel('Number of Particles')
+    ax.set_xlabel(r'$t_{transit}$ $[\mu s]$')
+    ax.grid()
+    ax.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
                 transform=ax.transAxes)
+
+
+    return ret
