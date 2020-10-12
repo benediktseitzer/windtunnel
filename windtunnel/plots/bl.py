@@ -416,7 +416,7 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     
     return ret, lgd
 
-def plot_lux(Lux, heights, err=0, var_lat=None, lat=False, ref_path=None, ax=None,
+def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=None,
              **kwargs):
     """Plots Lux data on a double logarithmic scale with reference data. yerr
     specifies the uncertainty. Its default value is 0. If lat
