@@ -80,8 +80,8 @@ def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     # Plot
     ret = ax.scatter(x_clean,y_clean, **kwargs)
     ax.scatter(x_outliers,y_outliers, color='orange', **kwargs)
-    ax.set_ylabel(r'w $[ms^{-1}]$')
-    ax.set_xlabel(r'u $[ms^{-1}]$')
+    ax.set_ylabel(r'$w$ (ms$^{-1}$)')
+    ax.set_xlabel(r'$u$ (ms$^{-1}$)')
     ax.grid()
     
     return ret
@@ -120,8 +120,8 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     # Plot
     ret = ax.scatter(x_clean,y_clean, **kwargs)
     ax.scatter(x_outliers,y_outliers, color='orange', **kwargs)
-    ax.set_ylabel(r'w $[ms^{-1}]$')
-    ax.set_xlabel(r'u $[ms^{-1}]$')
+    ax.set_ylabel(r'$w$ (ms$^{-1}$)')
+    ax.set_xlabel(r'$u$ (ms$^{-1}$)')
     ax.grid()
     
     return ret
@@ -156,7 +156,7 @@ def plot_hist(data,ax=None,**kwargs):
     ax.set_xlim([ticks.min()-0.5*np.nanmean(np.diff(bins)),
               ticks.max()+0.5*np.nanmean(np.diff(bins))])
            
-    ax.set_ylabel('relative Frequency [%]')
+    ax.set_ylabel('relative Frequency (%)')
     ax.grid('on')
     
     return ret
@@ -205,7 +205,7 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                              color='dodgerblue', **kwargs)
             
 
-            labels = [r'turbulence intensity '+component]
+            labels = [r'turbulence intensity ' + component + '(-)']
             
         ret.append(l)
         
@@ -213,13 +213,13 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     if lat == False:
         ax.legend([l,s,m,r,vr],labels,bbox_to_anchor=(0.5, 1.04),loc=8,
                    fontsize=14)
-        ax.set_xlabel(r'turbulence intensity '+component)
-        ax.set_ylabel('z full-scale [m]')
+        ax.set_xlabel(r'turbulence intensity ' + component + '(-)')
+        ax.set_ylabel('z full-scale (m)')
     else:
         ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
                                                                   fontsize=14)
-        ax.set_xlabel(var_lat+' full-scale [m]')
-        ax.set_ylabel(r'turbulence intensity '+component)
+        ax.set_xlabel(var_lat+' full-scale (m)')
+        ax.set_ylabel(r'turbulence intensity ' + component + '(-)')
     
     return ret
 
@@ -267,12 +267,12 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
-        ax.set_ylabel('z full-scale [m]')
+        ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+        ax.set_ylabel('z full-scale (m)')
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
-        ax.set_xlabel(var_lat+' full-scale [m]')
+        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+        ax.set_xlabel(var_lat+' full-scale (m)')
         
     return ret
 
@@ -312,8 +312,8 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
     ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ [-]$')
-    ax.set_ylabel('z full-scale [m]')
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+    ax.set_ylabel('z full-scale (m)')
     
     return ret
 
@@ -353,8 +353,8 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
             ax.grid(True)
             lgd = ax.legend([M,U,V],labels,bbox_to_anchor=(0.5,1.05),
                       loc='lower center',borderaxespad=0.,ncol=3,fontsize=16)
-            ax.set_xlabel(r'velocity $[-]$')
-            ax.set_ylabel('z full-scale [m]')
+            ax.set_xlabel(r'velocity $(-)$')
+            ax.set_ylabel('z full-scale (m)')
         
             ret.append(M + U + V)
         
@@ -371,8 +371,8 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
             ax.grid(True)
             lgd = ax.legend([M,U,V],labels,bbox_to_anchor=(0.5,1.05),
                       loc='lower center',borderaxespad=0.,ncol=3,fontsize=16)
-            ax.set_xlabel(var_lat+' full-scale [m]')
-            ax.set_ylabel(r'velocity $[-]$')
+            ax.set_xlabel(var_lat+' full-scale (m)')
+            ax.set_ylabel(r'velocity $(-)$')
             ax.set_ylim(-0.1,0.7)
     
             ret.append(M + U + V)
@@ -408,8 +408,8 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     ax.grid(True,'both','both')
     lgd = ax.legend([M,U,V],labels,bbox_to_anchor=(0.5,1.05),loc='lower center',
               borderaxespad=0.,ncol=3,fontsize=16)
-    ax.set_xlabel(r'wind magnitude $[-]$')
-    ax.set_ylabel('z full-scale [m]')
+    ax.set_xlabel(r'wind magnitude $(-)$')
+    ax.set_ylabel('z full-scale (m)')
     
     return ret, lgd
 
@@ -460,8 +460,8 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         
         ax.set_xlim([10,1000])
         ax.set_ylim([min(heights),1000])
-        ax.set_xlabel(r'$L_{u}^{x}$ full-scale [m]')
-        ax.set_ylabel(r'$z$ full-scale [m]')    
+        ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
+        ax.set_ylabel(r'$z$ full-scale ([)m)')    
         
     else:
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
@@ -469,8 +469,8 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         ax.grid(True)
         ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='upper center',
                   borderaxespad=0.,ncol=2,fontsize=16)
-        ax.set_xlabel(var_lat+' full-scale [m]')
-        ax.set_ylabel(r'$L_{u}^{x}$ full-scale [m]')    
+        ax.set_xlabel(var_lat+' full-scale (m)')
+        ax.set_ylabel(r'$L_{u}^{x}$ full-scale (m)')    
         
     return ret
 
@@ -615,7 +615,7 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
         ax.set_ylim((ymin,ymax))
         ret.append(l)
         
-    ax.set_xlabel(r'$U_{0}$ $[ms^{-1}]$')
+    ax.set_xlabel(r'$U_{0}$ ([ms$^{-1}]$)')
     ax.set_ylabel(r'$M\cdot U_{0}^{-1}$')
     ax.legend(loc='lower right',fontsize=14)
     ax.grid(True)
@@ -679,16 +679,16 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
         ax.set_xlabel('Interval Size')
         handles.append(l)
     
-    #xticklabels=[key for key in data.keys()]
-    #xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
-    #ax.set(xticks=np.arange(0,len(data.keys())+1),
-                  #xticklabels=xticklabels,
-                  #xlim=(-0.5, len(data.keys())-0.5))
-    #ax.locator_params(axis='x', nbins=10)
-    #ax.tick_params(labelsize=12)
-    #ax.set_ylabel(ylabel, fontsize=18)
-    #ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
-                  #fontsize=18)
+    # xticklabels=[key for key in data.keys()]
+    # xticklabels=[int((x*wtref/ref_length)/scale) for x in xticklabels]
+    # ax.set(xticks=np.arange(0,len(data.keys())+1),
+    #               xticklabels=xticklabels,
+    #               xlim=(-0.5, len(data.keys())-0.5))
+    # ax.locator_params(axis='x', nbins=10)
+    # ax.tick_params(labelsize=12)
+    # ax.set_ylabel(ylabel, fontsize=18)
+    # ax.set_xlabel(r'$\Delta t(wind\ tunnel)\cdot U_{0}\cdot L_{0}^{-1}$',
+    #               fontsize=18)
 
     return handles
     
@@ -994,8 +994,8 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
 
     ret.append(b+f+a)
 
-    ax.set_xlabel(r'$\delta t$ [ms]')
-    ax.set_ylabel(r'$P(\delta t)$ [1/s]')
+    ax.set_xlabel(r'$\delta t$ (ms)')
+    ax.set_ylabel(r'$P(\delta t)$ (1/s)')
     ax.grid()
     lgd = plt.legend(loc='best')
 
@@ -1016,7 +1016,7 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     ret = ax.hist(transit_time, density=False, 
             bins='auto')
     ax.set_ylabel('Number of Particles')
-    ax.set_xlabel(r'$t_{transit}$ $[\mu s]$')
+    ax.set_xlabel(r'$t_{transit}$ $(\mu s)$')
     ax.grid()
     ax.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
                 transform=ax.transAxes)
