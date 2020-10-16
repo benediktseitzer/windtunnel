@@ -26,6 +26,7 @@ __all__ = [
     'calc_ref_spectra',
     'convergence_test_1',
     'convergence_test_2',
+    'convergence_test',
     'power_law',
     'calc_alpha',
     'calc_z0',
@@ -616,26 +617,30 @@ def convergence_test_2(data,interval=100,blocksize=100):
     
     return intervals, block_data
 
-def convergence_test(values, min_interval = 1000, max_num_intervals = 100, max_overlap = 1, overlap_stepsize = 0.1):
+def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_overlap = True,
+                     max_overlap = 1, overlap_stepsize = 0.1):
     '''
     Conducts a convergence test on non circular data by sequentially splitting the data into smaller fractions. The
     convergence test begins by calculating the total mean (1/1), then calculating the next smaller fractions (1/2) and
     so on (1/n). This continues until the max_num_intervals (default 100) or a minimum interval length (default 1000) is
-    reached. The overlap between
+    reached. If an overlap between the blocks is desired the calc_overlap flag should be set to True (is default). With
+    the overlap active the blocks are overlapping each other. A maximum overlap of 1 (default) doesnt result in a
+    complete overlap but rather a maximum overlap of 1 - overlap_stepsize (default 0.1) = 0.9.
 
-    dictionary block_data. Each entry is named after its respective interval.
-    blocksize's and interval's default values are 100.
+    Returns a dictionary mean_vals. Each entry is named after its respective blocksize.
 
     Parameters
     ----------
-    values
-    min_interval
-    max_num_intervals
-    max_overlap
-    overlap_stepsize
+    values: ndarray
+    min_interval: int
+    max_num_intervals: int
+    calc_overlap: bool
+    max_overlap: float
+    overlap_stepsize: float
 
     Returns
     -------
+    mean_vals: dict
 
     '''
     vals_org = np.copy(values)
@@ -650,10 +655,11 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, max_o
         chunks = np.array_split(vals, n)
         length = int(len(vals) / n)
         mean_vals[length] = ([np.mean(chunk) for chunk in chunks])
-        for overlap in overlaps:
-            vals = vals_org[int((len(vals_org) / n) * overlap):-int((len(vals_org) / n) * (1 - overlap))]
-            chunks = np.array_split(vals, n - 1)
-            mean_vals[length].extend([np.mean(chunk) for chunk in chunks])
+        if calc_overlap:
+            for overlap in overlaps:
+                vals = vals_org[int((len(vals_org) / n) * overlap):-int((len(vals_org) / n) * (1 - overlap))]
+                chunks = np.array_split(vals, n - 1)
+                mean_vals[length].extend([np.mean(chunk) for chunk in chunks])
 
         if np.any(n == fracs):
             numerator = int(n / (np.where(n == fracs)[0][0] + 2) - 1)

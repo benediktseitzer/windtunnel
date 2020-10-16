@@ -37,6 +37,11 @@ class building():
         self.calc_boundaries()
 
     def calc_boundaries(self):
+        '''
+        Calculates the building boundaries from the positions and extents.
+        Returns
+        -------
+        '''
         self.boundaries.append([[self.x_pos,self.y_pos],
                                 [self.x_pos+self.x_extent,self.y_pos]]) #lower
         self.boundaries.append([[self.x_pos+self.x_extent,self.y_pos],
@@ -72,6 +77,16 @@ class configuration():
                                       np.max([struct.y_pos + struct.y_extent for struct in self.buildings]) + 100])
 
     def plot_configuration(self,figure_size):
+        '''
+        Plots the buildings in the configuration with a desired figure size
+        Parameters
+        ----------
+        figure_size
+
+        Returns
+        -------
+
+        '''
         fig, ax = plt.subplots(1,figsize=figure_size)
         ax.grid(linewidth=0.5)
 
@@ -85,6 +100,16 @@ class configuration():
         return fig,ax
 
     def add_configuration(self,ax):
+        '''
+        Adds the building configuration to the ax.
+        Parameters
+        ----------
+        ax
+
+        Returns
+        -------
+
+        '''
         ax.grid(linewidth=0.5)
         for struct in self.buildings:
             ax.add_patch(struct.patch)
@@ -94,30 +119,79 @@ class configuration():
         ax.set_ylim(self.domain_extents[2:])
         return ax
 
-    def filter_points(self,x,y,tolerance=0,scale = 1):
+    def filter_points(self,x,y,z,tolerance=0,scale = 1):
+        '''
+        Filters out points which lie inside or in the vicinity of buildings. The value of tolerance acts as a buffer
+        around the buildings where points are also filtered out.
+        Parameters
+        ----------
+        x: array_like
+        y: array_like
+        z: array_like
+        tolerance: float
+        scale: float
+            unused
+
+        Returns
+        -------
+        grid: array_like
+                2-D array representing the coordinates of the points [X,Y,Z]
+        '''
         x = x.astype(float)
         y = y.astype(float)
+        z = z.astype(float)
+
         for building in self.buildings:
             mask = (x + tolerance > building.x_pos) & (x - tolerance < building.x_pos+building.x_extent) & \
-                   (y + tolerance > building.y_pos) & (y - tolerance < building.y_pos+building.y_extent)
+                   (y + tolerance > building.y_pos) & (y - tolerance < building.y_pos+building.y_extent) & \
+                   (z < building.z_extent)
             x[mask] = np.nan
             y[mask] = np.nan
+            z[mask] = np.nan
 
-        return x,y
+
+        grid = np.stack([x, y, z], axis=1)
+
+        return grid
 
     def get_building_boundaries(self):
+        '''
+        Returns a list of the boundaries of the buildings-
+        Returns
+        -------
+        boundaries: list
+        '''
         boundaries=[]
         for building in self.buildings:
             boundaries.append(building.boundaries)
 
         return boundaries
 
-    def gen_polar_grid(self,angles,dists,height,avoid_buildings=True):
+    def gen_polar_grid(self,angles,dists,height,x_offset=0,y_offset=0,avoid_buildings=True):
+        '''
+        Generates a polar grid of points from the input parameters. If desired the points that lie inside of
+        buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
+        parameters to shift the centre of the polar grid.
+        Parameters
+        ----------
+        angles: array_like
+            angles in degrees
+        dists: array_like
+            distances
+        height: float
+        x_offset: float
+        y_offset: float
+        avoid_buildings: bool
 
+        Returns
+        -------
+        grid: array_like
+                2-D array representing the coordinates of the points [X,Y,Z]
+        '''
         a, d = np.meshgrid(angles, dists)
 
-        x = np.outer(d, np.cos(np.radians(a)))
-        y = np.outer(d, np.sin(np.radians(a)))
+        x = np.outer(d, np.cos(np.radians(a)))-x_offset
+        y = np.outer(d, np.sin(np.radians(a)))-y_offset
         if avoid_buildings:
             x,y = self.filter_points(x, y)
         x=np.diag(x)
@@ -126,9 +200,26 @@ class configuration():
         grid = np.stack([x, y, z], axis=1)
         return grid
 
-    def gen_cart_grid(self,x,y,height,avoid_buidlings=True):
+    def gen_cart_grid(self,x,y,height,avoid_buildings=True):
+        '''
+        Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
+        buildings can be omitted.
+        Parameters
+        ----------
+        x: array_like
+              1-D arrays representing the coordinates of a grid.
+        y: array_like
+               1-D arrays representing the coordinates of a grid.
+        height: float
+        avoid_buildings: bool
+
+        Returns
+        -------
+        grid: array_like
+                2-D array representing the coordinates of the points [X,Y,Z]
+        '''
         x,y = np.meshgrid(x,y)
-        if avoid_buidlings:
+        if avoid_buildings:
             x,y= self.filter_points(x, y)
         x=np.diag(x)
         y=np.diag(y)
@@ -138,7 +229,18 @@ class configuration():
         return grid
 
 def intersects(s0,s1):
-    # assumes line segments are stored in the format [(x0,y0),(x1,y1)]
+    '''
+    Tests if 2 line segments are intersecting. Assumes line segments are stored in the format [(x0,y0),(x1,y1)].
+
+    Parameters
+    ----------
+    s0: list of tuples
+    s1: list of tuples
+
+    Returns
+    -------
+    bool
+    '''
     dx0 = s0[1][0]-s0[0][0]
     dx1 = s1[1][0]-s1[0][0]
     dy0 = s0[1][1]-s0[0][1]
@@ -178,7 +280,21 @@ def get_metangle(x, y):
     return met_ang
 
 def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
+    '''
+    This function optimizes a input grid of points by minimizing the traveltime and angle between each point. Angles
+    between points of ]0 - 25 and 65-90[ are punished in terms of traveltime and are avoided. Furthermore routes through
+    buildings can be avoided aswell.
+    Parameters
+    ----------
+    points: array_like
+    configuration: object
+    avoid_buildings: bool
+    angle_cost: float
 
+    Returns
+    -------
+    path
+    '''
     if points.shape[1]==3:
         points2d = points[:, :2] # throwing away third dimension (z)
 
