@@ -128,7 +128,7 @@ class Timeseries(pd.DataFrame):
                 self.wind_comp_1 = name[pos+1].lower()
                 self.wind_comp_2 = name[pos+2].lower()
             except:
-                print('Make sure the columns for wind speed components are names correctly.')
+                print('Make sure the columns for wind speed components are named correctly.')
                 for i, line in enumerate(file):
                     if i == 5:
                         self.wind_comp1 = line.split()[-4][-1].lower()
