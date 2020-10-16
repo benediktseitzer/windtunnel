@@ -616,6 +616,63 @@ def convergence_test_2(data,interval=100,blocksize=100):
     
     return intervals, block_data
 
+def convergence_test(values, min_interval = 1000, max_num_intervals = 100, max_overlap = 1, overlap_stepsize = 0.1):
+    '''
+    Conducts a convergence test on non circular data by sequentially splitting the data into smaller fractions. The
+    convergence test begins by calculating the total mean (1/1), then calculating the next smaller fractions (1/2) and
+    so on (1/n). This continues until the max_num_intervals (default 100) or a minimum interval length (default 1000) is
+    reached. The overlap between
+
+    dictionary block_data. Each entry is named after its respective interval.
+    blocksize's and interval's default values are 100.
+
+    Parameters
+    ----------
+    values
+    min_interval
+    max_num_intervals
+    max_overlap
+    overlap_stepsize
+
+    Returns
+    -------
+
+    '''
+    vals_org = np.copy(values)
+    overlaps = np.arange(0, max_overlap, overlap_stepsize)
+    fracs = np.array([12, 24, 40, 60, 84])
+    mean_vals = {len(vals_org): np.mean(vals_org)}
+    n = 2
+    length = len(vals_org)
+
+    while (length > min_interval) and (n < max_num_intervals):
+        vals = np.copy(vals_org)
+        chunks = np.array_split(vals, n)
+        length = int(len(vals) / n)
+        mean_vals[length] = ([np.mean(chunk) for chunk in chunks])
+        for overlap in overlaps:
+            vals = vals_org[int((len(vals_org) / n) * overlap):-int((len(vals_org) / n) * (1 - overlap))]
+            chunks = np.array_split(vals, n - 1)
+            mean_vals[length].extend([np.mean(chunk) for chunk in chunks])
+
+        if np.any(n == fracs):
+            numerator = int(n / (np.where(n == fracs)[0][0] + 2) - 1)
+            bounds = []
+            offset = 0
+            while offset < int(numerator):
+                lower_bounds = np.where((np.arange(0, n)[offset:] - offset) % numerator == 0)[0] + offset
+                upper_bounds = np.where((np.arange(0, n)[offset:] - offset) % numerator == (numerator - 1))[0] + offset
+                lower_bounds = lower_bounds[:len(upper_bounds)]
+                bounds.extend(list(zip(lower_bounds, upper_bounds)))
+                offset += 1
+            vals = np.copy(vals_org)
+            chunks = np.array_split(vals, n)
+            length = int(len(vals) * numerator / n)
+            mean_vals[length] = [np.mean([np.mean(chunk) for chunk in chunks[bound[0]:bound[1]]]) for bound in bounds]
+
+        n += 1
+
+    return mean_vals
 
 def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     """ Estimate power law profile.
