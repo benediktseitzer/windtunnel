@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
-import pandas as pd
 import windtunnel as wt
-import numpy as np
 import time
 
 # This is an example script for the use of a PuffConcentration object.
@@ -15,13 +12,13 @@ import time
 
 start = time.time()
 # Path to your data
-path = '/home/jkfischer/Desktop/Uni_Hamburg/Home_Office/Puff_Beispiele/'
+path = '\\\\ewtl2\\work\\Johannes\Puff_Beispiele\\'
 #edit 02/18/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
 #is not found in the given file, the program resosrts to the default values specified below. 
-csv_file='Q2_Ambient_Conditions.csv'
+csv_file='S02_Ambient_Conditions.csv'
 
 # Name of your measurement
-namelist = ['Q2_170_P09.txt.ts#0']
+namelist = ['Q2_170_P09.txt.ts#0','Q2_170_P10.txt.ts#0']
             
 #Define user input variables
 #Set theshold peak concentration (ppm, model scale). All puffs with a peak concentration
@@ -45,9 +42,16 @@ time_threshold=0.05
 if time_threshold != 0.05:
     print('Warning: threshold dosage used to compute characteristic start and end times set to '+str(100*time_threshold)+'%, which does not equal the default value of 5%. Consider using default value!')
 #edit 02/04/2020: added non-dimensional mode
-full_scale='nd'
-#edit 09/19/2019: added a priori information necessary for full scale analysis
+full_scale='ms'
+#edit 09/19/2019: added a priori information necessary for full scale analysis. Potential for GUI usage
+#at a futuretime
 #edit 02/21/2020: added seperate input of source location (x_source, y_source, z_source) and measurement location (x_measure, y_measure, z_measure)
+#edit 05/20/2020: the proposed GUI is well under development, but has been moved to a separate
+#script, titled "PAPE_GUI_code_point.py."
+#edit 07/23/2020: GUI has been restructured. Standalone script "PAPE_GUI_code_point.py" has 
+#been abandoned in favor of the function "standard_point_analysis.py" in the windtunnel
+#package. This avoids having to use the insecure method with the open and exec functions
+#in the GUI script. 
 x_source=0
 y_source=0
 z_source=0
@@ -72,14 +76,13 @@ gas_factor=0.5
 full_scale_wtref=6
 full_scale_flow_rate=0.5
 
-#edit 02/25/2020: added ability to run script in basic mode (if 'functions_mode' variable is set to 'basic'), which runs only the core features of the scipr,
+#edit 02/25/2020: added ability to run script in basic mode (if 'functions_mode' variable is set to 'basic'), which runs only the core features of the script,
 #but much faster than full mode (if 'functions_mode' variable is set to 'full'), which runs all functions of the script. 
 functions_mode='full'
 
 #edit 05/31/2020: added abillity to determine y-axis range in puff plots using variable axis_range. Current options include 'auto' (whih determines y-axis limits
 #automatically for each individual puff seperately), and 'same' (which sets y-axis limits from 0 to 1.05 times the maximum concentration in the time series). Potentially 
 #add option to manually specify axis limits in the future. 
-
 axis_range='auto'
 
 #todo: add units (09/18/2019)
@@ -254,24 +257,24 @@ for name in namelist:
                 dict_ensemble_ts[name][file][key].calc_class_width(n_classes=5)
                 dict_ensemble_ts[name][file][key].calc_class_boundaries()
                 #edit 08/13/2019: added functions get_class_frequency and plot_class_statistics
-                dict_ensemble_ts[name][file][key].get_class_frequency() 
+                dict_ensemble_ts[name][file][key].get_class_frequency()
 
                 #edit 02/25/2020: added saving of full scale and non-dimensional data        
-                if full_scale == 'ms':           
+                if full_scale == 'ms':
                     dict_ensemble_ts[name][file][key].save2file_ms_ensemble(file,key)
-                elif full_scale == 'fs':    
-                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key)                
+                elif full_scale == 'fs':
+                    dict_ensemble_ts[name][file][key].save2file_fs_ensemble(file,key)
                 elif full_scale == 'nd':
-                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key)  
+                    dict_ensemble_ts[name][file][key].save2file_nd_ensemble(file,key)
                 else:
                     print("Error: invalid input for full_scale. Data can only be computed in model scale (full_scale='ms'), full scale (full_scale='fs'), or non-dimensionally (full_scale=nd).")
-                dict_ensemble_ts[name][file][key].plot_class_statistics(key=key,name=name,path=path,full_scale=full_scale)    
+                dict_ensemble_ts[name][file][key].plot_class_statistics(key=key,name=name,path=path,full_scale=full_scale)
             else:
-                print("Error: invalid input for functions_mode. Program can only be run in basic mode (functions_mode='basic') or full mode (functions_mode='full').")                
+                print("Error: invalid input for functions_mode. Program can only be run in basic mode (functions_mode='basic') or full mode (functions_mode='full').")
                       
             #edit 08/08/2019: added calculation of statistical values
-            dict_statistics[name][file][key]=wt.EnsembleAnalysis.from_results(results[key])  
-            dict_statistics[name][file][key].calc_puff_statistics(x_source=x_source,y_source=y_source,z_source=z_source,x_measure=x_measure,y_measure=y_measure,z_measure=z_measure,pressure=pressure,temperature=temperature,wtref=full_scale_wtref,wdir=wdir) 
+            dict_statistics[name][file][key]=wt.EnsembleAnalysis.from_results(results[key])
+            dict_statistics[name][file][key].calc_puff_statistics(x_source=x_source,y_source=y_source,z_source=z_source,x_measure=x_measure,y_measure=y_measure,z_measure=z_measure,pressure=pressure,temperature=temperature,wtref=full_scale_wtref,wdir=wdir)
             
                          
             
@@ -300,16 +303,8 @@ for name in namelist:
 
         dict_conc_ts[name][file].plot_mean_puff(path=path,name=name,stats='on',dist='off',full_scale=full_scale)         
 
-# Preliminary hist plots of the results DataFrame.
-plt.figure(0)
-results['peak concentration'].plot.hist(title='Peak Concentration')
-plt.figure(1)
-results['peak time'].plot.hist(title='Peak Time')
-plt.figure(2)
-results['arrival time'].plot.hist(title='Arrival Time')
-plt.figure(3)
-results['leaving time'].plot.hist(title='Leaving Time')
-plt.figure(4)
-results['ascent time'].plot.hist(title='Ascent Time')
-plt.figure(5)
-results['descent time'].plot.hist(title='Descent Time')
+dict_conc_ts, dict_conc_ms=wt.standard_puff_analysis(path,csv_file,namelist,threshold_concentration,threshold_dosage,
+n_exclude,time_threshold,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
+pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
+scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,
+full_scale_flow_rate,functions_mode,axis_range)

@@ -17,19 +17,19 @@ logger = logging.getLogger()
 # Specify path to data, path to wtref, output paths for plots and txt file, 
 # file type for plots, name of files, scale and desired mode of analysis.
 # Input paths for data and wtref with a list of names of the measurement files
-path = '/path/to/your/data/' # path to timeseries folder
-wtref_path = '/path/to/your/wtref/'
+path = 'G:/time_series/'
+wtref_path = 'G:/wtref/'
 
 #namelist = ['HG_BL_UW_0' + str(x).zfill(2) for x in range(12,2,-1)]
-namelist = ['name_of measurement_file']
+namelist = ['HG_BL_HR_DOK1_UW_005']
 
-txt_path = './postprocessed/'
+txt_path = 'G:/results_data/'
 #edit 06/20/19: set ref_path to none for unknown reference path
 #ref_path = './plots/'
-ref_path = None
+ref_path = 'G:/reference_data/'
 file_type = 'png'
 scale = 100
-plot_path = '/path/to/your/plots'
+plot_path = 'C:/Users/Simon/Uni/testplots/'
 
 #edit 08/08/2019: add errors for all quantities
 u_err=0
@@ -43,21 +43,26 @@ I_v_err=0
 flux_err=0
 lux_err=0
 
-
+if namelist[0][6] == 'H':
+    wtscale = 4.886/5.837
+elif namelist[0][6] == 'M':
+    wtscale = 0.831
+else:
+    wtscale = 1
 
 # 1 = vertical profile
 # 2 = lateral profile
 # 3 = convergence test
 # 4 = Reynolds Number Independence
-mode = 2
+mode = 1
 if mode == 2:
-    outdata_path = '/path/to/your/outdata_lat/'# format in npz
+    outdata_path = 'G:/time_series/' + str(scale) + '_lat1/'
 else:
-    outdata_path = '/path/to/your/outdata/'# format in npz
+    outdata_path = 'G:/time_series/' + str(scale) + '/'
 
 #plot scatter
 plot = True
-scatter = True
+scatter = False
 save_data = True
 # Check if all necessary output directories exist
 wt.check_directory(plot_path)
@@ -107,7 +112,7 @@ for name in namelist:
         ts_eq.mean_magnitude
         ts.mean_direction
         ts_eq.mean_direction
-        ts.save2file(file)     
+        #ts.save2file(file)
         time_series[name][file] = ts
         time_series_eq[name][file] = ts_eq
 
