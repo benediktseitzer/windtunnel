@@ -125,8 +125,8 @@ class Timeseries(pd.DataFrame):
                     pos = name.find('_UW_')
                 elif name.find('_VW_')>0:
                     pos = name.find('_VW_')
-                self.wind_comp_1 = name[pos+1].lower()
-                self.wind_comp_2 = name[pos+2].lower()
+                self.wind_comp1 = name[pos+1].lower()
+                self.wind_comp2 = name[pos+2].lower()
             except:
                 print('Make sure the columns for wind speed components are named correctly.')
                 for i, line in enumerate(file):
