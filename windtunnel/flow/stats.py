@@ -657,7 +657,8 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
         mean_vals[length] = ([np.mean(chunk) for chunk in chunks])
         if calc_overlap:
             for overlap in overlaps:
-                vals = vals_org[int((len(vals_org) / n) * overlap):-int((len(vals_org) / n) * (1 - overlap))]
+                vals = vals_org[int((len(vals_org) / n) 
+                    * overlap):-int((len(vals_org) / n) * (1 - overlap))]
                 chunks = np.array_split(vals, n - 1)
                 mean_vals[length].extend([np.mean(chunk) for chunk in chunks])
 
@@ -666,8 +667,10 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
             bounds = []
             offset = 0
             while offset < int(numerator):
-                lower_bounds = np.where((np.arange(0, n)[offset:] - offset) % numerator == 0)[0] + offset
-                upper_bounds = np.where((np.arange(0, n)[offset:] - offset) % numerator == (numerator - 1))[0] + offset
+                lower_bounds = np.where((np.arange(0, n)[offset:] 
+                            - offset) % numerator == 0)[0] + offset
+                upper_bounds = np.where((np.arange(0, n)[offset:] 
+                            - offset) % numerator == (numerator - 1))[0] + offset
                 lower_bounds = lower_bounds[:len(upper_bounds)]
                 bounds.extend(list(zip(lower_bounds, upper_bounds)))
                 offset += 1
