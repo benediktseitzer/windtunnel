@@ -13,6 +13,7 @@ __all__ = [
     'plot_windrose',
     'plot_DWD_windrose',
     'plot_rose',
+    'plot_rose_map',
     'plot_pdfs',
     'plot_pdfs_err',
     'plot_cdfs',
@@ -150,7 +151,6 @@ def plot_DWD_windrose(inFF,inDD):
     ax.legend(bbox_to_anchor=(1.14, 0.5), loc='center left',
               borderaxespad=0.,fontsize=12)
     
-    
 def plot_rose(inFF,inDD,ff_steps,dd_range):
     """ Plots windrose according to user specified input from ff_steps and
     dd_Range.
@@ -283,7 +283,6 @@ def plot_pdfs(sets,lablist,ax=None, **kwargs):
     ax.grid('on')
     
     return ret
-
 
 def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist with
