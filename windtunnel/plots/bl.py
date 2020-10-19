@@ -267,8 +267,12 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
-        ax.set_ylabel('z full-scale (m)')
+        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
+        ax.set_ylabel('z full-scale [m]')
+        if np.nanmax(data)<0:
+            ax.set_xlim([np.nanmin(data) * 1.1, 0])
+        else:
+            ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
         ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
@@ -312,9 +316,12 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
     ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
-    ax.set_ylabel('z full-scale (m)')
-    
+    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
+    ax.set_ylabel('z full-scale [m]')
+    if np.nanmax(data) < 0:
+        ax.set_xlim([np.nanmin(data) * 1.1, 0])
+    else:
+        ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data) * 1.1])
     return ret
 
 def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None, lat=False,

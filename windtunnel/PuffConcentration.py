@@ -498,18 +498,12 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Detects the indices of the end of each release period. Returns a
         list containing the index of the last timestamp of each release 
         period. """
-        #edit 10/28/2019: ignore last puff if puff release extends beyond of the timeseries.		
-        self.end_release_index = []			
-        for i, value in enumerate(self.signal):	
-            if value != 0 and i==np.size(self.signal)-1:
-               print('Time series terminates during puff release. Ignoring last puff which continues beyond the end of the dataset!')
-               #print(np.shape(self.begin_release_period))			   
-               del self.begin_release_index[-1]
-               self.begin_release_period=np.delete(self.begin_release_period,-1)             			   
-               continue			   
-            if value != 0 and self.signal[i + 1] == 0:			
-                self.end_release_index.append(i)				
-
+        #edit 10/28/2019: ignore last puff if puff release extends beyond of the timeseries.
+        self.end_release_index =(np.argwhere(np.diff(self.signal) < 0).flatten()).tolist()
+        if len(self.begin_release_index)> len(self.end_release_index):
+            print('Time series terminates during puff release. '
+                  'Ignoring last puff which continues beyond the end of the dataset!')
+            self.begin_release_index = self.begin_release_index[:-1]
         return self.end_release_index
 
     def detect_end_release_period(self):
@@ -522,14 +516,11 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.end_release_period
 
     def detect_begin_release_index(self):
-        """ Detects the indices of the end of each release period. Returns a
-        list containing the index of the last timestamp of each release 
+        """ Detects the indices of the beginning of each release period. Returns a
+        list containing the index of the first timestamp of each release 
         period. """
-        self.begin_release_index = []
-		
-        for i in range(np.size(self.signal) - 2):
-            if self.signal[i] == 0 and self.signal[i + 1] != 0:
-                self.begin_release_index.append(i + 1) 
+
+        self.begin_release_index =(np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
 
         return self.begin_release_index
 
@@ -545,12 +536,10 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def calc_release_length(self):
         """ Calculate the length of each release period. Returns an np.array
         containing the duration of each release period. """
+
         beginning = self.detect_begin_release_period()
         end = self.detect_end_release_period()
-        self.release_length = []
-
-        for begin, end in zip(beginning, end):
-            self.release_length.append(end - begin)
+        self.release_length = (end-beginning).tolist()
 
         return self.release_length
 
@@ -573,21 +562,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                #self.dosage.append(self.net_concentration[beginnings[i]:].sum())
 		
 		#original algorithm
-        for i, value in enumerate(beginnings):
-            begin = value
+        for i, begin in enumerate(beginnings):
+
             if i == np.size(beginnings) - 1:
                 self.dosage.append(self.net_concentration[begin:].sum())				
 
             if i < np.size(beginnings) - 1:
                 end = beginnings[i + 1]
                 self.dosage.append(self.net_concentration[begin:end].sum())
-                #if i<20:
-                   #plt.figure(1000 + i)
-                   #plt.plot(self.net_concentration[begin:end])
-                   #ax=plt.gca()
-                   #plt.title('Dosage=' + str(self.dosage[i]) + ' ppm$\mathrm{_v}$s')
-                   #plt.show()
-                                      
 
         #edit 09/27/2019: compute dt, which is the sampling time interval, and multiply by dt to fix units of dosage. 
         self.dt = np.mean(np.asarray(self.time[1:])-np.asarray(self.time[:-1]))
@@ -621,32 +603,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         for i in range(np.shape(puffs_start)[0]-1):
             self.puffs_array[i,:]=self.net_concentration[puffs_start[i]:puffs_start[i]+self.min_puff_length]
             self.signal_array[i,:]=self.signal[puffs_start[i]:puffs_start[i]+self.min_puff_length]			
-		
-		#edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.  
-        for i in range(np.shape(self.puffs_array)[1]):
-            self.mean_puff=np.append(self.mean_puff,self.puffs_array[:,i].mean())
-            self.mean_signal=np.append(self.mean_signal,self.signal_array[:,i].mean())
-            self.pct10_puff=np.append(self.pct10_puff,np.percentile(self.puffs_array[:,i],10))
-            self.pct90_puff=np.append(self.pct90_puff,np.percentile(self.puffs_array[:,i],90))			
-            self.pct10_signal=np.append(self.pct10_signal,np.percentile(self.signal_array[:,i],90))
-            self.pct90_signal=np.append(self.pct90_signal,np.percentile(self.signal_array[:,i],10))				
-			
-        #plt.figure(1)
-        #plt.plot(self.time[:np.shape(self.puffs_array)[1]],self.mean_puff)
-        #plt.plot(self.time[:np.shape(self.puffs_array)[1]],(np.max(self.mean_puff))*self.mean_signal)	
-        #plt.show()
-		    
 
-        #for i, value in enumerate(beginnings):
-            #begin = value
-            #if i == np.size(beginnings) - 1:
-                #self.dosage.append(self.net_concentration[begin:].sum())				
+        self.mean_puff = np.nanmean(self.puffs_array,axis=0)
+        self.mean_signal = np.nanmean(self.signal_array,axis=0)
+        self.pct10_puff = np.percentile(self.puffs_array, 10, axis=0)
+        self.pct90_puff = np.percentile(self.puffs_array, 90, axis=0)
+        self.pct10_signal= np.percentile(self.signal_array, 10, axis=0)
+        self.pct90_signal = np.percentile(self.signal_array, 90, axis=0)
 
-            #if i < np.size(beginnings) - 1:
-                #end = beginnings[i + 1]
-                #puff_length=end-begin
-                      
-                        
+    #edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.
 
         
 
@@ -668,20 +633,20 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         if time_threshold != 0.05:
             print('Warning: threshold dosage used to compute characteristic start and end times set to '+str(100*time_threshold)+'%, which does not equal the default value of 5%. Consider using default value!')
-        for begin, value in zip(self.begin_release_index, self.dosage):
-            index = begin
-            end = begin + 1
-            dose = 0
-            dose2 = 0                
-            while dose < (1-time_threshold) * value:
-                #edit 09/27/2019: multiply by dt to fix units
-                #dose = self.dt*self.net_concentration[begin:end].sum()
-                dose += self.dt*self.net_concentration[index]                
-                end += 1
-                index += 1
-                #print(dose-dose2)
-            self.leaving_index.append(index-1)				
-            self.leaving_time.append(self.time[index - 1] - self.time[begin])
+
+        for i in range(len(self.begin_release_index)):
+
+            begin = self.begin_release_index[i]
+            if (i + 1) < len(self.begin_release_index):
+                end = self.begin_release_index[i+1]
+            else:
+                end = len(self.net_concentration)
+
+            index = begin + np.argwhere(np.nancumsum(
+                self.net_concentration[begin:end])*self.dt > (1-time_threshold) * self.dosage[i])[0][0]
+
+            self.leaving_index.append(index)
+            self.leaving_time.append(self.time[index] - self.time[begin])
 
     def detect_arrival_time(self,time_threshold=0.05):
         """ Detects the beginning of each puff. Returns an np.array 
@@ -701,20 +666,19 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
         if time_threshold != 0.05:
             print('Warning: threshold dosage used to compute characteristic start and end times set to '+str(100*time_threshold)+'%, which does not equal the default value of 5%. Consider using default value!')
-        for begin, value in zip(self.begin_release_index, self.dosage):
-            index = begin
-            end = begin + 1
-            dose = 0
-            #dose2 = 0            
-            while dose < time_threshold * value:
-                #edit 09/27/2019: multiply by dt to fix units            
-                #dose = self.dt*self.net_concentration[begin:end].sum()
-                dose += self.dt*self.net_concentration[index]
-                end += 1
-                index += 1       
-                #print(dose-dose2)                
-            self.arrival_index.append(index-1)				
-            self.arrival_time.append(self.time[index - 1] - self.time[begin])
+        for i in range(len(self.begin_release_index)):
+
+            begin = self.begin_release_index[i]
+            if (i + 1) < len(self.begin_release_index):
+                end = self.begin_release_index[i+1]
+            else:
+                end = len(self.net_concentration)
+
+            index = begin + np.argwhere(np.nancumsum(
+                self.net_concentration[begin:end])*self.dt > time_threshold * self.dosage[i])[0][0]
+
+            self.arrival_index.append(index)
+            self.arrival_time.append(self.time[index] - self.time[begin])
 
     def get_residence_time(self):
         """ Calculate the residence time of each puff. Returns an np.array. """
