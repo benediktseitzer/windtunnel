@@ -118,6 +118,62 @@ class configuration():
 
         ax.set_ylim(self.domain_extents[2:])
         return ax
+    def gen_polar_grid(self,angles,dists,z,x_offset=0,y_offset=0,avoid_buildings=True):
+        '''
+        Generates a polar grid of points from the input parameters. If desired the points that lie inside of
+        buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
+        parameters to shift the centre of the polar grid.
+        Parameters
+        ----------
+        angles: array_like
+            angles in degrees
+        dists: array_like
+            distances
+        z: array_like
+        x_offset: float
+        y_offset: float
+        avoid_buildings: bool
+
+        Returns
+        -------
+        grid: array_like
+                2-D array representing the coordinates of the points [X,Y,Z]
+        '''
+        a, d = np.meshgrid(angles, dists)
+
+        x = np.outer(d, np.cos(np.radians(a)))-x_offset
+        y = np.outer(d, np.sin(np.radians(a)))-y_offset
+        z,_ = np.meshgrid(z,z)
+
+        if avoid_buildings:
+            grid = self.filter_points(x, y, z)
+        return grid
+
+    def gen_cart_grid(self,x,y,z,avoid_buildings=True):
+        '''
+        Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
+        buildings can be omitted.
+        Parameters
+        ----------
+        x: array_like
+              1-D arrays representing the coordinates of a grid.
+        y: array_like
+               1-D arrays representing the coordinates of a grid.
+        z: array_like
+               1-D arrays representing the coordinates of a grid.
+        avoid_buildings: bool
+
+        Returns
+        -------
+        grid: array_like
+                2-D array representing the coordinates of the points [X,Y,Z]
+        '''
+        x,y = np.meshgrid(x,y)
+        z,_ = np.meshgrid(z,z)
+
+        if avoid_buildings:
+           grid = self.filter_points(x, y, z)
+        return grid
 
     def filter_points(self,x,y,z,tolerance=0,scale = 1):
         '''
@@ -127,7 +183,7 @@ class configuration():
         ----------
         x: array_like
         y: array_like
-        z: array_like
+        z: array_like or float
         tolerance: float
         scale: float
             unused
@@ -139,7 +195,11 @@ class configuration():
         '''
         x = x.astype(float)
         y = y.astype(float)
-        z = z.astype(float)
+
+        if isinstance(z, float) or isinstance(z, int):
+            z = np.ones_like(x)*z
+        else:
+            z = z.astype(float)
 
         for building in self.buildings:
             mask = (x + tolerance > building.x_pos) & (x - tolerance < building.x_pos+building.x_extent) & \
@@ -150,7 +210,9 @@ class configuration():
             z[mask] = np.nan
 
 
-        grid = np.stack([x, y, z], axis=1)
+        grid = np.stack([x.flatten(), y.flatten(), z.flatten()], axis=1)
+        grid = grid[~np.isnan(grid)]
+        grid = grid.reshape(int(len(grid)/3),-1)
 
         return grid
 
@@ -167,66 +229,7 @@ class configuration():
 
         return boundaries
 
-    def gen_polar_grid(self,angles,dists,height,x_offset=0,y_offset=0,avoid_buildings=True):
-        '''
-        Generates a polar grid of points from the input parameters. If desired the points that lie inside of
-        buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
-        parameters to shift the centre of the polar grid.
-        Parameters
-        ----------
-        angles: array_like
-            angles in degrees
-        dists: array_like
-            distances
-        height: float
-        x_offset: float
-        y_offset: float
-        avoid_buildings: bool
 
-        Returns
-        -------
-        grid: array_like
-                2-D array representing the coordinates of the points [X,Y,Z]
-        '''
-        a, d = np.meshgrid(angles, dists)
-
-        x = np.outer(d, np.cos(np.radians(a)))-x_offset
-        y = np.outer(d, np.sin(np.radians(a)))-y_offset
-        if avoid_buildings:
-            x,y = self.filter_points(x, y)
-        x=np.diag(x)
-        y=np.diag(y)
-        z = np.ones_like(x)*height
-        grid = np.stack([x, y, z], axis=1)
-        return grid
-
-    def gen_cart_grid(self,x,y,height,avoid_buildings=True):
-        '''
-        Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
-        buildings can be omitted.
-        Parameters
-        ----------
-        x: array_like
-              1-D arrays representing the coordinates of a grid.
-        y: array_like
-               1-D arrays representing the coordinates of a grid.
-        height: float
-        avoid_buildings: bool
-
-        Returns
-        -------
-        grid: array_like
-                2-D array representing the coordinates of the points [X,Y,Z]
-        '''
-        x,y = np.meshgrid(x,y)
-        if avoid_buildings:
-            x,y= self.filter_points(x, y)
-        x=np.diag(x)
-        y=np.diag(y)
-        z = np.ones_like(x)*height
-
-        grid = np.stack([x, y, z], axis=1)
-        return grid
 
 def intersects(s0,s1):
     '''
@@ -302,19 +305,31 @@ def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     obstacle = np.zeros([len(points2d), len(points2d)])
 
     for i, point in enumerate(points2d):
+        # first the angles between all points (nodes) are calculated
         angles = np.rad2deg(np.arcsin(np.abs(point - points2d)[:, 0] /
                                          (np.sqrt((point - points2d)[:, 0] ** 2 + (point - points2d)[:, 1] ** 2))))
         angles = np.nan_to_num(angles)
 
-        for j, node in enumerate(points2d):
-            obstacle[i, j] = np.any([intersects([point, node], side) for building in configuration.get_building_boundaries()
-                                     for side in building])
+        # If buildings should be avoided in the paths between points, then every path (edge) between each point (node)
+        # is checked if it intersects with a wall of a any building.
+        if avoid_buildings:
+            for j, node in enumerate(points2d):
+                obstacle[i, j] = np.any([intersects([point, node], side) for building in configuration.get_building_boundaries()
+                                         for side in building])
 
+        # Then the distance between every point is calculated (pythagoras) and weighted with the angle (cost_func).
+        # Acute angles are punished heavily.
         if i == 0:
             dist_all = np.hypot((point - points2d)[:, 0], (point - points2d)[:, 1]) * cost_func(angles, angle_cost)
         else:
             dist_all = np.vstack(
                 [dist_all, np.hypot((point - points2d)[:, 0], (point - points2d)[:, 1]) * cost_func(angles, angle_cost)])
+    # Distances of edges which intersect buildings are set to a high number so the traveling salesman algorithm does not
+    # choose to go that path. However if no other path is available, it is still possible that the path intersects buildings.
+    # One possible solution to this could be to add new points as intermediate step points to avoid buildings and acute
+    # angles together.
+    # Setting the distance to np.nan does not work. The tsp algorithm is not able to interpret nans properly. Another
+    # solution is to completely disallow edges which intersect buildings. This could be implemented in the future.
     if avoid_buildings:
         dist_all[obstacle==1] = 1000000
 

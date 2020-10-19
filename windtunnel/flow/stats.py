@@ -651,17 +651,28 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
     length = len(vals_org)
 
     while (length > min_interval) and (n < max_num_intervals):
+        # with an increase of n, the fractions in which vals is split up increases. For n = 2, vals is split up in
+        # halfs. For n = 4 vals is split up in quarters and so on.
+        #
         vals = np.copy(vals_org)
         chunks = np.array_split(vals, n)
         length = int(len(vals) / n)
         mean_vals[length] = ([np.mean(chunk) for chunk in chunks])
+        # if an overlap is desired an overlap of the chunks is also used to calculate a mean. In case of halfs (0.5,
+        # 50%) of values of the total numver of values an initial overlap of 0.1 (10%) this results in a first chunk
+        # that starts at 5% of the total number of values.
+        # The last chunk (overlap 0.9, 90%) then begins at 45% of all values and ends on 95%.
         if calc_overlap:
             for overlap in overlaps:
                 vals = vals_org[int((len(vals_org) / n) 
                     * overlap):-int((len(vals_org) / n) * (1 - overlap))]
                 chunks = np.array_split(vals, n - 1)
                 mean_vals[length].extend([np.mean(chunk) for chunk in chunks])
-
+        # This section is a little experimental so far. It works properly but I'm not sure if it is needed...
+        # Here the total number of values is not split up in chunks like quarters but into 5/12, 7/24 and so on. This
+        # is implemented to fill the large gaps of the first chunk segments (halfs, thirds, quarters, etc.). These
+        # uneven chunks also move over the total number of values. E.g. 5/12 starting on the first value to 5/12. Then
+        # starting on 1/12 to 6/12 and so on.
         if np.any(n == fracs):
             numerator = int(n / (np.where(n == fracs)[0][0] + 2) - 1)
             bounds = []
