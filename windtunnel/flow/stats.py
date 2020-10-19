@@ -204,7 +204,7 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     I_u = u_std/np.mean(M)
     I_v = v_std/np.mean(M)
     # Fluxes
-    flux = wt.transit_time_weighted_fluxes(transit_time,u_comp,v_comp)
+    flux = wt.transit_time_weighted_flux(transit_time,u_comp,v_comp)
     
     data = np.array([I_u,I_v,flux])
     
