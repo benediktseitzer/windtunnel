@@ -395,7 +395,8 @@ def transit_time_weighted_mean(transit_time, component):
 
     transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
 
-    weighted_mean = np.sum((component * transit_time[~np.isnan(transit_time)]) / transit_time_sum)
+    weighted_mean = np.sum((component[~np.isnan(transit_time)] 
+                        * transit_time[~np.isnan(transit_time)]) / transit_time_sum)
 
     return float(weighted_mean)
 
@@ -428,10 +429,11 @@ def transit_time_weighted_flux(transit_time, component_1, component_2):
     @parameter: component_1,  type = np.arrray([])
     @parameter: component_2,  type = np.arrray([])"""
 
-    transit_time_sum = np.sum(transit_time)
-    weighted_flux = np.sum((component_1 - np.mean(component_1)) *
-                           (component_2 - np.mean(component_2)) * transit_time) / \
-                    transit_time_sum
+    transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
+    weighted_flux = np.sum((component_1 - np.mean(component_1)) 
+                            * (component_2 - np.mean(component_2)) 
+                            * transit_time[~np.isnan(transit_time)]) / \
+                            transit_time_sum
 
     return float(weighted_flux)
 
