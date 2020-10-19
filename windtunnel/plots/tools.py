@@ -224,19 +224,16 @@ def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap
                  np.max(y_coor)+(np.abs(np.min(y_coor))+np.max(y_coor))/10])
     
     for rose in range(inFF.shape[1]):
-
         ##  DATA PROCESSING
         dd, ff = Windrose(inDD[rose], inFF[rose]).pack(dd_range, ff_steps)
         dd = dd * np.pi / 180.
 
         ##  PLOT
         width = (np.pi) * dd_range / 180  # (2*np.pi)/dd_range
-
         ax_sub= inset_axes(ax, width=0.55, height=0.55, loc=10,
                        bbox_to_anchor=(x_coor[rose],y_coor[rose]),
                        bbox_transform=ax.transData,
                        borderpad=0.0, axes_class=get_projection_class("polar"))
-
         ax_sub.bar(dd, ff[:, 0],
                 width=width,
                 bottom=0.,
