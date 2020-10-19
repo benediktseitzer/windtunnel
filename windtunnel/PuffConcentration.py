@@ -516,8 +516,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.end_release_period
 
     def detect_begin_release_index(self):
-        """ Detects the indices of the end of each release period. Returns a
-        list containing the index of the last timestamp of each release 
+        """ Detects the indices of the beginning of each release period. Returns a
+        list containing the index of the first timestamp of each release 
         period. """
 
         self.begin_release_index =(np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
@@ -536,10 +536,10 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def calc_release_length(self):
         """ Calculate the length of each release period. Returns an np.array
         containing the duration of each release period. """
+
         beginning = self.detect_begin_release_period()
         end = self.detect_end_release_period()
-
-        self.release_length=(end-beginning).tolist()
+        self.release_length = (end-beginning).tolist()
 
         return self.release_length
 
@@ -647,7 +647,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
             self.leaving_index.append(index)
             self.leaving_time.append(self.time[index] - self.time[begin])
-
 
     def detect_arrival_time(self,time_threshold=0.05):
         """ Detects the beginning of each puff. Returns an np.array 
