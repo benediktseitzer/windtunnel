@@ -659,7 +659,7 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
         length = int(len(vals) / n)
         mean_vals[length] = ([np.mean(chunk) for chunk in chunks])
         # if an overlap is desired an overlap of the chunks is also used to calculate a mean. In case of halfs (0.5,
-        # 50%) of values of the total numver of values an initial overlap of 0.1 (10%) this results in a first chunk
+        # 50%) of values of the total number of values an initial overlap of 0.1 (10%) this results in a first chunk
         # that starts at 5% of the total number of values.
         # The last chunk (overlap 0.9, 90%) then begins at 45% of all values and ends on 95%.
         if calc_overlap:
