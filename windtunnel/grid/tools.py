@@ -1,3 +1,10 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+""" 
+/grid/tools.py: 
+generates measurement grids for domains with obstacles/buildings.
+"""
+
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
@@ -19,6 +26,7 @@ class building():
     Class used to describe the properties of a building. Used to easier plot the different buildings in a flow or
     concentration experiment.
     """
+
     def __init__(self, name, type, x, y, x_extent, y_extent, z_extent):
         self.name = name
         self.type = type
@@ -62,6 +70,7 @@ class configuration():
     parameters is needed. The following structure is required:
     Name    type(rect)  x_pos   y_pos   x_extent    y_extent    z_extent
     '''
+
     def __init__(self,path):
 
         self.buildings = []
@@ -118,6 +127,7 @@ class configuration():
 
         ax.set_ylim(self.domain_extents[2:])
         return ax
+
     def gen_polar_grid(self,angles,dists,z,x_offset=0,y_offset=0,avoid_buildings=True):
         '''
         Generates a polar grid of points from the input parameters. If desired the points that lie inside of
@@ -209,7 +219,6 @@ class configuration():
             y[mask] = np.nan
             z[mask] = np.nan
 
-
         grid = np.stack([x.flatten(), y.flatten(), z.flatten()], axis=1)
         grid = grid[~np.isnan(grid)]
         grid = grid.reshape(int(len(grid)/3),-1)
@@ -228,8 +237,6 @@ class configuration():
             boundaries.append(building.boundaries)
 
         return boundaries
-
-
 
 def intersects(s0,s1):
     '''
@@ -284,7 +291,7 @@ def get_metangle(x, y):
 
 def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     '''
-    This function optimizes a input grid of points by minimizing the traveltime and angle between each point. Angles
+    This function optimizes an input grid of points by minimizing the traveltime and angle between each point. Angles
     between points of ]0 - 25 and 65-90[ are punished in terms of traveltime and are avoided. Furthermore routes through
     buildings can be avoided aswell.
     Parameters
@@ -300,7 +307,6 @@ def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     '''
     if points.shape[1]==3:
         points2d = points[:, :2] # throwing away third dimension (z)
-
 
     obstacle = np.zeros([len(points2d), len(points2d)])
 
