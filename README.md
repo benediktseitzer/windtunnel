@@ -13,7 +13,8 @@ somebody else can write this but it's most likely the same as below.
 #### Linux and MacOs
 You can pip install all the packages by typing:
 ```sh
-$ pip3 install numpy pandas os sys time fnmatch logging math scipy matplotlib csv tsp_solver mpl_toolkits tkinter 
+$ pip3 install numpy pandas scipy matplotlib tsp_solver
+$ sudo apt-get install python3-tk
 ```
 
 ## Program structure
