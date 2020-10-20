@@ -1,7 +1,6 @@
 # Windtunnel 
 The windtunnel python module is a processing library developed by the EWTL Laboratory at the University of Hamburg. 
 
-----
 ## Installation
 #### Requirements
  - python 3.0 
@@ -17,15 +16,12 @@ You can pip install all the packages by typing:
 $ pip3 install numpy pandas os sys time fnmatch logging math scipy matplotlib csv tsp_solver mpl_toolkits tkinter 
 ```
 
-----
 ## Program structure
 test
 
----
 ## How to work with windtunnel.py
 test test
 
----
 ## Contributing to windtunnel.py
 When contributing code, you’ll want to follow this checklist:
 1. **Pull** current version of windtunnel.py to your **local repository**.
@@ -54,6 +50,3 @@ example*
 # ignore itself
 .gitignore
 ```
-
-
----
