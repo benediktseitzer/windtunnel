@@ -1,5 +1,3 @@
---- 
-
 # Windtunnel 
 The windtunnel python module is a processing library developed by the EWTL Laboratory at the University of Hamburg. 
 
