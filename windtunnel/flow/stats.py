@@ -30,6 +30,7 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
+    'calc_z0_alpha',
     'calc_normalization_params',
     'calc_theo_arrival_law',
     'calc_arrival_law',
@@ -791,8 +792,34 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     
     return z0, err
 
+def calc_z0_alpha(u_mean, heights, sfc_height, BL_height):
+    '''
+    Calculates the roughness length z0 and the power law exponent alpha 
+    by fitting of the vertical profiles of the mean wind u_mean.  
+    ----------
+    Parameters
+
+    u_mean: array like
+    heights: array like
+    sfc_height: float
+    BL_height: float
+
+    -------
+    Returns
+
+    z0: float
+    z0_err: float
+    alpha: float
+    z_ref: float
+    '''
+    print('surface height and boundary layer height')
+    print(sfc_height, BL_height)
+    u_mean = np.asarray(u_mean)
+    heights = np.asarray(heights)
+
+
 def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
-                              num_data_points):
+    num_data_points):
     pass
 #    """ Calculate the normalized Fourier transform and frequency for the 
 #    Fourier transform of x
