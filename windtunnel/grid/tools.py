@@ -154,6 +154,9 @@ class configuration():
         x = np.outer(d, np.cos(np.radians(a)))-x_offset
         y = np.outer(d, np.sin(np.radians(a)))-y_offset
         z,_ = np.meshgrid(z,z)
+        x=np.diag(x)
+        y=np.diag(y)
+        z=np.diag(z)
 
         if avoid_buildings:
             grid = self.filter_points(x, y, z)
@@ -180,7 +183,9 @@ class configuration():
         '''
         x,y = np.meshgrid(x,y)
         z,_ = np.meshgrid(z,z)
-
+        x=np.diag(x)
+        y=np.diag(y)
+        z=np.diag(z)
         if avoid_buildings:
            grid = self.filter_points(x, y, z)
         return grid
