@@ -812,11 +812,22 @@ def calc_z0_alpha(u_mean, heights, sfc_height, BL_height):
     alpha: float
     z_ref: float
     '''
-    print('surface height and boundary layer height')
-    print(sfc_height, BL_height)
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
 
+    # sfc_layer = []
+    sfc_layer = np.where(heights>=sfc_height)
+    sfc_layer = np.where(heights[sfc_layer]<=40.)
+
+    z0 = np.polyfit(u_mean[sfc_layer], np.log(heights[sfc_layer]), deg = 1)
+    z0_error = np.mean(np.abs(u_mean[sfc_layer]*z0[0]+z0[1]
+                        - np.log(heights[sfc_layer])))
+    z0 = np.exp(z0[-1])
+
+    # z0_res = np.polyfit(u_mean[sfc_layer], np.log(heights[sfc_layer]), deg = 1, full=True)
+    # z0_res = z0_res[1][0]
+
+    return z0, z0_error
 
 def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
     num_data_points):
