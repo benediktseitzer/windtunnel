@@ -1,0 +1,5 @@
+op61.py
+*.pyc
+**/postprocessed/*.txt
+*.log
+*.docx
