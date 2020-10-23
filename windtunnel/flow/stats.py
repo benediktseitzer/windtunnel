@@ -792,7 +792,7 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     
     return z0, err
 
-def calc_z0_alpha(u_mean, heights, sfc_height, BL_height):
+def calc_z0_alpha(u_mean, heights, sfc_height, BL_height, sfc_layer):
     '''
     Calculates the roughness length z0 and the power law exponent alpha 
     by fitting of the vertical profiles of the mean wind u_mean.  
@@ -815,9 +815,9 @@ def calc_z0_alpha(u_mean, heights, sfc_height, BL_height):
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
 
-    # sfc_layer = []
-    sfc_layer = np.where(heights>=sfc_height)
-    sfc_layer = np.where(heights[sfc_layer]<=40.)
+    # # sfc_layer = []
+    # sfc_layer = np.where(heights >= sfc_height)
+    # sfc_layer = np.where(heights[sfc_layer] <= 40.)
 
     z0 = np.polyfit(u_mean[sfc_layer], np.log(heights[sfc_layer]), deg = 1)
     z0_error = np.mean(np.abs(u_mean[sfc_layer]*z0[0]+z0[1]
