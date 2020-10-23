@@ -5,9 +5,10 @@
 import numpy as np
 import logging
 import scipy.stats as sc
-import windtunnel as wt
 from math import e
 from scipy.optimize import curve_fit
+
+import windtunnel as wt
 
 logger = logging.getLogger()
 __all__ = [
