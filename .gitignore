@@ -1,5 +1,11 @@
-op61.py
+# ignore pyc-files
 *.pyc
-**/postprocessed/*.txt
-*.log
-*.docx
+# ignore generated files (log, txt) 
+windtunnel.log
+postprocessed*
+*txt
+# ignore own scripts
+own*
+example*
+# ignore itself
+.gitignore
