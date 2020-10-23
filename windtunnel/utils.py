@@ -19,14 +19,6 @@ __all__ = [
     'equ_dist_ts',
     'trunc_at',
     'get_files',
-    'from_file',
-    'get_wtref',
-    'get_wind_comps',
-    'nondimensionalise',
-    'adapt_scale',
-    'equidistant',
-    'mask_outliers',
-    'mask_outliers_wght',
     'get_pdf_max',
     'count_nan_chunks',
     'get_lux_referencedata',
@@ -56,7 +48,6 @@ def find_block(indata, length, tolerance):
 
     raise Exception('Interval of given length and quality not found.')
 
-
 def equ_dist_ts(arrival_time, eq_dist_array, data):
     """ Create a time series with constant time steps. The nearest point of the
    original time series is used for the corresponding time of the equi-distant
@@ -72,7 +63,6 @@ def equ_dist_ts(arrival_time, eq_dist_array, data):
                  fill_value='extrapolate')
 
     return f(eq_dist_array)
-
 
 def trunc_at(string, delimiter, n=3):
     """ Returns string truncated at the n'th (3rd by default) occurrence of the
@@ -94,172 +84,6 @@ def get_files(path, filename):
 
     return return_files
 
-# TODO: doubled (see timeseries.py)
-# def from_file(path, filename):
-#     """ Create array from timeseries in path + file.
-#     @parameter: path, string
-#     @parameter: filename, string"""
-#     with open(filename) as file:
-#         for i, line in enumerate(file):
-#             if i == 3:
-#                 x = float(line.split(";")[0][:-3])
-#                 y = float(line.split(";")[1][:-3])
-#                 z = float(line.split(";")[-1][:-3])
-#                 break
-
-#     t_arr, u, v = np.genfromtxt(filename, usecols=(1, 3, 4),
-#                                 skip_header=6, unpack=True)
-
-#     return x, y, z, t_arr, u, v
-
-# # TODO: doubled (see timeseries.py)
-# def get_wtref(wtref_path, filename, index=0, vscale=1.):
-#     """Reads wtref-file selected by the time series name 'filename' and
-#     scales wtref with vscale. vscale is set to 1 as standard. index 
-#     accesses only the one wtref value that is associated to the current
-#     file.
-#     @parameter: path, type = string
-#     @parameter: filename, type = string
-#     @parameter: index, type = int
-#     @parameter: vscale, type = float """
-
-#     wtreffile = wtref_path + filename + '_wtref.txt'.format(filename.split('.')[0])
-#     try:
-#         all_wtrefs = np.genfromtxt(wtreffile, usecols=(3), skip_header=1)
-#     except OSError:
-#         print(' ATTENTION: wtref-file not found at ' + wtreffile + '!')
-
-#     if np.size(all_wtrefs) == 1:
-#         wtref = float(all_wtrefs) * vscale
-#     else:
-#         wtref = all_wtrefs[index] * vscale
-
-#     return wtref
-
-# TODO: doubled (see timeseries.py). Also version in timeseries.py is newer
-# def get_wind_comps(path, filename):
-#     """ Get wind components from filename.
-#     @parameter: filename, type = str """
-#     with open(path + filename) as file:
-#         for i, line in enumerate(file):
-#             if i == 5:
-#                 wind_comp1 = line.split()[-4][-1].lower()
-#                 wind_comp2 = line.split()[-2][-1].lower()
-
-#     return wind_comp1, wind_comp2
-
-# TODO: doubled (see timeseries.py)
-# def nondimensionalise(u, v, wtref=None):
-#     """ Nondimensionalise the data. wtref is set to 1 if no wtref is 
-#     specified.
-#     @parameter: u, type = np.array
-#     @parameter: v, type = np.array
-#     @parameter: wtref, type = int or float"""
-#     if wtref is None:
-#         wtref = 1
-#         raise Warning('No value for wtref found. Run get_wtref(). wtref\
-#         set to 1')
-
-#     u = u / wtref
-#     v = v / wtref
-
-#     return u, v
-
-# TODO: doubled (see timeseries.py)
-# def adapt_scale(x, y, z, t_arr, scale):
-#     """ Convert timeseries from model scale to full scale. 
-#     @parameter: x, type = int or float
-#     @parameter: y, type = int or float
-#     @parameter: z, type = int or float
-#     @parameter: t_arr, type = np.array
-#     @parameter: scale, type = float """
-#     scale = scale
-#     x = x * scale / 1000  # [m]
-#     y = y * scale / 1000  # [m]
-#     z = z * scale / 1000  # [m]
-#     t_arr = t_arr * scale / 1000  # [s]
-
-#     return x, y, z, t_arr
-
-# TODO: what is the difference between this and equ_dist_ts()
-# def equidistant(u, v, t_arr):
-#     """ Create equidistant time series.
-#     @parameter: u, type = np.array
-#     @parameter: v, type = np.array
-#     @parameter: t_arr, type = np.array or list"""
-#     t_eq = np.linspace(t_arr[0], t_arr[-1], len(t_arr))
-#     u = wt.equ_dist_ts(t_arr, t_eq, u)
-#     v = wt.equ_dist_ts(t_arr, t_eq, v)
-
-#     return u, v, t_eq
-
-# TODO: doubled (see timeseries.py)
-# def mask_outliers(u, v, std_mask=5.):
-#     """ Mask outliers and print number of outliers. std_mask specifies the
-#     threshold for a value to be considered an outlier. 5 is the default 
-#     value for std_mask.
-#     @parameter: u, type = np.array
-#     @parameter: v, type = np.array
-#     @parameter: std_mask, type = float"""
-#     u_size = np.size(u)
-#     v_size = np.size(v)
-
-#     # Mask outliers
-#     u_mask = u < (std_mask * np.std(u) + np.mean(u))
-#     v_mask = v < (std_mask * np.std(v) + np.mean(v))
-#     mask = np.logical_and(u_mask, v_mask)
-
-#     u = u[mask]
-#     v = v[mask]
-
-#     # Log outliers in console and to file
-#     logger.info('Outliers component 1: {} or {:.4f}%'.format(
-#         np.size(np.where(~u_mask)),
-#         np.size(np.where(~u_mask)) / u_size * 100
-#     ))
-#     logger.info('Outliers component 2: {} or {:.4f}%'.format(
-#         np.size(np.where(~v_mask)),
-#         np.size(np.where(~v_mask)) / v_size * 100
-#     ))
-
-#     return u, v
-
-# TODO: doubled (see timeseries.py)
-# def mask_outliers_wght(transit_time, u, v, std_mask=5.):
-#     """ Mask outliers and print number of outliers. std_mask specifies the
-#     threshold for a value to be considered an outlier. 5 is the default 
-#     value for std_mask. This function usues time transit time weighted 
-#     statistics.
-#     @parameter: u, type = np.array
-#     @parameter: v, type = np.array
-#     @parameter: std_mask, type = float"""
-
-#     u_size = np.size(u)
-#     v_size = np.size(v)
-
-#     # Mask outliers
-#     u_mask = u < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, u)) +
-#                               wt.transit_time_weighted_mean(transit_time, u)))
-#     v_mask = v < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, v)) +
-#                               wt.transit_time_weighted_mean(transit_time, v)))
-
-#     mask = np.logical_and(u_mask, v_mask)
-
-#     u = u[mask]
-#     v = v[mask]
-
-#     # Log outliers in console and to file
-#     logger.info('Outliers component 1: {} or {:.4f}%'.format(
-#         np.size(np.where(~u_mask)),
-#         np.size(np.where(~u_mask)) / u_size * 100
-#     ))
-#     logger.info('Outliers component 2: {} or {:.4f}%'.format(
-#         np.size(np.where(~v_mask)),
-#         np.size(np.where(~v_mask)) / v_size * 100
-#     ))
-
-#     return u, v
-
 def get_pdf_max(data):
     """Finds maximum of the probability distribution of data.
     @parameter data: np.array"""
@@ -271,18 +95,6 @@ def get_pdf_max(data):
     result = bins[np.argsort(nparam_density)[-1]]
 
     return result
-
-# def count_nan_chunks(data):
-#     """ Counts chunks of NaNs in data. Returns the size of each chunk and
-#     the overall number of chunks.
-#     @parameter: data, type = np.array or string"""
-
-#     data[np.isnan(data)] = -9999
-#     data[data != -9999] = 1
-#     labelled, N = label(data, background=-9999, return_num=True)
-#     chunk_sizes = [np.sum(labelled == i) for i in range(N)]
-
-#     return chunk_sizes, N
 
 # TODO: goes into new /flow/utils.py
 def get_lux_referencedata(ref_path=None):
