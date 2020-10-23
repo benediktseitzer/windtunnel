@@ -20,7 +20,6 @@ __all__ = [
     'trunc_at',
     'get_files',
     'get_pdf_max',
-    'count_nan_chunks',
     'get_lux_referencedata',
     'get_turb_referencedata',
     'find_nearest',
