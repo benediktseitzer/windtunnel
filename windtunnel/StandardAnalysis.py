@@ -21,6 +21,7 @@ __all__ = [
 'standard_point_analysis',
 ]
 
+# TODO: content goes back into example_puff_measurement(_jkf).py
 def standard_puff_analysis(path,csv_file,namelist,threshold_concentration,threshold_dosage,
 n_exclude,time_threshold,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
 pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
@@ -269,8 +270,8 @@ full_scale_flow_rate,functions_mode,axis_range):
     results['ascent time'].plot.hist(title='Ascent Time')
     plt.figure(5)
     results['descent time'].plot.hist(title='Descent Time')
-   
-    
+
+# TODO: content goes back into example_point_measurement(_jkf).py
 def standard_point_analysis(path,csv_file,namelist,full_scale,x_source,y_source,z_source,x_measure,y_measure,z_measure,
 pressure,temperature,wdir,calibration_curve,mass_flow_controller,calibration_factor,
 scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,

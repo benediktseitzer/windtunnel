@@ -155,8 +155,6 @@ class PuffConcentration(pd.DataFrame):
 		
         return cls(time, wtref, slow_FID, fast_FID, signal, open_rate * 10)
 		
-               
-		
     def to_full_scale(self):
         """ Converts all quantities to full scale, overwriting model scale variables."""
         #edit 09/19/2019: new function, based on to_full_scale in PointConcentration.py,
@@ -310,7 +308,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         calibration_factor, scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,\
         gas_factor,full_scale_wtref,full_scale_flow_rate
            		
-
     def ambient_conditions(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],

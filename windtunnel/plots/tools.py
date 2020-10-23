@@ -17,7 +17,6 @@ __all__ = [
     'plot_pdfs',
     'plot_pdfs_err',
     'plot_cdfs',
-    'plot_rose_map',
 ]
 
 class Windrose:

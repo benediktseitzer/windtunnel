@@ -80,8 +80,6 @@ def trunc_at(string, delimiter, n=3):
 
     return delimiter.join(string.split(delimiter, n)[:n])
     
-
-
 def get_files(path, filename):
     """Finds files with filename in path as specified. Filename supports the
     Unix shell-style wildcards.
@@ -96,172 +94,171 @@ def get_files(path, filename):
 
     return return_files
 
+# TODO: doubled (see timeseries.py)
+# def from_file(path, filename):
+#     """ Create array from timeseries in path + file.
+#     @parameter: path, string
+#     @parameter: filename, string"""
+#     with open(filename) as file:
+#         for i, line in enumerate(file):
+#             if i == 3:
+#                 x = float(line.split(";")[0][:-3])
+#                 y = float(line.split(";")[1][:-3])
+#                 z = float(line.split(";")[-1][:-3])
+#                 break
 
-def from_file(path, filename):
-    """ Create array from timeseries in path + file.
-    @parameter: path, string
-    @parameter: filename, string"""
-    with open(filename) as file:
-        for i, line in enumerate(file):
-            if i == 3:
-                x = float(line.split(";")[0][:-3])
-                y = float(line.split(";")[1][:-3])
-                z = float(line.split(";")[-1][:-3])
-                break
+#     t_arr, u, v = np.genfromtxt(filename, usecols=(1, 3, 4),
+#                                 skip_header=6, unpack=True)
 
-    t_arr, u, v = np.genfromtxt(filename, usecols=(1, 3, 4),
-                                skip_header=6, unpack=True)
+#     return x, y, z, t_arr, u, v
 
-    return x, y, z, t_arr, u, v
+# # TODO: doubled (see timeseries.py)
+# def get_wtref(wtref_path, filename, index=0, vscale=1.):
+#     """Reads wtref-file selected by the time series name 'filename' and
+#     scales wtref with vscale. vscale is set to 1 as standard. index 
+#     accesses only the one wtref value that is associated to the current
+#     file.
+#     @parameter: path, type = string
+#     @parameter: filename, type = string
+#     @parameter: index, type = int
+#     @parameter: vscale, type = float """
 
+#     wtreffile = wtref_path + filename + '_wtref.txt'.format(filename.split('.')[0])
+#     try:
+#         all_wtrefs = np.genfromtxt(wtreffile, usecols=(3), skip_header=1)
+#     except OSError:
+#         print(' ATTENTION: wtref-file not found at ' + wtreffile + '!')
 
-def get_wtref(wtref_path, filename, index=0, vscale=1.):
-    """Reads wtref-file selected by the time series name 'filename' and
-    scales wtref with vscale. vscale is set to 1 as standard. index 
-    accesses only the one wtref value that is associated to the current
-    file.
-    @parameter: path, type = string
-    @parameter: filename, type = string
-    @parameter: index, type = int
-    @parameter: vscale, type = float """
+#     if np.size(all_wtrefs) == 1:
+#         wtref = float(all_wtrefs) * vscale
+#     else:
+#         wtref = all_wtrefs[index] * vscale
 
-    wtreffile = wtref_path + filename + '_wtref.txt'.format(filename.split('.')[0])
-    try:
-        all_wtrefs = np.genfromtxt(wtreffile, usecols=(3), skip_header=1)
-    except OSError:
-        print(' ATTENTION: wtref-file not found at ' + wtreffile + '!')
+#     return wtref
 
-    if np.size(all_wtrefs) == 1:
-        wtref = float(all_wtrefs) * vscale
-    else:
-        wtref = all_wtrefs[index] * vscale
+# TODO: doubled (see timeseries.py). Also version in timeseries.py is newer
+# def get_wind_comps(path, filename):
+#     """ Get wind components from filename.
+#     @parameter: filename, type = str """
+#     with open(path + filename) as file:
+#         for i, line in enumerate(file):
+#             if i == 5:
+#                 wind_comp1 = line.split()[-4][-1].lower()
+#                 wind_comp2 = line.split()[-2][-1].lower()
 
-    return wtref
+#     return wind_comp1, wind_comp2
 
+# TODO: doubled (see timeseries.py)
+# def nondimensionalise(u, v, wtref=None):
+#     """ Nondimensionalise the data. wtref is set to 1 if no wtref is 
+#     specified.
+#     @parameter: u, type = np.array
+#     @parameter: v, type = np.array
+#     @parameter: wtref, type = int or float"""
+#     if wtref is None:
+#         wtref = 1
+#         raise Warning('No value for wtref found. Run get_wtref(). wtref\
+#         set to 1')
 
-def get_wind_comps(path, filename):
-    """ Get wind components from filename.
-    @parameter: filename, type = str """
-    with open(path + filename) as file:
-        for i, line in enumerate(file):
-            if i == 5:
-                wind_comp1 = line.split()[-4][-1].lower()
-                wind_comp2 = line.split()[-2][-1].lower()
+#     u = u / wtref
+#     v = v / wtref
 
-    return wind_comp1, wind_comp2
+#     return u, v
 
+# TODO: doubled (see timeseries.py)
+# def adapt_scale(x, y, z, t_arr, scale):
+#     """ Convert timeseries from model scale to full scale. 
+#     @parameter: x, type = int or float
+#     @parameter: y, type = int or float
+#     @parameter: z, type = int or float
+#     @parameter: t_arr, type = np.array
+#     @parameter: scale, type = float """
+#     scale = scale
+#     x = x * scale / 1000  # [m]
+#     y = y * scale / 1000  # [m]
+#     z = z * scale / 1000  # [m]
+#     t_arr = t_arr * scale / 1000  # [s]
 
-def nondimensionalise(u, v, wtref=None):
-    """ Nondimensionalise the data. wtref is set to 1 if no wtref is 
-    specified.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: wtref, type = int or float"""
-    if wtref is None:
-        wtref = 1
-        raise Warning('No value for wtref found. Run get_wtref(). wtref\
-        set to 1')
+#     return x, y, z, t_arr
 
-    u = u / wtref
-    v = v / wtref
+# TODO: what is the difference between this and equ_dist_ts()
+# def equidistant(u, v, t_arr):
+#     """ Create equidistant time series.
+#     @parameter: u, type = np.array
+#     @parameter: v, type = np.array
+#     @parameter: t_arr, type = np.array or list"""
+#     t_eq = np.linspace(t_arr[0], t_arr[-1], len(t_arr))
+#     u = wt.equ_dist_ts(t_arr, t_eq, u)
+#     v = wt.equ_dist_ts(t_arr, t_eq, v)
 
-    return u, v
+#     return u, v, t_eq
 
+# TODO: doubled (see timeseries.py)
+# def mask_outliers(u, v, std_mask=5.):
+#     """ Mask outliers and print number of outliers. std_mask specifies the
+#     threshold for a value to be considered an outlier. 5 is the default 
+#     value for std_mask.
+#     @parameter: u, type = np.array
+#     @parameter: v, type = np.array
+#     @parameter: std_mask, type = float"""
+#     u_size = np.size(u)
+#     v_size = np.size(v)
 
-def adapt_scale(x, y, z, t_arr, scale):
-    """ Convert timeseries from model scale to full scale. 
-    @parameter: x, type = int or float
-    @parameter: y, type = int or float
-    @parameter: z, type = int or float
-    @parameter: t_arr, type = np.array
-    @parameter: scale, type = float """
-    scale = scale
-    x = x * scale / 1000  # [m]
-    y = y * scale / 1000  # [m]
-    z = z * scale / 1000  # [m]
-    t_arr = t_arr * scale / 1000  # [s]
+#     # Mask outliers
+#     u_mask = u < (std_mask * np.std(u) + np.mean(u))
+#     v_mask = v < (std_mask * np.std(v) + np.mean(v))
+#     mask = np.logical_and(u_mask, v_mask)
 
-    return x, y, z, t_arr
+#     u = u[mask]
+#     v = v[mask]
 
+#     # Log outliers in console and to file
+#     logger.info('Outliers component 1: {} or {:.4f}%'.format(
+#         np.size(np.where(~u_mask)),
+#         np.size(np.where(~u_mask)) / u_size * 100
+#     ))
+#     logger.info('Outliers component 2: {} or {:.4f}%'.format(
+#         np.size(np.where(~v_mask)),
+#         np.size(np.where(~v_mask)) / v_size * 100
+#     ))
 
-def equidistant(u, v, t_arr):
-    """ Create equidistant time series.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: t_arr, type = np.array or list"""
-    t_eq = np.linspace(t_arr[0], t_arr[-1], len(t_arr))
-    u = wt.equ_dist_ts(t_arr, t_eq, u)
-    v = wt.equ_dist_ts(t_arr, t_eq, v)
+#     return u, v
 
-    return u, v, t_eq
+# TODO: doubled (see timeseries.py)
+# def mask_outliers_wght(transit_time, u, v, std_mask=5.):
+#     """ Mask outliers and print number of outliers. std_mask specifies the
+#     threshold for a value to be considered an outlier. 5 is the default 
+#     value for std_mask. This function usues time transit time weighted 
+#     statistics.
+#     @parameter: u, type = np.array
+#     @parameter: v, type = np.array
+#     @parameter: std_mask, type = float"""
 
+#     u_size = np.size(u)
+#     v_size = np.size(v)
 
-def mask_outliers(u, v, std_mask=5.):
-    """ Mask outliers and print number of outliers. std_mask specifies the
-    threshold for a value to be considered an outlier. 5 is the default 
-    value for std_mask.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: std_mask, type = float"""
-    u_size = np.size(u)
-    v_size = np.size(v)
+#     # Mask outliers
+#     u_mask = u < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, u)) +
+#                               wt.transit_time_weighted_mean(transit_time, u)))
+#     v_mask = v < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, v)) +
+#                               wt.transit_time_weighted_mean(transit_time, v)))
 
-    # Mask outliers
-    u_mask = u < (std_mask * np.std(u) + np.mean(u))
-    v_mask = v < (std_mask * np.std(v) + np.mean(v))
-    mask = np.logical_and(u_mask, v_mask)
+#     mask = np.logical_and(u_mask, v_mask)
 
-    u = u[mask]
-    v = v[mask]
+#     u = u[mask]
+#     v = v[mask]
 
-    # Log outliers in console and to file
-    logger.info('Outliers component 1: {} or {:.4f}%'.format(
-        np.size(np.where(~u_mask)),
-        np.size(np.where(~u_mask)) / u_size * 100
-    ))
-    logger.info('Outliers component 2: {} or {:.4f}%'.format(
-        np.size(np.where(~v_mask)),
-        np.size(np.where(~v_mask)) / v_size * 100
-    ))
+#     # Log outliers in console and to file
+#     logger.info('Outliers component 1: {} or {:.4f}%'.format(
+#         np.size(np.where(~u_mask)),
+#         np.size(np.where(~u_mask)) / u_size * 100
+#     ))
+#     logger.info('Outliers component 2: {} or {:.4f}%'.format(
+#         np.size(np.where(~v_mask)),
+#         np.size(np.where(~v_mask)) / v_size * 100
+#     ))
 
-    return u, v
-
-
-def mask_outliers_wght(transit_time, u, v, std_mask=5.):
-    """ Mask outliers and print number of outliers. std_mask specifies the
-    threshold for a value to be considered an outlier. 5 is the default 
-    value for std_mask. This function usues time transit time weighted 
-    statistics.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: std_mask, type = float"""
-
-    u_size = np.size(u)
-    v_size = np.size(v)
-
-    # Mask outliers
-    u_mask = u < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, u)) +
-                              wt.transit_time_weighted_mean(transit_time, u)))
-    v_mask = v < (std_mask * (np.sqrt(wt.transit_time_weighted_var(transit_time, v)) +
-                              wt.transit_time_weighted_mean(transit_time, v)))
-
-    mask = np.logical_and(u_mask, v_mask)
-
-    u = u[mask]
-    v = v[mask]
-
-    # Log outliers in console and to file
-    logger.info('Outliers component 1: {} or {:.4f}%'.format(
-        np.size(np.where(~u_mask)),
-        np.size(np.where(~u_mask)) / u_size * 100
-    ))
-    logger.info('Outliers component 2: {} or {:.4f}%'.format(
-        np.size(np.where(~v_mask)),
-        np.size(np.where(~v_mask)) / v_size * 100
-    ))
-
-    return u, v
-
+#     return u, v
 
 def get_pdf_max(data):
     """Finds maximum of the probability distribution of data.
@@ -275,20 +272,19 @@ def get_pdf_max(data):
 
     return result
 
+# def count_nan_chunks(data):
+#     """ Counts chunks of NaNs in data. Returns the size of each chunk and
+#     the overall number of chunks.
+#     @parameter: data, type = np.array or string"""
 
-def count_nan_chunks(data):
-    """ Counts chunks of NaNs in data. Returns the size of each chunk and
-    the overall number of chunks.
-    @parameter: data, type = np.array or string"""
+#     data[np.isnan(data)] = -9999
+#     data[data != -9999] = 1
+#     labelled, N = label(data, background=-9999, return_num=True)
+#     chunk_sizes = [np.sum(labelled == i) for i in range(N)]
 
-    data[np.isnan(data)] = -9999
-    data[data != -9999] = 1
-    labelled, N = label(data, background=-9999, return_num=True)
-    chunk_sizes = [np.sum(labelled == i) for i in range(N)]
+#     return chunk_sizes, N
 
-    return chunk_sizes, N
-
-
+# TODO: goes into new /flow/utils.py
 def get_lux_referencedata(ref_path=None):
     """Reads and returns reference data for the integral length scale (Lux).
     This function takes no parameters. """
@@ -309,7 +305,7 @@ def get_lux_referencedata(ref_path=None):
 
     return Lux_10, Lux_1, Lux_01, Lux_001, Lux_obs_smooth, Lux_obs_rough
 
-
+# TODO: goes into new /flow/utils.py
 def get_turb_referencedata(component, ref_path=None):
     """Reads and returns the VDI reference data for the turbulence intensity of
     component.
@@ -353,7 +349,7 @@ def get_turb_referencedata(component, ref_path=None):
 
         return I_w_slight, I_w_moderate, I_w_rough, I_w_very
 
-
+# TODO: used in get_reference_spectra()
 def find_nearest(array, value):
     """ Finds nearest element of array to value.
     @parameter: array, np.array
@@ -362,7 +358,7 @@ def find_nearest(array, value):
 
     return array[idx]
 
-
+# TODO: goes into new /flow/utils.py
 def get_reference_spectra(height, ref_path=None):
     """ Get referemce spectra from pre-defined location."""
     #  REFERENCE SPAECTRA RANGE FIT
@@ -375,7 +371,6 @@ def get_reference_spectra(height, ref_path=None):
 
     return ref_specs
 
-
 def check_directory(directory):
     """ Checks if directory exists. If directory doesn't exist, it is created.
     @parameter: directory, type = string """
@@ -383,7 +378,7 @@ def check_directory(directory):
         os.makedirs(directory)
         print("Desired directory created.")
 
-
+# TODO: goes into new /flow/utils.py
 def transit_time_weighted_mean(transit_time, component):
     """ Weigh the flow component with its transit time through the
     measurement volume. This is analoguous to the processing of the raw
@@ -400,7 +395,7 @@ def transit_time_weighted_mean(transit_time, component):
 
     return float(weighted_mean)
 
-
+# TODO: goes into new /flow/utils.py
 def transit_time_weighted_var(transit_time, component):
     """ Weigh the u and v component with its transit time through the
     measurement volume. This is analoguous to the processing of the raw
@@ -420,7 +415,7 @@ def transit_time_weighted_var(transit_time, component):
 
     return float(weighted_var)
 
-
+# TODO: goes into new /flow/utils.py
 def transit_time_weighted_flux(transit_time, component_1, component_2):
     """ Calculate mean flux using transit time weighted statistics. Transit
     time weighting removes a possible bias towards higher wind velocities.
@@ -436,7 +431,6 @@ def transit_time_weighted_flux(transit_time, component_1, component_2):
                             transit_time_sum
 
     return float(weighted_flux)
-
 
 def get_percentiles(data_dict, percentile_list):
     """ Get percentiles from each entry in data_dict specified in
@@ -459,6 +453,7 @@ def get_percentiles(data_dict, percentile_list):
 
     return percentile_dict
 	
+# TODO: It should be in flow/stats.py
 def calc_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_height=None,max_height=None,split_height=None):
     """Calculate profile exponent α and roughness length z_0, and save data to excel file. 
     Avaliable modes are 'all' (calculates profile between min_height and max_height), and 

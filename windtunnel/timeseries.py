@@ -135,7 +135,6 @@ class Timeseries(pd.DataFrame):
                         self.wind_comp2 = line.split()[-2][-1].lower()
                         break
 
-
     def nondimensionalise(self):
         """ Nondimensionalise the data. wtref is set to 1 if no wtref is
         speciefied. """
@@ -177,7 +176,6 @@ class Timeseries(pd.DataFrame):
         
         self.index = self.t_eq
         
-
     def mask_outliers(self,std_mask=5):
         """ Mask outliers and print number of outliers. std_mask specifies the
         threshold for a value to be considered an outlier. 5 is the default
@@ -262,7 +260,6 @@ class Timeseries(pd.DataFrame):
             np.size(np.where(~v_mask)) / v_size * 100
         ))
         
-
     def tilt_coords(self):
         """ Tilt the coordinate system so that the x-axis is always parallel to
         the local mean wind direction. The y-axis stays horizontal while being 
@@ -328,7 +325,6 @@ class Timeseries(pd.DataFrame):
         for i, value in enumerate(self.direction.values):
             if value > 180:
                 self.direction.iloc[i] = value - 360
-
 
     def set_tau(self, milliseconds):
         """ Give tau a new value """
