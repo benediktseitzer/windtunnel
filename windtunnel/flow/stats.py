@@ -30,10 +30,11 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
+    'calc_alpha_profile',
     'calc_normalization_params',
     'calc_theo_arrival_law',
     'calc_arrival_law',
-    'calc_transit_time_distribution',
+    'calc_transit_time_distribution'
 ]
 
 def calc_intervalmean(indata,intervals,DD=False):    
@@ -790,6 +791,57 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
         err = np.nan
     
     return z0, err
+
+def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_height=None,max_height=None,split_height=None):
+    """Calculate profile exponent alpha and roughness length z_0, and save data to excel file. 
+    Avaliable modes are 'all' (calculates profile between min_height and max_height), and 
+    'seperate', which calulates two profiles, one above and one below split_height.
+    Setting minimum and maximum height to 'None' calculates profile to bottom and top of
+    data respectively. All heights assumed in m full-scale."""
+    print("Warning: Assuming that wind data is non-dimensional, and that heights are in m full-scale. d_0 in mm.")
+    #Note: heights should be in (m) full-scale. Change code if this is not the case!
+    
+    heights=np.asarray(heights)
+    mean_mag=np.asarray(mean_mag)
+    if min_height == None:
+       min_height = np.min(heights)
+    if max_height == None:
+       max_height = np.max(heights)
+    if mode == 'all':
+       heights_mask=(heights>=min_height) & (heights<=max_height)
+       heights=heights[heights_mask]
+       mean_mag=mean_mag[heights_mask]
+       z_norm = (np.array(heights)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm=np.vstack([np.log(z_norm),np.zeros(len(z_norm))]).transpose()
+       print(z_norm)
+       alpha=np.linalg.lstsq(z_norm,np.log(np.array(mean_mag)))
+       print(alpha) 
+       return alpha
+    elif mode == 'seperate':
+       heights_bottom=heights[(heights>=min_height) & (heights<=split_height)]
+       mean_mag_bottom = mean_mag[(heights>=min_height) & (heights<=split_height)]
+       z_norm_bottom = (np.array(heights_bottom)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_bottom=np.vstack([np.log(z_norm_bottom),np.zeros(len(z_norm_bottom))]).transpose()
+       print(z_norm_bottom)
+       alpha_bottom=np.linalg.lstsq(z_norm_bottom,np.log(np.array(mean_mag_bottom)))
+       print(alpha_bottom)
+       heights_top=heights[(heights>=split_height) & (heights<=max_height)]
+       mean_mag_top = mean_mag[(heights>=split_height) & (heights<=max_height)]
+       z_norm_top = (np.array(heights_top)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_top=np.vstack([np.log(z_norm_top),np.zeros(len(z_norm_top))]).transpose()
+       print(z_norm_top)
+       alpha_top=np.linalg.lstsq(z_norm_top,np.log(np.array(mean_mag_top)))
+       print(alpha_top)  
+       return alpha_top
 
 def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
                               num_data_points):
