@@ -30,7 +30,6 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
-    'calc_z0_alpha',
     'calc_normalization_params',
     'calc_theo_arrival_law',
     'calc_arrival_law',
@@ -695,7 +694,7 @@ def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
    
     return np.abs(u_comp / u_ref - ((height-d0)/(z_ref-d0))**alpha)
 
-def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
+def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=None):
     """Estimate the power law exponent alpha.
     @parameter: u_mean, type = list or np.array
     @parameter: heights, type = list or np.array
@@ -706,11 +705,11 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
     #alpha. In particular, it is unknown why uref and zref are not constant
     #with height. Different approach used in 'calc_profile' function. To be
     #verified with Bernd Leitl and/or Frank Harms !!
-    
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
-    
-    BL = np.where(heights<BL_height)
+    if BL == []:
+        BL = np.where(heights<BL_height)
+
     if np.size(heights[BL]) < 6:
         print("   small sample - alpha estimation with high uncertainty")
     def tempf(x,ex):
@@ -720,9 +719,7 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
         ref = 999.
         for ui,zi in enumerate(heights[BL]):
             zref=zi
-            zref = 867.5
             uref = u_mean[BL][ui]
-            uref = 1                
             B,covtemp = curve_fit(tempf, (heights[BL]-d0)/(zref-d0),
                                   u_mean[BL]/uref)        
             diff = power_law(u_mean[BL],heights[BL],uref,zref,B[0],d0)
@@ -741,18 +738,33 @@ def calc_alpha(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
         
     return alpha, ref
 
-def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
-    """ Estimate the roughness length z0.
-    @parameter: u_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: d0, type = float
-    @parameter: sfc_height, type = float
-    @parameter: BL_height, type = float """   
+def calc_z0(u_mean,heights,d0=0.,sfc_height=120., sfc_layer=None):
+    """ 
+    Calculates the roughness length z0 and the power law exponent alpha 
+    by fitting of the vertical profiles of the mean wind u_mean.
+    There are two ways to pick the used data-points.
+    Choose sfc_height (the maximum height used to calculate z0)
+    Give array sfc_layer predifined by own script (e.g. <10% deviation in fluxes.)
+    ----------
+    Parameters
+
+    u_mean: array like
+    heights: array like
+    d0: float
+    sfc_height: float
+    sfc_layer: array like
+
+    -------
+    Returns
+
+    z0: float
+    err: float    
+    """   
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
-    
-    ## z0
-    sfc_layer = np.where(heights<sfc_height)
+    if sfc_layer == []:
+        sfc_layer = np.where(heights<sfc_height)
+
     if np.size(heights[sfc_layer]) > 2:
         z0 = np.polyfit(u_mean[sfc_layer],np.log(heights[sfc_layer]-d0),deg=1)
         err = np.mean(np.abs(np.exp(u_mean[sfc_layer]*z0[0]+z0[1]) -
@@ -773,6 +785,7 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
                                          heights[sfc_layer]))        
             else:
                 break       
+        fitted_height = np.exp(u_mean*z0[0]+z0[1])
         z0 = np.exp(z0[-1])
         z0_list = [z0]
         for i in range(1,np.size(heights[sfc_layer])//3):
@@ -789,45 +802,9 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120.,BL_height=600.):
         print('    too few points for z0 estimation')
         z0 = np.nan
         err = np.nan
+        fitted_height = np.nan
     
-    return z0, err
-
-def calc_z0_alpha(u_mean, heights, sfc_height, BL_height, sfc_layer):
-    '''
-    Calculates the roughness length z0 and the power law exponent alpha 
-    by fitting of the vertical profiles of the mean wind u_mean.  
-    ----------
-    Parameters
-
-    u_mean: array like
-    heights: array like
-    sfc_height: float
-    BL_height: float
-
-    -------
-    Returns
-
-    z0: float
-    z0_err: float
-    alpha: float
-    z_ref: float
-    '''
-    u_mean = np.asarray(u_mean)
-    heights = np.asarray(heights)
-
-    # # sfc_layer = []
-    # sfc_layer = np.where(heights >= sfc_height)
-    # sfc_layer = np.where(heights[sfc_layer] <= 40.)
-
-    z0 = np.polyfit(u_mean[sfc_layer], np.log(heights[sfc_layer]), deg = 1)
-    z0_error = np.mean(np.abs(u_mean[sfc_layer]*z0[0]+z0[1]
-                        - np.log(heights[sfc_layer])))
-    z0 = np.exp(z0[-1])
-
-    # z0_res = np.polyfit(u_mean[sfc_layer], np.log(heights[sfc_layer]), deg = 1, full=True)
-    # z0_res = z0_res[1][0]
-
-    return z0, z0_error
+    return z0, err, fitted_height
 
 def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
     num_data_points):
