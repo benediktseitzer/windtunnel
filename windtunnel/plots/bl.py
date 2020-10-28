@@ -245,13 +245,13 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
     ret = []
     for flux, height in zip(data, heights):
         if lat == False:
-            l = ax.errorbar(flux,height,yerr=yerr,fmt='o',color='dodgerblue',
+            l = ax.errorbar(flux,height,xerr=yerr,fmt='o',color='dodgerblue',
                             **kwargs)
             
             labels= [r'wind tunnel flux']
         
         else:
-            l = ax.errorbar(height,flux,yerr=yerr,fmt='o',color='dodgerblue',
+            l = ax.errorbar(height,flux,xerr=yerr,fmt='o',color='dodgerblue',
                          label=r'wind tunnel flux', **kwargs)
             
             labels= [r'wind tunnel flux']
