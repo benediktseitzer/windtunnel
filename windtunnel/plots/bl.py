@@ -299,7 +299,7 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     
     ret = []
     for flux, height in zip(data, heights):
-        l = ax.errorbar(flux,height,yerr=yerr,fmt='o',color='dodgerblue',
+        l = ax.errorbar(flux,height,xerr=yerr,fmt='o',color='dodgerblue',
                         **kwargs)
         
         labels= [r'wind tunnel flux']
@@ -316,8 +316,8 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
     ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
-    ax.set_ylabel('z full-scale [m]')
+    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
+    ax.set_ylabel('z full-scale (m)')
     if np.nanmax(data) < 0:
         ax.set_xlim([np.nanmin(data) * 1.1, 0])
     else:
