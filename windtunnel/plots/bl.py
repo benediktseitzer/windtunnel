@@ -223,22 +223,33 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     
     return ret
 
-def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, ax=None, 
-                **kwargs):
+def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, 
+                ax=None, sfc_height=60., **kwargs):
     """ Plots fluxes from data for their respective height with a 10% range of
     the low point mean. yerr specifies the uncertainty. Its default value is 0.
     WARNING: Data must be made dimensionless before plotting! If lat is True 
     then a lateral profile is created.
-    @parameter: data, type = list or np.array
-    @parameter: height, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: component, type = string
-    @parameter: lat, type = boolean
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    ----------
+    Parameters
+
+    data: list or np.array
+    heights: list or np.array
+    yerr: float
+    component: string
+    var_lat: boolean
+    lat: boolean
+    ax: axis passed to function
+    sfc_height: float
+
+    -------
+    Returns
+
+    ret: list
+    """
+
     if ax is None:
         ax = plt.gca()
-    
+
     data = np.asarray(data)
     heights = np.asarray(heights)
     
@@ -260,7 +271,7 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
         
     ax.grid(True)
     if lat == False:
-        sfc_layer = np.where(heights<60)
+        sfc_layer = np.where(heights<sfc_height)
         xcen = np.mean(data[sfc_layer])
         xrange = np.abs(0.1*xcen)
         ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',
@@ -280,17 +291,28 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False, a
         
     return ret
 
-def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
+def plot_fluxes_log(data, heights, yerr=0, component='v', 
+                    ax=None, sfc_height=60., **kwargs):
     """ Plots fluxes from data for their respective height on a log scale with
     a 10% range of the low point mean. yerr specifies the uncertainty. Its 
     default value is 0. WARNING: Data must be made dimensionless before 
     plotting!
-    @parameter: data, type = list or np.array
-    @parameter: height, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: component, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    ----------
+    Parameters
+
+    data: list or np.array
+    heights: list or np.array
+    yerr: float
+    component: string
+    ax: axis passed to function
+    sfc_height: float
+
+    -------
+    Returns
+
+    ret: list
+    """
+
     if ax is None:
        ax = plt.gca()
 
@@ -309,7 +331,7 @@ def plot_fluxes_log(data, heights, yerr=0, component='v', ax=None, **kwargs):
     # plt.xlim(-0.0025,0.)
     plt.yscale('log')
     ax.grid(True,'both','both')
-    sfc_layer = np.where(heights<60)
+    sfc_layer = np.where(heights<sfc_height)
     xcen = np.mean(data[sfc_layer])
     xrange = np.abs(0.1*xcen)
     ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',

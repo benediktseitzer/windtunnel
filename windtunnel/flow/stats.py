@@ -694,17 +694,28 @@ def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
    
     return np.abs(u_comp / u_ref - ((height-d0)/(z_ref-d0))**alpha)
 
-def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=None):
-    """Estimate the power law exponent alpha.
-    @parameter: u_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: d0, type = float
-    @parameter: sfc_height, type = float
-    @parameter: BL_height, type = float"""
-    #note 07/28/2020: extremely questionable assumptions for calculating
-    #alpha. In particular, it is unknown why uref and zref are not constant
-    #with height. Different approach used in 'calc_profile' function. To be
-    #verified with Bernd Leitl and/or Frank Harms !!
+def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=[]):
+    """ 
+    Calculates the power law exponent alpha 
+    by fitting of the vertical profiles of the mean wind u_mean.
+    There are two ways to pick the used data-points.
+    Choose BL_height (the maximum height used to calculate alpha)
+    Give array BL predifined by own script
+    ----------
+    Parameters
+
+    u_mean: array like
+    heights: array like
+    d0: float
+    BL_height: float
+    BL: array like
+
+    -------
+    Returns
+
+    alpha: float
+    ref: float    
+    """
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
     if BL == []:
@@ -738,13 +749,14 @@ def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=None):
         
     return alpha, ref
 
-def calc_z0(u_mean,heights,d0=0.,sfc_height=120., sfc_layer=None):
+def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     """ 
     Calculates the roughness length z0 and the power law exponent alpha 
     by fitting of the vertical profiles of the mean wind u_mean.
     There are two ways to pick the used data-points.
     Choose sfc_height (the maximum height used to calculate z0)
-    Give array sfc_layer predifined by own script (e.g. <10% deviation in fluxes.)
+    Give array sfc_layer predifined by own script (e.g. <10% deviation 
+    in fluxes or visual estimation)
     ----------
     Parameters
 
@@ -759,10 +771,11 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=120., sfc_layer=None):
 
     z0: float
     err: float    
-    """   
+    """
     u_mean = np.asarray(u_mean)
     heights = np.asarray(heights)
     if sfc_layer == []:
+        print('     No surface layer defined. Use surface height instead.')
         sfc_layer = np.where(heights<sfc_height)
 
     if np.size(heights[sfc_layer]) > 2:
