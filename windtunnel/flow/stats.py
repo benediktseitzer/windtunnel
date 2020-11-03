@@ -340,7 +340,6 @@ def calc_autocorr(timeseries, lag=1):
     timeseries = timeseries[~np.isnan(timeseries)]
     autocorr = np.corrcoef(timeseries[0:np.size(timeseries) - lag],
                            timeseries[lag:])[1, 0]
-
     return autocorr
 
 def calc_spectra(u_comp,v_comp,t_eq,height):
