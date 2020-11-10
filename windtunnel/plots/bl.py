@@ -205,7 +205,7 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                              color='dodgerblue', **kwargs)
             
 
-            labels = [r'turbulence intensity ' + component + '(-)']
+            labels = [r'turbulence intensity ' + component + ' (-)']
             
         ret.append(l)
         
@@ -213,13 +213,13 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     if lat == False:
         ax.legend([l,s,m,r,vr],labels,bbox_to_anchor=(0.5, 1.04),loc=8,
                    fontsize=14)
-        ax.set_xlabel(r'turbulence intensity ' + component + '(-)')
+        ax.set_xlabel(r'turbulence intensity ' + component + ' (-)')
         ax.set_ylabel('z full-scale (m)')
     else:
         ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
                                                                   fontsize=14)
         ax.set_xlabel(var_lat+' full-scale (m)')
-        ax.set_ylabel(r'turbulence intensity ' + component + '(-)')
+        ax.set_ylabel(r'turbulence intensity ' + component + ' (-)')
     
     return ret
 
@@ -278,8 +278,8 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
-        ax.set_ylabel('z full-scale [m]')
+        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
+        ax.set_ylabel('z full-scale (m)')
         if np.nanmax(data)<0:
             ax.set_xlim([np.nanmin(data) * 1.1, 0])
         else:
@@ -490,7 +490,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         ax.set_xlim([10,1000])
         ax.set_ylim([min(heights),1000])
         ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
-        ax.set_ylabel(r'$z$ full-scale ([)m)')    
+        ax.set_ylabel(r'$z$ full-scale (m)')    
         
     else:
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
