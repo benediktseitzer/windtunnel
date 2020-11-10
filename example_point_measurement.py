@@ -11,7 +11,7 @@ import numpy as np
 # are expected to be time, wtref, slow FID, fast ID, release signal and
 # open_rate, where release signal will be ignored.
 
-# Path to your data
+# Path to your data (current path leads to example data)
 path = '\\\\ewtl2\\work\\Johannes\Puff_Beispiele\\'
 #edit 05/20/2020: new variable to specify name of csv file which contains ambient conditions data. If given dataset
 #is not found in the given file, the program resosrts to the default values specified below. 
