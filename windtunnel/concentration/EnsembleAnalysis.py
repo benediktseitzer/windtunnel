@@ -308,8 +308,7 @@ class EnsembleAnalysis(pd.DataFrame):
                for j in range(np.shape(self.ensemble_min)[1]):
                    #edit 08/13/2019: added multiplicative factor of 2 to class widhth, as in function mantioned above from Anne Philip's C program.  			   
                    self.class_width[i,j]=2*(self.ensemble_max[i,j]-self.ensemble_min[i,j])/self.n_classes[i,j]
-       
-				   				   
+       		   				   
     def calc_class_boundaries(self):
         """Calculates boundaries of the classes as a function of ensemble size and number. Method based on original C Program by Anne Philip. Output is a 3d array of values, 
 		with the 1st dimension denoting the ensemble size, the second dimension denoting the ensemble number, and the 
@@ -448,11 +447,6 @@ class EnsembleAnalysis(pd.DataFrame):
         self.temperature = temperature
         self.wtref = wtref
         self.wdir = wdir	
-
-		
-		
-
-		
             
     def plot_convergence_ensemble(self,key=None,path=None,name=None,conv_step=1,full_scale=None):
         """Plot convergence analysis of puff data based on the calculated ensemble means"""

@@ -7,6 +7,7 @@ import logging
 
 from .utils import *
 from .flow.stats import *
+from .flow.utils import *
 # from .concentration.stats import *
 from .plots import *
 from .timeseries import *

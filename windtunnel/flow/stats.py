@@ -30,10 +30,8 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
-    'calc_normalization_params',
-    'calc_theo_arrival_law',
-    'calc_arrival_law',
-    'calc_transit_time_distribution',
+    'calc_alpha_profile',
+    'calc_normalization_params'
 ]
 
 def calc_intervalmean(indata,intervals,DD=False):    
@@ -818,6 +816,57 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     
     return z0, err, fitted_height
 
+def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_height=None,max_height=None,split_height=None):
+    """Calculate profile exponent alpha and roughness length z_0, and save data to excel file. 
+    Avaliable modes are 'all' (calculates profile between min_height and max_height), and 
+    'seperate', which calulates two profiles, one above and one below split_height.
+    Setting minimum and maximum height to 'None' calculates profile to bottom and top of
+    data respectively. All heights assumed in m full-scale."""
+    print("Warning: Assuming that wind data is non-dimensional, and that heights are in m full-scale. d_0 in mm.")
+    #Note: heights should be in (m) full-scale. Change code if this is not the case!
+    
+    heights=np.asarray(heights)
+    mean_mag=np.asarray(mean_mag)
+    if min_height == None:
+       min_height = np.min(heights)
+    if max_height == None:
+       max_height = np.max(heights)
+    if mode == 'all':
+       heights_mask=(heights>=min_height) & (heights<=max_height)
+       heights=heights[heights_mask]
+       mean_mag=mean_mag[heights_mask]
+       z_norm = (np.array(heights)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm=np.vstack([np.log(z_norm),np.zeros(len(z_norm))]).transpose()
+       print(z_norm)
+       alpha=np.linalg.lstsq(z_norm,np.log(np.array(mean_mag)))
+       print(alpha) 
+       return alpha
+    elif mode == 'seperate':
+       heights_bottom=heights[(heights>=min_height) & (heights<=split_height)]
+       mean_mag_bottom = mean_mag[(heights>=min_height) & (heights<=split_height)]
+       z_norm_bottom = (np.array(heights_bottom)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_bottom=np.vstack([np.log(z_norm_bottom),np.zeros(len(z_norm_bottom))]).transpose()
+       print(z_norm_bottom)
+       alpha_bottom=np.linalg.lstsq(z_norm_bottom,np.log(np.array(mean_mag_bottom)))
+       print(alpha_bottom)
+       heights_top=heights[(heights>=split_height) & (heights<=max_height)]
+       mean_mag_top = mean_mag[(heights>=split_height) & (heights<=max_height)]
+       z_norm_top = (np.array(heights_top)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_top=np.vstack([np.log(z_norm_top),np.zeros(len(z_norm_top))]).transpose()
+       print(z_norm_top)
+       alpha_top=np.linalg.lstsq(z_norm_top,np.log(np.array(mean_mag_top)))
+       print(alpha_top)  
+       return alpha_top
+
 def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
     num_data_points):
     pass
@@ -856,64 +905,3 @@ def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x,
 #                          reduced_transform[-10:])>=0.)[0],[9]))[0]
 #    
 #    return reduced_transform, reduced_freq, aliasing
-
-def calc_theo_arrival_law(t_arr, data_rate):
-    """ 
-    calculate theoretical particle arrival law. 
-    if exponential, there is temporally uniform seeding.
-    
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate from mean file 
-    """
-
-    # allocate
-    delta_t_arr = []
-    # calculate inter arrival times for each burst
-    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
-    delta_t_arr = np.asarray(delta_t_arr)
-    # calculate particle arrival law: p(t_arr) = dN/dt * exp(- dN/dt * t_arr)
-    particle_arrival_law = data_rate * np.exp(-data_rate * delta_t_arr)
-
-    return delta_t_arr, particle_arrival_law
-
-def calc_arrival_law(t_arr, data_rate):
-    """ 
-    calculate particle arrival law and fit the distribution. 
-    if exponential, there is temporally uniform seeding.
-    
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate N/T
-    """
-
-    # allocate
-    delta_t_arr = []
-    # calculate inter arrival times for each burst
-    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
-    delta_t_arr = np.asarray(delta_t_arr)
-
-    data_entries, bins = np.histogram(delta_t_arr, bins='auto',density=True)
-    binscenters = np.array([0.5 * (bins[i] + bins[i+1]) for i in range(len(bins)-1)])
-
-    def fit_function(x, A):
-        return (A * np.exp(-x * A) )
-
-    popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries)
-    print('     fitted data rate = {}'.format(popt))
-    print('     expected data rate = {}'.format(data_rate))
-    # scale
-    # data_entries = data_entries * popt
-
-    return binscenters, data_entries, popt
-
-def calc_transit_time_distribution(transit_time):
-    """ 
-    calculate particle arrival law. 
-    if exponential, there is temporally uniform seeding.
-    
-    @parameter: transit_time, type = list or np.array, 
-                                    time particle moves 
-                                    through measurement volume
-    """
-
-    return sc.skew(transit_time, nan_policy='omit')
-

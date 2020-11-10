@@ -191,20 +191,20 @@ class PointConcentration(pd.DataFrame):
            return		   
         elif name==None:
            print('Warning: Name of dataset not specified. Cannot attempt to locate csv file containing ambient conditions data. Resorting\
-to input data in example_puff_measurement.py')
+                to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
         elif not os.path.exists(input_file):
            print('Error: Cannont find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
-conditions file. Resorting to input data in example_puff_measurement.py')	
+                conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   
         else:	
            ambient_conditions=pd.read_csv(input_file,sep=',',index_col=0) 
         
         if name not in ambient_conditions.keys():
            print('Error: Dataset not found in csv file. Check to make sure that csv file to make sure that the csv file contains all necessary \
-data and is properly formatted. Resorting to input data in example_puff_measurement.py')
+                data and is properly formatted. Resorting to input data in example_puff_measurement.py')
            return	
 
         #list of all variables output by read_ambient_conditions fuction.  
@@ -212,7 +212,7 @@ data and is properly formatted. Resorting to input data in example_puff_measurem
         'scaling_factor','scale','ref_length','ref_height','gas_name','mol_weight','gas_factor','full_scale_wtref','full_scale_flow_rate' }
         if not all(name2 in ambient_conditions[name] for name2 in necessary_keys):
            print('Error: csv file does not contain all necessary ambient conditions data. Check to make sure that csv file to make sure that \
-the csv file contains all necessary data and is properly formatted. Resorting to input data in example_puff_measurement.py')
+                the csv file contains all necessary data and is properly formatted. Resorting to input data in example_puff_measurement.py')
            return			   
        		
 
