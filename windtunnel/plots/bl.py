@@ -486,7 +486,8 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
                   #bbox_to_anchor=(0.5,1.05),loc='lower center',
                   #borderaxespad=0.,ncol=2,fontsize=16)
         ax.legend(loc='upper center',bbox_to_anchor=(0.5,1.5),borderaxespad=0.,ncol=2,fontsize=12)
-        
+        # ax.legend()
+
         ax.set_xlim([10,1000])
         ax.set_ylim([min(heights),1000])
         ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
