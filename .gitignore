@@ -5,7 +5,7 @@ windtunnel.log
 postprocessed*
 *txt
 # ignore own scripts
-own*
-example*
+#own*
+#example*
 # ignore itself
-.gitignore
+#.gitignore
