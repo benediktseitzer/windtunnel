@@ -127,10 +127,18 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     return ret
     
 def plot_hist(data,ax=None,**kwargs):
-    """Creates a scatter plot of x and y.
-    @parameter: data, type = list or np.array
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    """Creates a histogram for data.
+
+    ----------
+    Parameters
+
+    data: array like
+    ax: axis object
+    
+    ----------
+    Returns
+    ret: 
+    """
 	#edit 08/01/2019: convert data from times series to array manually, to avoid
     #compatibility issues with python 3.6 & pandas 0.24
     
@@ -147,15 +155,15 @@ def plot_hist(data,ax=None,**kwargs):
     
     count = (count/np.size(data))*100.
     
-    # Plot
-    ret = ax.bar(bins[:-1],count,width = np.nanmean(np.diff(bins)))
+    # Plots bar-plot using np.histogram data
+    ret = ax.bar(bins[:-1],count,width = np.nanmean(np.diff(bins)), 
+            color='cornflowerblue')
     ticks=bins[:-1]+0.5*np.nanmean(np.diff(bins))
     ax.set_xticks(ticks.round(2))
     for tick in ax.get_xticklabels():
         tick.set_rotation(55)
     ax.set_xlim([ticks.min()-0.5*np.nanmean(np.diff(bins)),
               ticks.max()+0.5*np.nanmean(np.diff(bins))])
-           
     ax.set_ylabel('relative Frequency (%)')
     ax.grid('on')
     
@@ -286,7 +294,7 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
             ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ $(-)$')
         ax.set_xlabel(var_lat+' full-scale (m)')
         
     return ret
@@ -337,9 +345,10 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
-    ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
-    ax.set_ylabel('z full-scale (m)')
+    ax.legend([l],labels,loc='best',fontsize=16, numpoints=1)
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ (-)')
+    ax.set_ylabel('$z$ (m)')
+    ax.set_ylim(4.,100.)
     if np.nanmax(data) < 0:
         ax.set_xlim([np.nanmin(data) * 1.1, 0])
     else:
@@ -464,7 +473,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
 
     ret = []
     if lat == False:
-        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',label='wind tunnel')
+        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='cornflowerblue',label='wind tunnel')
         ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1,label=r'$z_0=10\ m$ (theory)')
         ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1,label=r'$z_0=1\ m$ (theory)')
         ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
