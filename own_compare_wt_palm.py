@@ -112,8 +112,9 @@ elif data_nd == 0:
 # 1 = vertical profile
 # 2 = lateral profile
 # 5 = compare profiles
+# 6 = compare multiple palm to wind tunnel 
 # 7 = longitudinal profile
-mode = 5
+mode = 6
 calc_palm = True
 outdata_path = '../wt_outdata/'# format in npz
 
@@ -560,7 +561,7 @@ for name in namelist:
 
     print('\n Finished data-processing for: {} \n'.format(name))
 
-# comparing mode for cummulative flux and wind-profile plots 
+# comparing mode for single palm simulations and wind tunnel measurements
 if mode == 5:
     plt.style.use('classic')
     plt.figure(7)
@@ -568,7 +569,7 @@ if mode == 5:
     #             '#003eda', '#007cff', '#3ebdff',
     #             '#7cffff', '#a8ebf4', '#d5d7e9']
     # c_list = ['#00006f', '#a8ebf4']    
-    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']            
+    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
     component = 'w'
 
     y_max = 300.
@@ -958,5 +959,129 @@ if mode == 5:
 
 
     print('\n plotted cummulative profiles over length.\n')
+
+
+# comparing mode for multiple palm simulations and wind tunnel measurements
+if mode == 6:
+    plt.style.use('classic')
+    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
+    
+    palm_data = {}
+    palm_data.fromkeys(papy.globals.run_numbers)
+    var_name_list = ['flux', 'u']
+    #read palm-data and init 
+    for run in papy.globals.run_numbers:
+        print('     Start processing palm-run #{}'.format(run[-3:]))
+        papy.globals.run_number = run
+        palm_data[papy.globals.run_number] = {}
+        palm_data[papy.globals.run_number].fromkeys(var_name_list)
+        nc_file = '{}_pr{}.nc'.format(papy.globals.run_name,papy.globals.run_number)        
+        
+        # read variables for plot
+        time, time_unit = papy.read_nc_time(nc_file_path,nc_file)
+        # read wind tunnel profile
+        wt_pr, wt_u_ref, wt_z = papy.read_wt_ver_pr(wt_file_pr, wt_file_ref ,wt_scale)        
+        
+        for i,var_name in enumerate(var_name_list):
+            if var_name == 'u':
+                grid_name = 'z{}'.format(var_name)        
+                var, var_max, var_unit = papy.read_nc_var_ver_pr(nc_file_path,nc_file,var_name)
+                z, z_unit = papy.read_nc_grid(nc_file_path,nc_file,grid_name)
+                palm_data[run][var_name] = var
+            elif var_name == 'flux':
+                grid_name = 'zw*u*'
+                var1, var_max1, var_unit1 = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*u*')
+                var2, var_max2, var_unit2 = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w"u"')
+                var = var1 + var2
+                palm_data[run][var_name] = var
+            else:
+                grid_name = 'z{}'.format(var_name)        
+                var, var_max, var_unit = papy.read_nc_var_ver_pr(nc_file_path,nc_file,var_name)
+                z, z_unit = papy.read_nc_grid(nc_file_path,nc_file,grid_name)
+                palm_data[run][var_name] = var                
+        print('     End processing palm-run #{}'.format(run[-3:]))
+
+    # plot flux data
+    plt.figure(8)
+    j = 0
+    for name in namelist:
+        heights = []
+        fluxes = []
+        files = wt.get_files(path,name)
+        turb_data[name] = {}
+        turb_data[name].fromkeys(files)
+
+        for file in files:
+            heights.append((time_series[name][file].z))
+            x_val = time_series[name][file].x
+            x_val += x_val_shift
+            turb_data[name][file] = wt.calc_turb_data_wght(
+                                        time_series[name][file].t_transit,
+                                        time_series[name][file].u.dropna(),
+                                        time_series[name][file].v.dropna())            
+            fluxes.append(turb_data[name][file][2])
+
+        ax = plt.gca()
+        ax.grid(True, 'both', 'both')
+
+        for i in range(np.size(fluxes)):
+            if i == 1:
+                # l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
+                #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
+                if name[6] == 'L':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
+                                label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name[6] == 'S':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j],
+                                label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name[6] == 'D':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
+                                label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name == 'BA_BL_UW_010':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j],
+                                label=r'smooth wall'.format(x_val))
+                elif name == 'BA_BL_UW_001':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j],
+                                label=r'boundary layer')
+            else:
+                if name[6] == 'L':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j])
+                if name[6] == 'S':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j])
+                if name[6] == 'D':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j])
+                elif name == 'BA_BL_UW_010':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j])
+                elif name == 'BA_BL_UW_001':
+                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j])
+        j += 1
+
+    print(' Start plotting of palm-runs of {}'.format(papy.globals.run_name))
+    for i in range(len(time)-1,len(time)):
+        try:
+            for run in papy.globals.run_numbers:
+                ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
+                        label='PALM - {}'.format(run[-3:]))
+        except:
+            print('Exception has occurred: StopIteration - plot_ver_profile')
+        ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
+                palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
+    ax.set_ylabel(r'$z$ (m)')
+    # ax.set_ylim(y_min, y_max)
+    if data_nd == 0:
+        ax.set_xlim(-0.004,0.)
+    elif data_nd == 1:
+        ax.set_xlim(-0.1,0.)
+    plt.legend(loc= 'top left', numpoints=1)
+    # plt.yscale('log')
+    ax.set_yscale('log', nonposy='clip')
+    plt.tight_layout()
+    plt.grid(True,'both','both')    
+    plt.savefig(plot_path_0 + 'cummulative_flux_log_range' + '.' + file_type,
+                bbox_inches='tight')
+
+
+    print(' End plotting of palm-runs of {}'.format(papy.globals.run_name))
 
 # %%
