@@ -57,7 +57,7 @@ x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
-papy.globals.run_number = '.003'
+papy.globals.run_number = '.008'
 # PHYSICS
 papy.globals.z0 = 0.021
 papy.globals.alpha = 0.17
@@ -705,7 +705,7 @@ if mode == 5:
         except:
             print('Exception has occurred: StopIteration - plot_ver_profile')
 
-    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
     ax.set_ylabel(r'$z$ (m)')
     ax.set_ylim(y_min, y_max)
     if data_nd == 0:
