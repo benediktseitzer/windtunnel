@@ -57,9 +57,10 @@ x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
-papy.globals.run_number = '.008'
+papy.globals.run_number = '.019'
+papy.globals.run_numbers = ['.014', '.019']
 # PHYSICS
-papy.globals.z0 = 0.021
+papy.globals.z0 = 0.02
 papy.globals.alpha = 0.17
 papy.globals.ka = 0.41
 papy.globals.d0 = 0.
@@ -218,7 +219,16 @@ if calc_palm:
     height_list = [2., 4., 5., 7.5, 10., 15.,  20., 25., 30., 35., 40., 45., 50., 60.,
                         70., 80., 90., 100., 125., 150.]
     time_prof, time_prof_unit = papy.read_nc_time(nc_file_path, nc_file)
-    palm_wtref = 5.51057969
+    
+    # estimate palm_wtref
+    wt_file_pr = '../../experiments/balcony/BL/coincidence/mean/BA_BL_UW_001.000001.txt'
+    wt_file_ref = '../../experiments/balcony/BL/wtref/BA_BL_UW_001_wtref.txt'  
+    wt_scale = 100.
+    wt_u_pr, wt_u_ref, wt_z = papy.read_wt_ver_pr(wt_file_pr, wt_file_ref, wt_scale)
+    print('\n wind tunnel profile loaded \n')
+    z = np.linspace(0.,256.,65)
+    u_pr, u_fric = papy.calc_input_profile(wt_u_pr, wt_z, z)
+    palm_wtref = u_pr[-1]
 
     # calculate palm-fluxes
     grid_name = 'zw"u"'
