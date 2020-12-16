@@ -965,7 +965,7 @@ if mode == 5:
 if mode == 6:
     plt.style.use('classic')
     c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
-    
+
     palm_data = {}
     palm_data.fromkeys(papy.globals.run_numbers)
     var_name_list = ['flux', 'u']
@@ -980,7 +980,7 @@ if mode == 6:
         # read variables for plot
         time, time_unit = papy.read_nc_time(nc_file_path,nc_file)
         # read wind tunnel profile
-        wt_pr, wt_u_ref, wt_z = papy.read_wt_ver_pr(wt_file_pr, wt_file_ref ,wt_scale)        
+        wt_pr, wt_u_ref, wt_z = papy.read_wt_ver_pr(wt_file_pr, wt_file_ref , wt_scale)        
         
         for i,var_name in enumerate(var_name_list):
             if var_name == 'u':
@@ -992,7 +992,14 @@ if mode == 6:
                 grid_name = 'zw*u*'
                 var1, var_max1, var_unit1 = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*u*')
                 var2, var_max2, var_unit2 = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w"u"')
-                var = var1 + var2
+                if data_nd == 0:
+                    var = var1/palm_wtref**2. + var2/palm_wtref**2.
+                    var1 = var1/palm_wtref**2.
+                    var2 = var2/palm_wtref**2.
+                elif data_nd == 1:
+                    var = var1 + var2
+                    var1 = var1
+                    var2 = var2
                 palm_data[run][var_name] = var
             else:
                 grid_name = 'z{}'.format(var_name)        
@@ -1056,17 +1063,19 @@ if mode == 6:
                     l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j])
         j += 1
 
+    color_list = ['orchid', 'hotpink']
+    z0_list = [0.02, 0.07]
     print(' Start plotting of palm-runs of {}'.format(papy.globals.run_name))
     for i in range(len(time)-1,len(time)):
         try:
-            for run in papy.globals.run_numbers:
+            for j,run in enumerate(papy.globals.run_numbers):
                 ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
-                        label='PALM - {}'.format(run[-3:]))
+                        label=r'PALM - $z_0=${}'.format(z0_list[j]), color=color_list[j])
         except:
             print('Exception has occurred: StopIteration - plot_ver_profile')
         ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
                 palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
-    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
+    ax.set_xlabel(r'u' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
     ax.set_ylabel(r'$z$ (m)')
     # ax.set_ylim(y_min, y_max)
     if data_nd == 0:
