@@ -968,7 +968,7 @@ if mode == 6:
 
     palm_data = {}
     palm_data.fromkeys(papy.globals.run_numbers)
-    var_name_list = ['flux', 'u']
+    var_name_list = ['u', 'flux']
     #read palm-data and init 
     for run in papy.globals.run_numbers:
         print('     Start processing palm-run #{}'.format(run[-3:]))
@@ -988,6 +988,8 @@ if mode == 6:
                 var, var_max, var_unit = papy.read_nc_var_ver_pr(nc_file_path,nc_file,var_name)
                 z, z_unit = papy.read_nc_grid(nc_file_path,nc_file,grid_name)
                 palm_data[run][var_name] = var
+                palm_wtref = var_max
+                print(palm_wtref)
             elif var_name == 'flux':
                 grid_name = 'zw*u*'
                 var1, var_max1, var_unit1 = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*u*')
@@ -1006,7 +1008,7 @@ if mode == 6:
                 var, var_max, var_unit = papy.read_nc_var_ver_pr(nc_file_path,nc_file,var_name)
                 z, z_unit = papy.read_nc_grid(nc_file_path,nc_file,grid_name)
                 palm_data[run][var_name] = var                
-        print('     End processing palm-run #{}'.format(run[-3:]))
+        print('     End processing palm-run #{} \n'.format(run[-3:]))
 
     # plot flux data
     plt.figure(8)
@@ -1070,19 +1072,19 @@ if mode == 6:
         try:
             for j,run in enumerate(papy.globals.run_numbers):
                 ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
-                        label=r'PALM - $z_0=${}'.format(z0_list[j]), color=color_list[j])
+                        label=r'PALM - $z_0={}$'.format(z0_list[j]), color=color_list[j])
         except:
             print('Exception has occurred: StopIteration - plot_ver_profile')
         ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
                 palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
-    ax.set_xlabel(r'u' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
+    ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
     ax.set_ylabel(r'$z$ (m)')
-    # ax.set_ylim(y_min, y_max)
+    ax.set_ylim(1., 265)
     if data_nd == 0:
         ax.set_xlim(-0.004,0.)
     elif data_nd == 1:
         ax.set_xlim(-0.1,0.)
-    plt.legend(loc= 'top left', numpoints=1)
+    plt.legend(loc= 'upper left', numpoints=1)
     # plt.yscale('log')
     ax.set_yscale('log', nonposy='clip')
     plt.tight_layout()
@@ -1091,6 +1093,6 @@ if mode == 6:
                 bbox_inches='tight')
 
 
-    print(' End plotting of palm-runs of {}'.format(papy.globals.run_name))
+    print(' End plotting of palm-runs of {} \n'.format(papy.globals.run_name))
 
 # %%
