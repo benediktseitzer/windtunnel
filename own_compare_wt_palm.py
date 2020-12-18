@@ -114,7 +114,7 @@ elif data_nd == 0:
 # 5 = compare profiles
 # 6 = compare multiple palm to wind tunnel 
 # 7 = longitudinal profile
-mode = 6
+mode = 5
 calc_palm = True
 outdata_path = '../wt_outdata/'# format in npz
 
@@ -231,6 +231,16 @@ if calc_palm:
     u_pr, u_fric = papy.calc_input_profile(wt_u_pr, wt_z, z)
     palm_wtref = u_pr[-1]
 
+    # calculate palm-velocity-profile
+    grid_name = 'zu'
+    z_u, z_unit = papy.read_nc_grid(nc_file_path, nc_file, grid_name)
+    palm_u, palm_u_max, palm_u_unit = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u')
+    if data_nd == 0:
+        palm_u = palm_u/palm_wtref
+    palm_wtref = palm_u_max
+    print('     palm_u_max = {}'.format(palm_u_max))
+    print('     Calculated PLAM-u-profile')
+
     # calculate palm-fluxes
     grid_name = 'zw"u"'
     z_flux, z_unit = papy.read_nc_grid(nc_file_path, nc_file, grid_name)
@@ -245,14 +255,6 @@ if calc_palm:
         palm_flux1 = var1
         palm_flux2 = var2
     print('     Calculated PLAM-fluxes')
-
-    # calculate palm-velocity-profile
-    grid_name = 'zu'
-    z_u, z_unit = papy.read_nc_grid(nc_file_path, nc_file, grid_name)
-    palm_u, palm_u_max, palm_u_unit = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u')
-    if data_nd == 0:
-        palm_u = palm_u/palm_wtref
-    print('     Calculated PLAM-u-profile')
 
     # calculate palm-Lux
     palm_lux = np.zeros(len(height_list))
@@ -644,7 +646,7 @@ if mode == 5:
         ax.set_xlim(0.2,1.)   
     elif data_nd == 1:
         axes.set_ylim(min(palm_u), max(palm_u))   
-    plt.legend(loc= 'top left', numpoints=1)
+    plt.legend(loc= 'upper left', numpoints=1)
     plt.yscale('log')    
     plt.tight_layout()
     plt.grid(True,'both','both')
@@ -723,7 +725,7 @@ if mode == 5:
         ax.set_xlim(-0.004,0.)
     elif data_nd == 1:
         ax.set_xlim(-0.1,0.)
-    plt.legend(loc= 'top left', numpoints=1)
+    plt.legend(loc= 'upper left', numpoints=1)
     plt.yscale('log')
     plt.tight_layout()
     plt.grid(True,'both','both')    
@@ -947,7 +949,7 @@ if mode == 5:
     ax.set_ylabel(r'$z$ (m)')
     ax.set_ylim(y_min, y_max)
     ax.set_xlim(10., 1000.)    
-    plt.legend(loc= 'top left', numpoints=1)
+    plt.legend(loc= 'upper left', numpoints=1)
     plt.yscale('log')
     plt.xscale('log')
     plt.tight_layout()
@@ -1010,88 +1012,89 @@ if mode == 6:
                 palm_data[run][var_name] = var                
         print('     End processing palm-run #{} \n'.format(run[-3:]))
 
-    # plot flux data
-    plt.figure(8)
-    j = 0
-    for name in namelist:
-        heights = []
-        fluxes = []
-        files = wt.get_files(path,name)
-        turb_data[name] = {}
-        turb_data[name].fromkeys(files)
-
-        for file in files:
-            heights.append((time_series[name][file].z))
-            x_val = time_series[name][file].x
-            x_val += x_val_shift
-            turb_data[name][file] = wt.calc_turb_data_wght(
-                                        time_series[name][file].t_transit,
-                                        time_series[name][file].u.dropna(),
-                                        time_series[name][file].v.dropna())            
-            fluxes.append(turb_data[name][file][2])
-
-        ax = plt.gca()
-        ax.grid(True, 'both', 'both')
-
-        for i in range(np.size(fluxes)):
-            if i == 1:
-                # l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
-                #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
-                if name[6] == 'L':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
-                                label=r'$s_b={}$ m'.format(name[4], x_val))
-                elif name[6] == 'S':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j],
-                                label=r'$s_b={}$ m'.format(name[4], x_val))
-                elif name[6] == 'D':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
-                                label=r'$s_b={}$ m'.format(name[4], x_val))
-                elif name == 'BA_BL_UW_010':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j],
-                                label=r'smooth wall'.format(x_val))
-                elif name == 'BA_BL_UW_001':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j],
-                                label=r'boundary layer')
-            else:
-                if name[6] == 'L':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j])
-                if name[6] == 'S':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j])
-                if name[6] == 'D':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j])
-                elif name == 'BA_BL_UW_010':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j])
-                elif name == 'BA_BL_UW_001':
-                    l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j])
-        j += 1
-
-    color_list = ['orchid', 'hotpink']
-    z0_list = [0.02, 0.07]
     print(' Start plotting of palm-runs of {}'.format(papy.globals.run_name))
-    for i in range(len(time)-1,len(time)):
-        try:
-            for j,run in enumerate(papy.globals.run_numbers):
-                ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
-                        label=r'PALM - $z_0={}$'.format(z0_list[j]), color=color_list[j])
-        except:
-            print('Exception has occurred: StopIteration - plot_ver_profile')
-        ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
-                palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
-    ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
-    ax.set_ylabel(r'$z$ (m)')
-    ax.set_ylim(1., 265)
-    if data_nd == 0:
-        ax.set_xlim(-0.004,0.)
-    elif data_nd == 1:
-        ax.set_xlim(-0.1,0.)
-    plt.legend(loc= 'upper left', numpoints=1)
-    # plt.yscale('log')
-    ax.set_yscale('log', nonposy='clip')
-    plt.tight_layout()
-    plt.grid(True,'both','both')    
-    plt.savefig(plot_path_0 + 'cummulative_flux_log_range' + '.' + file_type,
-                bbox_inches='tight')
+    # plot flux data
+    plot_flux = True
+    if plot_flux:
+        plt.figure(8)
+        j = 0
+        for name in namelist:
+            heights = []
+            fluxes = []
+            files = wt.get_files(path,name)
+            turb_data[name] = {}
+            turb_data[name].fromkeys(files)
 
+            for file in files:
+                heights.append((time_series[name][file].z))
+                x_val = time_series[name][file].x
+                x_val += x_val_shift
+                turb_data[name][file] = wt.calc_turb_data_wght(
+                                            time_series[name][file].t_transit,
+                                            time_series[name][file].u.dropna(),
+                                            time_series[name][file].v.dropna())            
+                fluxes.append(turb_data[name][file][2])
+
+            ax = plt.gca()
+            ax.grid(True, 'both', 'both')
+
+            for i in range(np.size(fluxes)):
+                if i == 1:
+                    # l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
+                    #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
+                    if name[6] == 'L':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                    elif name[6] == 'S':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                    elif name[6] == 'D':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                    elif name == 'BA_BL_UW_010':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j],
+                                    label=r'smooth wall'.format(x_val))
+                    elif name == 'BA_BL_UW_001':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j],
+                                    label=r'boundary layer')
+                else:
+                    if name[6] == 'L':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j])
+                    if name[6] == 'S':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j])
+                    if name[6] == 'D':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j])
+                    elif name == 'BA_BL_UW_010':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j])
+                    elif name == 'BA_BL_UW_001':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j])
+            j += 1
+
+        color_list = ['orchid', 'hotpink']
+        z0_list = [0.02, 0.07]
+        for i in range(len(time)-1,len(time)):
+            try:
+                for j,run in enumerate(papy.globals.run_numbers):
+                    ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
+                            label=r'PALM - $z_0={}$'.format(z0_list[j]), color=color_list[j])
+            except:
+                print('Exception has occurred: StopIteration - plot_ver_profile')
+            ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
+                    palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
+        ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
+        ax.set_ylabel(r'$z$ (m)')
+        ax.set_ylim(1., 265)
+        if data_nd == 0:
+            ax.set_xlim(-0.004,0.)
+        elif data_nd == 1:
+            ax.set_xlim(-0.1,0.)
+        plt.legend(loc= 'upper left', numpoints=1)
+        # plt.yscale('log')
+        ax.set_yscale('log', nonposy='clip')
+        plt.tight_layout()
+        plt.grid(True,'both','both')    
+        plt.savefig(plot_path_0 + 'cummulative_flux_log_range' + '.' + file_type,
+                    bbox_inches='tight')
 
     print(' End plotting of palm-runs of {} \n'.format(papy.globals.run_name))
 
