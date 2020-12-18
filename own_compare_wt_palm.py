@@ -57,10 +57,10 @@ x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
-papy.globals.run_number = '.019'
+papy.globals.run_number = '.018'
 papy.globals.run_numbers = ['.014', '.019']
 # PHYSICS
-papy.globals.z0 = 0.02
+papy.globals.z0 = 0.03
 papy.globals.alpha = 0.17
 papy.globals.ka = 0.41
 papy.globals.d0 = 0.
@@ -91,7 +91,6 @@ else:
 
 #set data_nd to 1 if using non-dimensional data
 data_nd = 0
-
 if data_nd == 1:
     u_err = 0.0169
     v_err = 0.0169
@@ -121,18 +120,18 @@ outdata_path = '../wt_outdata/'# format in npz
 # scale of the model.
 scale = 100.
 
-#plot
+# to plot or not to plot:
 plot = True
 
 # Check if all necessary output directories exist
 wt.check_directory(plot_path_0)
 wt.check_directory(txt_path)
 
+# allocate variables
 time_series = {}
 time_series.fromkeys(namelist)
 time_series_eq = {}
 time_series_eq.fromkeys(namelist)
-
 files = []
 
 # Gather all files into Timeseries objects, save raw timeseries
@@ -179,7 +178,6 @@ for name in namelist:
         ts.save2file(file)     
         time_series[name][file] = ts
         time_series_eq[name][file] = ts_eq
-
     print('\n created Timeseries object for: {} \n'.format(name))
 
 if files==[]:
@@ -207,7 +205,6 @@ lux_data = {}
 lux_data.fromkeys(namelist)
 spectra_data = {}
 spectra_data.fromkeys(namelist)
-
 
 # calculate palm measures
 height_list = []
