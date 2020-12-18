@@ -44,8 +44,6 @@ MAIN
 #             'BA_S7_L_UW_007', 'BA_S7_S_UW_006', 'BA_S7_D_UW_007',
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
-# namelist = ['BA_BL_UW_001']
-
 namelist = ['BA_BL_UW_001', 
             'BA_S5_L_UW_002',  
             'BA_S6_L_UW_007', 
@@ -57,10 +55,10 @@ x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
-papy.globals.run_number = '.018'
+papy.globals.run_number = '.014'
 papy.globals.run_numbers = ['.014', '.019']
 # PHYSICS
-papy.globals.z0 = 0.03
+papy.globals.z0 = 0.07
 papy.globals.alpha = 0.17
 papy.globals.ka = 0.41
 papy.globals.d0 = 0.
@@ -137,7 +135,6 @@ files = []
 # Gather all files into Timeseries objects, save raw timeseries
 # prepare environment
 for name in namelist:
-    # prepare environment
     if os.path.exists('{}{}'.format(plot_path_0,name)):
         print('\n {}{} already exists \n'.format(plot_path_0,name))
     else:
@@ -183,8 +180,8 @@ for name in namelist:
 if files==[]:
    raise Exception('No Matching File Names Found. Please check namelist and/or path!') 
    
+# Check if positions in all files match for vertical profile
 for name in namelist:
-    # Check if positions in all files match for vertical profile
     files = wt.get_files(path, name)
     for i in range(np.size(files)-2):
         if time_series[name][files[i]].x != time_series[name][files[i+1]].x:
@@ -203,8 +200,6 @@ turb_data = {}
 turb_data.fromkeys(namelist)
 lux_data = {}
 lux_data.fromkeys(namelist)
-spectra_data = {}
-spectra_data.fromkeys(namelist)
 
 # calculate palm measures
 height_list = []
@@ -314,8 +309,6 @@ for name in namelist:
     turb_data[name].fromkeys(files)
     lux_data[name] = {}
     lux_data[name].fromkeys(files)
-    spectra_data[name] = {}
-    spectra_data[name].fromkeys(files)
 
     for file in files:
         print('     Started data-processing for: {} \n'.format(file))        
@@ -389,175 +382,6 @@ for name in namelist:
             I_v.append(turb_data[name][file][1])
             fluxes.append(turb_data[name][file][2])
             lux.append(lux_data[name][file])
-
-    # plot results
-    if mode == 1 and plot:
-
-        # Plot results of a vertical profile
-        # Wind components
-        plt.figure(0)
-
-        # calculate theoretical wind profile
-        u_pr, u_pw, u_fric = papy.calc_theoretical_profile(u_mean_wght, wtref, heights, z_u)
-        plt.style.use('classic')
-        fig, ax = plt.subplots()
-        ax.grid(True,'both','both')
-
-        for i in range(len(time_prof)-1,len(time_prof)):
-            try:
-                ax.plot(palm_u[i,:-1], z_u[:-1], label='PALM', 
-                        color='darkviolet')
-            except:
-                print('Exception has occurred: StopIteration - plot_ver_profile')
-        ax.plot(u_pr, z_u, label='prandtls law', 
-                    color='darkorange',linestyle='--')
-        ax.errorbar(u_mean_wght,heights,xerr=u_v_err*np.mean(wtref), 
-                    label='wind tunnel',fmt='o',c='cornflowerblue')        
-
-        ax.set(xlabel=r'${}$ $({})$'.format(var_name,var_unit), 
-                ylabel=r'$z$ $({})$'.format(z_unit), 
-                title= r'Height profile of ${}$'.format(var_name))
-        # ax.set_yscale('log', nonposy='clip')
-        ax.legend(loc='best', fontsize=11, numpoints=1)
-        ax.set_ylim(0., 300.)
-        ax.set_xlim(0., 1.)
-
-        plt.tight_layout()
-        plt.savefig(plot_path + 'compare_u_' + name + '.' + file_type)
-        plt.close(0)
-        
-        # Turbulence intensity of u component
-        plt.figure(2)
-        ax = plt.gca()
-        ax.grid(True, 'both', 'both')        
-        slight,moderate,rough,very_rough = wt.get_turb_referencedata('I_u',
-                                                                    ref_path)
-        for turb_int, height in zip(I_u, heights):  
-            l = ax.errorbar(turb_int,height,xerr=I_u_err, 
-                        fmt='o', color='cornflowerblue')
-            s = ax.plot(slight[1,:],slight[0,:],'k-',linewidth=0.5)
-            m = ax.plot(moderate[1,:],moderate[0,:],'k-',linewidth=0.5)
-            r = ax.plot(rough[1,:],rough[0,:],'k-',linewidth=0.5)
-            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k-',linewidth=0.5)
-        labels = ['wind tunnel',
-                'VDI slightly rough (lower bound)',
-                'VDI moderately rough (lower bound)',
-                'VDI rough (lower bound)',
-                'VDI very rough (lower bound)',
-                'PALM']
-
-        pl = ax.errorbar(palm_Iu, height_list, xerr=0.1*palm_Iu, markersize=3,
-                    fmt='o', color = 'darkviolet')
-
-        ax.legend([l,s,m,r,vr,pl], labels, fontsize=11, numpoints=1)
-        ax.set_ylim(0., 300.)        
-        ax.set_xlabel(r'turbulence intensity ' + r'$I_u$' + ' (-)')
-        ax.set_ylabel('z full-scale (m)')        
-        plt.tight_layout()
-        plt.savefig(plot_path + 'compare_' + r'I_u' + '_' + name + '.' + file_type)
-        plt.close(2)
-    
-        # # Turbulence intensity of the second component
-        plt.figure(3)
-        ax = plt.gca()
-        ax.grid(True, 'both', 'both')        
-        slight,moderate,rough,very_rough = wt.get_turb_referencedata('I_w',
-                                                                    ref_path)
-        for turb_int, height in zip(I_v, heights):  
-            l = ax.errorbar(turb_int,height,xerr=I_v_err, 
-                        fmt='o', color='cornflowerblue')
-            s = ax.plot(slight[1,:],slight[0,:],'k-',linewidth=0.5)
-            m = ax.plot(moderate[1,:],moderate[0,:],'k-',linewidth=0.5)
-            r = ax.plot(rough[1,:],rough[0,:],'k-',linewidth=0.5)
-            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k-',linewidth=0.5)
-        labels = ['wind tunnel',
-                'VDI slightly rough (lower bound)',
-                'VDI moderately rough (lower bound)',
-                'VDI rough (lower bound)',
-                'VDI very rough (lower bound)',
-                'PALM']
-
-        pl = ax.errorbar(palm_Iw, height_list, xerr=0.1*palm_Iv, markersize=3,
-                    fmt='o', color = 'darkviolet')
-
-        ax.legend([l,s,m,r,vr,pl], labels, fontsize=11, numpoints=1)
-        ax.set_ylim(0., 300.)        
-        ax.set_xlabel(r'turbulence intensity ' + r'$I_w$' + ' (-)')
-        ax.set_ylabel('z full-scale (m)')        
-        plt.tight_layout()
-        plt.savefig(plot_path + 'compare_' + 'I_w' + '_' + name + '.' + file_type)
-        plt.close(3)
-    
-        # Profile of the fluxes
-        plt.figure(4) 
-        ax = plt.gca()
-        data = np.asarray(fluxes)
-        heights = np.asarray(heights)
-        for flux, height in zip(data, heights):
-            if height == heights[0]:
-                l = ax.errorbar(flux, height, xerr=flux_err, fmt='o', 
-                    color='cornflowerblue', label = 'wind tunnel')
-            else:
-                l = ax.errorbar(flux, height, xerr=flux_err, fmt='o', 
-                    color='cornflowerblue')                
-        ax.grid(True,'both','both')
-        sfc_layer = np.where(heights<40.)
-        xcen = np.mean(data[sfc_layer])
-        xrange = np.abs(0.1*xcen)
-        ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',
-                edgecolor='none', alpha=0.2,
-                label='10% range')
-        if np.nanmax(data)<0:
-            ax.set_xlim([np.nanmin(data) * 1.1, 0])
-        else:
-            ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
-        ax.set_ylim(4.,80.)
-        for i in range(len(time_prof)-1,len(time_prof)):
-            try:
-                ax.plot(palm_flux[i,:-1], z_flux[:-1], label='PALM', color = 'darkviolet')
-            except:
-                print('Exception has occurred: StopIteration - plot_ver_profile')
-        ax.legend(loc='lower right', fontsize=11, numpoints=1)                
-        ax.set(xlabel=r'$u$' + '\'' + r'$w$' + '\'' + ' $(m^2/s^2)$', 
-                ylabel=r'$z$ $(m)$')
-        ax.set_yscale('log', nonposy='clip')
-        plt.tight_layout()
-        plt.savefig(plot_path + 'compare_fluxes_' + name + '.' + file_type)
-        plt.close(4)
-
-        # Double logarithmic profile of Lux data
-        plt.figure(6)
-        ax = plt.gca()
-        Lux_10,Lux_1,Lux_01,Lux_001,Lux_obs_smooth,Lux_obs_rough = \
-        wt.get_lux_referencedata(ref_path)
-        lux = ax.errorbar(lux,heights,xerr=lux_err,fmt='o',
-                    markersize=3, color='cornflowerblue', label=r'wind tunnel')
-        h1 = ax.errorbar(palm_lux, height_list, xerr=0.1*palm_lux, 
-                    fmt='o', markersize=3, color='darkviolet', label=r'PALM')
-        ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',
-                    linewidth=1,label=r'$z_0=10\ m$ (theory)')
-        ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',
-                    linewidth=1,label=r'$z_0=1\ m$ (theory)')
-        ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',
-                    linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
-        ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',
-                    linewidth=1,label=r'$z_0=0.01\ m$ (theory)')
-        ref5 = ax.plot(Lux_obs_smooth[1,:],Lux_obs_smooth[0,:],'k+', 
-                    linewidth=1,label='observations smooth surface')
-        ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx', 
-                    linewidth=1,label='observations rough surface')
-        ax.set_yscale('log')
-        ax.set_xscale('log')
-        ax.grid(True,'both','both')
-        ax.legend(loc='lower right', fontsize=11,numpoints=1)
-        # ax.set_xlim([10,1000])
-        ax.set_ylim([4.,1000])
-        ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
-        ax.set_ylabel(r'$z$ full-scale (m)')
-        plt.tight_layout()
-        plt.savefig(plot_path + 'compare_Lux_' + name + '.' + file_type)
-        plt.close(6)
-
     print('\n Finished data-processing for: {} \n'.format(name))
 
 # comparing mode for single palm simulations and wind tunnel measurements
