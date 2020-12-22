@@ -45,18 +45,16 @@ MAIN
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
 namelist = ['BA_BL_UW_001', 
-            'BA_S5_L_UW_002',  
-            'BA_S6_L_UW_007', 
-            'BA_S7_L_UW_007', 
-            'BA_S8_L_UW_007',
-            'BA_BL_UW_010']
+            'BA_S5_L_UW_002',
+            'BA_S5_S_UW_006', 
+            'BA_S5_D_UW_007']
 
-x_val_shift = 100.
+x_val_shift = 75.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
-papy.globals.run_number = '.014'
-papy.globals.run_numbers = ['.014', '.019']
+papy.globals.run_number = '.005'
+papy.globals.run_numbers = ['.015', '.019']
 # PHYSICS
 papy.globals.z0 = 0.07
 papy.globals.alpha = 0.17
@@ -111,7 +109,7 @@ elif data_nd == 0:
 # 5 = compare profiles
 # 6 = compare multiple palm to wind tunnel 
 # 7 = longitudinal profile
-mode = 5
+mode = 6
 calc_palm = True
 outdata_path = '../wt_outdata/'# format in npz
 
@@ -787,8 +785,8 @@ if mode == 5:
 # comparing mode for multiple palm simulations and wind tunnel measurements
 if mode == 6:
     plt.style.use('classic')
-    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
-
+    # c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
+    c_list = ['orangered', 'forestgreen', 'limegreen', 'springgreen', 'forestgreen', 'forestgreen']
     palm_data = {}
     palm_data.fromkeys(papy.globals.run_numbers)
     var_name_list = ['u', 'flux']
@@ -865,15 +863,15 @@ if mode == 6:
                     #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
                     if name[6] == 'L':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
-                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                                    label=r'$\Theta=0^o$')
                     elif name[6] == 'S':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j],
-                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                                    label=r'$\Theta=90^o$')
                     elif name[6] == 'D':
-                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
-                                    label=r'$s_b={}$ m'.format(name[4], x_val))
-                    elif name == 'BA_BL_UW_010':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j],
+                                    label=r'$\Theta=45^o$')
+                    elif name == 'BA_BL_UW_010':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
                                     label=r'smooth wall'.format(x_val))
                     elif name == 'BA_BL_UW_001':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j],
@@ -892,21 +890,23 @@ if mode == 6:
             j += 1
 
         color_list = ['orchid', 'hotpink']
-        z0_list = [0.02, 0.07]
+        z0_list = [0.02, 0.06]
+
         for i in range(len(time)-1,len(time)):
+            ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
+                    palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle',
+                    label = 'PALM: $0.02 m<z_0<0.06 m$')
+        for i in range(len(time_prof)-1,len(time_prof)):
             try:
-                for j,run in enumerate(papy.globals.run_numbers):
-                    ax.plot(palm_data[run]['flux'][i,:-1], z[:-1], 
-                            label=r'PALM - $z_0={}$'.format(z0_list[j]), color=color_list[j])
+                ax.plot(palm_flux[i,:-1], z_flux[:-1], label='PALM: $z_0=0.021$ $m$', color = 'darkviolet')
             except:
                 print('Exception has occurred: StopIteration - plot_ver_profile')
-            ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
-                    palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle')
-        ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
-        ax.set_ylabel(r'$z$ (m)')
+
+        ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\$ $(-)$')
+        ax.set_ylabel(r'$z$ $(m)$')
         ax.set_ylim(1., 265)
         if data_nd == 0:
-            ax.set_xlim(-0.004,0.)
+            ax.set_xlim(-0.0045,0.)
         elif data_nd == 1:
             ax.set_xlim(-0.1,0.)
         plt.legend(loc= 'upper left', numpoints=1)
