@@ -46,17 +46,19 @@ MAIN
 
 namelist = ['BA_BL_UW_001', 
             'BA_S5_L_UW_002',
-            'BA_S5_S_UW_006', 
-            'BA_S5_D_UW_007']
+            'BA_S6_L_UW_007', 
+            'BA_S7_L_UW_007',
+            'BA_S8_L_UW_007',
+            'BA_BL_UW_010']
 
-x_val_shift = 75.
+x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
 papy.globals.run_number = '.005'
 papy.globals.run_numbers = ['.015', '.019']
 # PHYSICS
-papy.globals.z0 = 0.07
+papy.globals.z0 = 0.021
 papy.globals.alpha = 0.17
 papy.globals.ka = 0.41
 papy.globals.d0 = 0.
@@ -785,8 +787,8 @@ if mode == 5:
 # comparing mode for multiple palm simulations and wind tunnel measurements
 if mode == 6:
     plt.style.use('classic')
-    # c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
-    c_list = ['orangered', 'forestgreen', 'limegreen', 'springgreen', 'forestgreen', 'forestgreen']
+    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
+    # c_list = ['orangered', 'darkorange', 'peru', 'chocolate']
     palm_data = {}
     palm_data.fromkeys(papy.globals.run_numbers)
     var_name_list = ['u', 'flux']
@@ -863,13 +865,13 @@ if mode == 6:
                     #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
                     if name[6] == 'L':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
-                                    label=r'$\Theta=0^o$')
+                                    label=r'$s_b={} m$'.format(name[4]))
                     elif name[6] == 'S':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j],
-                                    label=r'$\Theta=90^o$')
+                                    label=r'$s_b={} m$'.format(name[4]))
                     elif name[6] == 'D':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j],
-                                    label=r'$\Theta=45^o$')
+                                    label=r'$s_b={} m$'.format(name[4]))
                     elif name == 'BA_BL_UW_010':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j],
                                     label=r'smooth wall'.format(x_val))
@@ -882,9 +884,9 @@ if mode == 6:
                     if name[6] == 'S':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='d',color=c_list[j])
                     if name[6] == 'D':
-                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j])
-                    elif name == 'BA_BL_UW_010':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='x',color=c_list[j])
+                    elif name == 'BA_BL_UW_010':
+                        l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='+',color=c_list[j])
                     elif name == 'BA_BL_UW_001':
                         l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='^',color=c_list[j])
             j += 1
@@ -902,7 +904,7 @@ if mode == 6:
             except:
                 print('Exception has occurred: StopIteration - plot_ver_profile')
 
-        ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\$ $(-)$')
+        ax.set_xlabel(r'$u$' + '\'' + '$w$' + '\' $\cdot$ $u_{ref}^{-2}\ (-)$')
         ax.set_ylabel(r'$z$ $(m)$')
         ax.set_ylim(1., 265)
         if data_nd == 0:
