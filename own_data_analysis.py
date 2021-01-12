@@ -105,12 +105,12 @@ MAIN
 #             'BA_S6_L_UW_007', 'BA_S6_S_UW_008', 'BA_S6_D_UW_007',
 #             'BA_S7_L_UW_007', 'BA_S7_S_UW_006', 'BA_S7_D_UW_007',
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
-namelist = ['BA_BL_UW_001', 
-            'BA_S5_L_UW_002',  
-            'BA_S6_L_UW_007', 
-            'BA_S7_L_UW_007', 
-            'BA_S8_L_UW_007',
-            'BA_BL_UW_010']
+# namelist = ['BA_BL_UW_001', 
+#             'BA_S5_L_UW_002',  
+#             'BA_S6_L_UW_007', 
+#             'BA_S7_L_UW_007', 
+#             'BA_S8_L_UW_007',
+#             'BA_BL_UW_010']
 
 # namelist = ['HG_MR_M1_UV_021']
 namelist = ['BA_BL_UW_001']
@@ -186,10 +186,10 @@ mode_2 = False
 if mode == 9:
     scale = 1.
 else:
-    scale = 100.
+    scale = 250.
 #plot scatter
 plot = True
-scatter = True
+scatter = False
 save_data = False
 
 # Check if all necessary output directories exist
@@ -569,8 +569,8 @@ if not (mode == 5 or mode == 8 or mode == 9):
         # calculate parameters z0 and alpha
         # estimate surface_height and BL_height from fluxes and mean windprofile
         if mode == 1:
-            BL_height = 100.
-            sfc_heights = [70., 60., 50., 40., 30., 20.]
+            BL_height = 425.
+            sfc_heights = [100., 90., 80., 70., 60., 50.]
             mode_predefine_sfc = 'boundingheights'
 
             for sfc_height in sfc_heights:
@@ -593,7 +593,7 @@ if not (mode == 5 or mode == 8 or mode == 9):
                     sfc_layer = np.intersect1d(sfc_layer_l,sfc_layer_u)
                     BL_layer = []
                 elif mode_predefine_sfc == 'boundingheights':
-                    sfc_layer_l = np.where(np.asarray(heights) >= 7.)
+                    sfc_layer_l = np.where(np.asarray(heights) >= 17.)
                     sfc_layer_u = np.where(np.asarray(heights) <= sfc_height)
                     BL_layer_u = np.where(np.asarray(heights) <= 1000.)                    
                     sfc_layer = np.intersect1d(sfc_layer_l,sfc_layer_u)
@@ -637,8 +637,9 @@ if not (mode == 5 or mode == 8 or mode == 9):
                 print('     a = ', alpha, ' +- ', alpha_err)
                 print('     calculated roughness length and alpha. \n')
                 # calculate and sort fitting functions
+                z_ref = 425.
                 z0_x, z0_y = zip(*sorted(zip(u_mean_wght, z1)))
-                alpha_x2 = (np.asarray(heights)/170.)**alpha
+                alpha_x2 = (np.asarray(heights)/z_ref)**alpha
                 alpha_x2, alpha_y2 = zip(*sorted(zip(alpha_x2, heights)))
 
                 # plot results and check fit
@@ -653,10 +654,10 @@ if not (mode == 5 or mode == 8 or mode == 9):
                                     marker='o', color='grey')
 
                 ax.plot(z0_x, z0_y, color='darkorange', linestyle='--', 
-                        label=r'fit: $z_0$ = {}'.format(np.around(z0,decimals=4)))
+                        label=r'fit: $z_0 = {}$'.format(np.around(z0,decimals=4)))
                 ax.plot(alpha_x2, alpha_y2, color='indianred', linestyle='-.',  
                         label=r'fit: $\alpha = {}$'.format(np.around(alpha,decimals=3)) 
-                        + r' at $z_{ref}=$' + r'${}$'.format(170.))
+                        + r' at $z_{ref}=$' + r'${}$'.format(z_ref))
                 ax.grid(True)
                 ax.set_xlabel(r'$u/u_{ref}$ (-)')
                 ax.set_ylabel(r'$z$ (m)')
