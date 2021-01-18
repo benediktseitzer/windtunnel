@@ -186,7 +186,7 @@ mode_2 = False
 if mode == 9:
     scale = 1.
 else:
-    scale = 250.
+    scale = 150.
 #plot scatter
 plot = True
 scatter = False
@@ -569,7 +569,7 @@ if not (mode == 5 or mode == 8 or mode == 9):
         # calculate parameters z0 and alpha
         # estimate surface_height and BL_height from fluxes and mean windprofile
         if mode == 1:
-            BL_height = 425.
+            BL_height = 250.
             sfc_heights = [100., 90., 80., 70., 60., 50.]
             mode_predefine_sfc = 'boundingheights'
 
@@ -593,7 +593,7 @@ if not (mode == 5 or mode == 8 or mode == 9):
                     sfc_layer = np.intersect1d(sfc_layer_l,sfc_layer_u)
                     BL_layer = []
                 elif mode_predefine_sfc == 'boundingheights':
-                    sfc_layer_l = np.where(np.asarray(heights) >= 17.)
+                    sfc_layer_l = np.where(np.asarray(heights) >= 10.)
                     sfc_layer_u = np.where(np.asarray(heights) <= sfc_height)
                     BL_layer_u = np.where(np.asarray(heights) <= 1000.)                    
                     sfc_layer = np.intersect1d(sfc_layer_l,sfc_layer_u)
@@ -637,7 +637,7 @@ if not (mode == 5 or mode == 8 or mode == 9):
                 print('     a = ', alpha, ' +- ', alpha_err)
                 print('     calculated roughness length and alpha. \n')
                 # calculate and sort fitting functions
-                z_ref = 425.
+                z_ref = 250.
                 z0_x, z0_y = zip(*sorted(zip(u_mean_wght, z1)))
                 alpha_x2 = (np.asarray(heights)/z_ref)**alpha
                 alpha_x2, alpha_y2 = zip(*sorted(zip(alpha_x2, heights)))
