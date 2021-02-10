@@ -44,11 +44,7 @@ MAIN
 #             'BA_S7_L_UW_007', 'BA_S7_S_UW_006', 'BA_S7_D_UW_007',
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
-namelist = ['BA_BL_UW_001', 
-            'BA_S5_S_UW_006',
-            'BA_S6_S_UW_008', 
-            'BA_S7_S_UW_006',
-            'BA_S8_S_UW_006']
+namelist = ['BA_BL_UW_001']
 
 x_val_shift = 75.
 
@@ -107,10 +103,11 @@ elif data_nd == 0:
 
 # 1 = vertical profile
 # 2 = lateral profile
+# 3 = compare spectra
 # 5 = compare profiles
 # 6 = compare multiple palm to wind tunnel 
 # 7 = longitudinal profile
-mode = 5
+mode = 3
 calc_palm = True
 outdata_path = '../wt_outdata/'# format in npz
 
@@ -199,6 +196,9 @@ turb_data = {}
 turb_data.fromkeys(namelist)
 lux_data = {}
 lux_data.fromkeys(namelist)
+spectra_data = {}
+spectra_data.fromkeys(namelist)
+
 
 # calculate palm measures
 height_list = []
@@ -291,7 +291,7 @@ for name in namelist:
         x_val_shift = 100.
     print(x_val_shift)
 
-    plot_path = '{}{}/'.format(plot_path_0,name)
+    plot_path = '{}{}/'.format(plot_path_0, name)
 
     n_outliers_u=0
     n_outliers_v=0
@@ -382,6 +382,68 @@ for name in namelist:
             fluxes.append(turb_data[name][file][2])
             lux.append(lux_data[name][file])
     print('\n Finished data-processing for: {} \n'.format(name))
+
+
+# comparing spectra for single palm simulations and wind tunnel measurements
+if mode == 3:
+    for name in namelist:
+        spectra_data[name] = {}
+        spectra_data[name].fromkeys(files)    
+
+        var_name_list = ['u', 'w']
+
+
+        # calculation of spectra for PALM-data
+        print('\n Compute at different heights: \n')
+        grid_name = 'zu'
+        z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
+
+        for i,mask_name in enumerate(mask_name_list):
+
+            nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
+            try:
+                time, time_unit = papy.read_nc_var_ms(nc_file_path,nc_file,'time')   
+                height = height_list[i]
+            except: 
+                print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
+
+            print('\n HEIGHT = {} m'.format(height))
+            for var_name in var_name_list:
+                var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)
+                if var_name == 'u':
+                    u_mean  = np.mean(var)            
+                f_sm, S_uu_sm, u_aliasing = papy.calc_spectra(var,time,height,u_mean)
+                print('    calculated spectra for {}'.format(var_name))
+
+
+        # calculation of spectra for wind tunnel data
+        for file in files:
+            print('     Started spectra-processing for: {} \n'.format(file))
+            spectra_data[name][file] = wt.calc_spectra(
+                                                time_series_eq[name][file].u_eq.dropna()*time_series_eq[name][file].wtref,
+                                                time_series_eq[name][file].v_eq.dropna()*time_series_eq[name][file].wtref,
+                                                time_series_eq[name][file].t_eq[~np.isnan(time_series_eq[name][file].t_eq)],
+                                                time_series_eq[name][file].z)
+
+            # Plot spectra
+            plt.figure(files.index(file)+400)
+            wt.plots.plot_spectra(spectra_data[name][file][0],
+                                spectra_data[name][file][1],
+                                spectra_data[name][file][2],
+                                spectra_data[name][file][3],
+                                spectra_data[name][file][4],
+                                spectra_data[name][file][5],
+                                spectra_data[name][file][6],
+                                wind_comps[name][file],
+                                time_series[name][file].z,ref_path=ref_path)
+            
+            plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type)
+            plt.close('all')
+            print('     Finished spectra-processing for: {} \n'.format(file))
+
+
+
+
 
 # comparing mode for single palm simulations and wind tunnel measurements
 if mode == 5:
@@ -696,89 +758,88 @@ if mode == 5:
 
     ######
     # Lux
-    # plt.figure(11)
-    # j = 0
-    # for name in namelist:
-    #     heights = []
-    #     lux_list = []
-    #     files = wt.get_files(path,name)
-    #     turb_data[name] = {}
-    #     turb_data[name].fromkeys(files)
+    plt.figure(11)
+    j = 0
+    for name in namelist:
+        heights = []
+        lux_list = []
+        files = wt.get_files(path,name)
+        turb_data[name] = {}
+        turb_data[name].fromkeys(files)
 
-    #     for file in files:
-    #         heights.append((time_series[name][file].z))
-    #         x_val = time_series[name][file].x
-    #         x_val += x_val_shift
-    #         dt = time_series[name][file].t_eq[1] - \
-    #             time_series[name][file].t_eq[0]
-    #         lux_list.append(wt.calc_lux_data_wght(
-    #                             time_series[name][file].t_transit,
-    #                             dt,
-    #                             (time_series[name][file].u_eq.dropna().values
-    #                             * time_series[name][file].wtref)))
+        for file in files:
+            heights.append((time_series[name][file].z))
+            x_val = time_series[name][file].x
+            x_val += x_val_shift
+            dt = time_series[name][file].t_eq[1] - \
+                time_series[name][file].t_eq[0]
+            lux_list.append(wt.calc_lux_data_wght(
+                                time_series[name][file].t_transit,
+                                dt,
+                                (time_series[name][file].u_eq.dropna().values
+                                * time_series[name][file].wtref)))
 
-    #     ax = plt.gca()
-    #     ax.grid(True)
+        ax = plt.gca()
+        ax.grid(True)
 
-    #     for i in range(np.size(lux_list)):
-    #         if i == 1:
-    #             # l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
-    #             #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
-    #             if name[6] == 'L':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='o',color=c_list[j],
-    #                                 label=r'$s_b={}$ m'.format(name[4], x_val))
-    #             elif name[6] == 'S':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='d',color=c_list[j],
-    #                                 label=r'$s_b={}$ m'.format(name[4], x_val))
-    #             elif name[6] == 'D':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='+',color=c_list[j],
-    #                                 label=r'$s_b={}$ m'.format(name[4], x_val))
-    #             elif name == 'BA_BL_UW_010':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='x',color=c_list[j],
-    #                                 label=r'smooth wall'.format(x_val))
-    #             elif name == 'BA_BL_UW_001':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='^',color=c_list[j],
-    #                                 label=r'boundary layer')
-    #         else:
-    #             if name[6] == 'L':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='o',color=c_list[j])
-    #             if name[6] == 'S':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='d',color=c_list[j])
-    #             if name[6] == 'D':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='+',color=c_list[j])
-    #             elif name == 'BA_BL_UW_010':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='x',color=c_list[j])
-    #             elif name == 'BA_BL_UW_001':
-    #                 l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='^',color=c_list[j])
-    #     j += 1
-    #     print('Lux done for {}'.format(name))
-    # h1 = ax.errorbar(palm_lux, height_list, xerr=lux_err, 
-    #             fmt='o', markersize=3, color='darkviolet', label=r'PALM')
+        for i in range(np.size(lux_list)):
+            if i == 1:
+                # l = ax.errorbar(fluxes[i],heights[i],xerr=flux_err,fmt='o',color=c_list[j],
+                #                 label = r'fluxes at $x={}$ m'.format(str(x_val)))
+                if name[6] == 'L':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='o',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name[6] == 'S':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='d',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name[6] == 'D':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='+',color=c_list[j],
+                                    label=r'$s_b={}$ m'.format(name[4], x_val))
+                elif name == 'BA_BL_UW_010':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='x',color=c_list[j],
+                                    label=r'smooth wall'.format(x_val))
+                elif name == 'BA_BL_UW_001':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='^',color=c_list[j],
+                                    label=r'boundary layer')
+            else:
+                if name[6] == 'L':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='o',color=c_list[j])
+                if name[6] == 'S':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='d',color=c_list[j])
+                if name[6] == 'D':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='+',color=c_list[j])
+                elif name == 'BA_BL_UW_010':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='x',color=c_list[j])
+                elif name == 'BA_BL_UW_001':
+                    l = ax.errorbar(lux_list[i],heights[i],xerr=lux_err,fmt='^',color=c_list[j])
+        j += 1
+        print('Lux done for {}'.format(name))
+    h1 = ax.errorbar(palm_lux, height_list, xerr=lux_err, 
+                fmt='o', markersize=3, color='darkviolet', label=r'PALM')
                 
-    # Lux_10,Lux_1,Lux_01,Lux_001,Lux_obs_smooth,Lux_obs_rough = \
-    # wt.get_lux_referencedata(ref_path)
-    # ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1)
-    # ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1)
-    # ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1)
-    # ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1)
-    # ref5 = ax.plot(Lux_obs_smooth[1,:],Lux_obs_smooth[0,:],'k+',
-    #                 linewidth=1)
-    # ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1)
+    Lux_10,Lux_1,Lux_01,Lux_001,Lux_obs_smooth,Lux_obs_rough = \
+    wt.get_lux_referencedata(ref_path)
+    ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1)
+    ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1)
+    ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1)
+    ref4 = ax.plot(Lux_001[1,:],Lux_001[0,:],'k:',linewidth=1)
+    ref5 = ax.plot(Lux_obs_smooth[1,:],Lux_obs_smooth[0,:],'k+',
+                    linewidth=1)
+    ref6 = ax.plot(Lux_obs_rough[1,:],Lux_obs_rough[0,:],'kx',linewidth=1)
 
-    # ax.set_xlabel(r'$L_u^x$ (m)')
-    # ax.set_ylabel(r'$z$ (m)')
-    # ax.set_ylim(y_min, y_max)
-    # ax.set_xlim(10., 1000.)    
-    # plt.legend(loc= 'upper left', numpoints=1)
-    # plt.yscale('log')
-    # plt.xscale('log')
-    # plt.tight_layout()
-    # plt.grid(True,'both','both')    
-    # plt.savefig(plot_path_0 + 'cummulative_Lux_log_' + name[:-4] + '.' + file_type,
-    #             bbox_inches='tight')
-    # print(plot_path_0)
-    # plt.close(11)
-
+    ax.set_xlabel(r'$L_u^x$ (m)')
+    ax.set_ylabel(r'$z$ (m)')
+    ax.set_ylim(y_min, y_max)
+    ax.set_xlim(10., 1000.)    
+    plt.legend(loc= 'upper left', numpoints=1)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.grid(True,'both','both')    
+    plt.savefig(plot_path_0 + 'cummulative_Lux_log_' + name[:-4] + '.' + file_type,
+                bbox_inches='tight')
+    print(plot_path_0)
+    plt.close(11)
 
     print('\n plotted cummulative profiles over length.\n')
 
