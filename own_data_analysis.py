@@ -514,7 +514,9 @@ if not (mode == 5 or mode == 8 or mode == 9):
                                     spectra_data[name][file][6],
                                     wind_comps[name][file],
                                     time_series[name][file].z,ref_path=ref_path)
-                
+
+
+
                 plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type)
                 plt.close('all')
             
