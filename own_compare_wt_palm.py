@@ -413,7 +413,7 @@ if mode == 3:
                 if var_name == 'u':
                     u_mean  = np.mean(var)            
                 f_sm, S_uu_sm, u_aliasing = papy.calc_spectra(var,time,height,u_mean)
-                print('    calculated spectra for {}'.format(var_name))
+                print('    calculated PALM-spectra for {}'.format(var_name))
 
 
         # calculation of spectra for wind tunnel data
