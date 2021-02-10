@@ -443,11 +443,11 @@ if mode == 3:
                     plt.style.use('classic')
                     fig, ax = plt.subplots()
 
-                    h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 'r', markersize=3,
+                    h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 'darkviolet', markersize=3,
                                 label=r'PALM - $u$ at ${}$ m with ${}$ m/s'.format(height, str(palm_wtref)[:-4]))
-                    h2 = ax.loglog(f_sm[comp1_aliasing:], S_uu_sm[comp1_aliasing:], 'b', markersize=3,
+                    h2 = ax.loglog(f_sm[comp1_aliasing:], S_uu_sm[comp1_aliasing:], 'violet', markersize=3,
                                 fillstyle='none')
-                    h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1], 'c', markersize=3,
+                    h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1], 'orangered', markersize=3,
                                 label=r'Windtunnel $u$ at ${}$ m'.format(time_series_eq[name][file].z))
                     # h4 = ax.loglog(f_sm_wt[wt_aliasing:], S_wt_sm[wt_aliasing:], 'b', markersize=3,
                     #             fillstyle='none')
