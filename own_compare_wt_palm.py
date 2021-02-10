@@ -46,7 +46,7 @@ MAIN
 
 namelist = ['BA_BL_UW_001']
 
-x_val_shift = 75.
+x_val_shift = 100.
 
 # palm_python parameters
 papy.globals.run_name = 'BA_BL_UW_001'
@@ -389,61 +389,84 @@ if mode == 3:
     for name in namelist:
         spectra_data[name] = {}
         spectra_data[name].fromkeys(files)    
-
         var_name_list = ['u', 'w']
-
-
-        # calculation of spectra for PALM-data
-        print('\n Compute at different heights: \n')
-        grid_name = 'zu'
-        z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
-
-        for i,mask_name in enumerate(mask_name_list):
-
-            nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
-            try:
-                time, time_unit = papy.read_nc_var_ms(nc_file_path,nc_file,'time')   
-                height = height_list[i]
-            except: 
-                print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
-
-            print('\n HEIGHT = {} m'.format(height))
-            for var_name in var_name_list:
-                var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)
-                if var_name == 'u':
-                    u_mean  = np.mean(var)            
-                f_sm, S_uu_sm, u_aliasing = papy.calc_spectra(var,time,height,u_mean)
-                print('    calculated PALM-spectra for {}'.format(var_name))
-
 
         # calculation of spectra for wind tunnel data
         for file in files:
-            print('     Started spectra-processing for: {} \n'.format(file))
-            spectra_data[name][file] = wt.calc_spectra(
-                                                time_series_eq[name][file].u_eq.dropna()*time_series_eq[name][file].wtref,
-                                                time_series_eq[name][file].v_eq.dropna()*time_series_eq[name][file].wtref,
+            print('     Started spectra-processing for wind tunnel: {} \n'.format(file))
+            # spectra_data[name][file] = wt.calc_spectra(
+            #                                     time_series_eq[name][file].u_eq.dropna()*time_series_eq[name][file].wtref,
+            #                                     time_series_eq[name][file].v_eq.dropna()*time_series_eq[name][file].wtref,
+            #                                     time_series_eq[name][file].t_eq[~np.isnan(time_series_eq[name][file].t_eq)],
+            #                                     time_series_eq[name][file].z)
+            f_sm_wt, S_wt_sm, wt_aliasing = papy.calc_spectra(
+                                                time_series_eq[name][file].u_eq.dropna(), 
                                                 time_series_eq[name][file].t_eq[~np.isnan(time_series_eq[name][file].t_eq)],
-                                                time_series_eq[name][file].z)
+                                                time_series_eq[name][file].z,
+                                                palm_wtref)    
+            print('WTREF = {}'.format(time_series_eq[name][file].wtref))                                            
+            print('     Finished spectra-processing for wind tunnel: {} \n'.format(file))
 
-            # Plot spectra
-            plt.figure(files.index(file)+400)
-            wt.plots.plot_spectra(spectra_data[name][file][0],
-                                spectra_data[name][file][1],
-                                spectra_data[name][file][2],
-                                spectra_data[name][file][3],
-                                spectra_data[name][file][4],
-                                spectra_data[name][file][5],
-                                spectra_data[name][file][6],
-                                wind_comps[name][file],
-                                time_series[name][file].z,ref_path=ref_path)
-            
-            plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type)
-            plt.close('all')
-            print('     Finished spectra-processing for: {} \n'.format(file))
+            # calculation of spectra for PALM-data
+            print('\n Compute at different heights: \n')
 
+            grid_name = 'zu'
+            z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
 
+            for i,mask_name in enumerate(mask_name_list):
+                height_c = height_list[i]
+                if height_c == time_series_eq[name][file].z:
+                    height = height_c
+                    nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
+                    try:
+                        time, time_unit = papy.read_nc_var_ms(nc_file_path,nc_file,'time')   
+                    except: 
+                        print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
 
+                    print('\n HEIGHT = {} m'.format(height))
+                    for var_name in var_name_list:
+                        var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)          
+                        f_sm, S_uu_sm, comp1_aliasing = papy.calc_spectra(
+                                                                    var,
+                                                                    time,
+                                                                    height,
+                                                                    palm_wtref)
+                        print('    calculated PALM-spectra for {}'.format(var_name))
+                    
+                    # plot
+                    f_sm = [f_sm][np.argmin([np.nanmax(f_sm)])]
+                    f_sm = f_sm[:len(S_uu_sm)]
 
+                    f_sm_wt = [f_sm_wt][np.argmin([np.nanmax(f_sm_wt)])]
+                    f_sm_wt = f_sm_wt[:len(S_wt_sm)]
+
+                    plt.style.use('classic')
+                    fig, ax = plt.subplots()
+
+                    h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 'r', markersize=3,
+                                label=r'PALM - $u$ at ${}$ m with ${}$ m/s'.format(height, str(palm_wtref)[:-4]))
+                    h2 = ax.loglog(f_sm[comp1_aliasing:], S_uu_sm[comp1_aliasing:], 'b', markersize=3,
+                                fillstyle='none')
+                    h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1], 'c', markersize=3,
+                                label=r'Windtunnel $u$ at ${}$ m'.format(time_series_eq[name][file].z))
+                    # h4 = ax.loglog(f_sm_wt[wt_aliasing:], S_wt_sm[wt_aliasing:], 'b', markersize=3,
+                    #             fillstyle='none')
+                    try:
+                        h5 = ax.fill_between(f_refspecs, E_min, E_max,
+                                        facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
+                                        label=r'VDI-range $S _{uu}$')
+                    except:
+                        print('\n There are no reference-spectra available for this flow \n')
+
+                    ax.set_xlim([10**-4,250])
+                    ax.set_ylim([10 ** -4, 1])
+
+                    ax.set_xlabel(r"$f\cdot z\cdot U^{-1}$")
+                    ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
+                    ax.legend(loc='lower left', fontsize=11)
+                    ax.grid()
+
+                    plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type, bbox_inches='tight')
 
 # comparing mode for single palm simulations and wind tunnel measurements
 if mode == 5:
