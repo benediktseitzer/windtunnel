@@ -44,7 +44,8 @@ MAIN
 #             'BA_S7_L_UW_007', 'BA_S7_S_UW_006', 'BA_S7_D_UW_007',
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
-namelist = ['BA_BL_UW_001']
+namelist = ['BA_BL_UW_001',
+            'BA_S8_L_UW_007']
 
 x_val_shift = 100.
 
@@ -386,11 +387,12 @@ for name in namelist:
 
 # comparing spectra for single palm simulations and wind tunnel measurements
 if mode == 3:
-    for name in namelist:
+    c_list = ['orangered', 'forestgreen', 'gold', 'dodgerblue', 'darkorange', 'slategray']
+    for j,name in enumerate(namelist):
+        files = wt.get_files(path,name)        
         spectra_data[name] = {}
-        spectra_data[name].fromkeys(files)    
+        spectra_data[name].fromkeys(files)
         var_name_list = ['u', 'w']
-
         # calculation of spectra for wind tunnel data
         for var_name in var_name_list:
             for file in files:
@@ -422,7 +424,7 @@ if mode == 3:
                         height = height_c
                         nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
                         try:
-                            time, time_unit = papy.read_nc_var_ms(nc_file_path,nc_file,'time')   
+                            time, time_unit = papy.read_nc_var_ms(nc_file_path, nc_file,'time')   
                         except: 
                             print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
 
@@ -446,16 +448,21 @@ if mode == 3:
                         plt.style.use('classic')
                         fig, ax = plt.subplots()
 
-                        h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], marker='o', markersize=3, color='darkviolet',
-                                    label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, height, str(palm_wtref)[:-4]))
-                        h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], marker='o', markersize=3, color='violet',
-                                    fillstyle='none')
-                        h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1], 'orangered',marker='x', markersize=3,
-                                    label=r'Windtunnel ${}$ at ${}$ m'.format(var_name, time_series_eq[name][file].z))
+                        h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
+                                        marker='o', markersize=3, color='darkviolet',
+                                        label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, height, str(palm_wtref)[:-4]))
+                        h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
+                                        marker='o', markersize=3, color='violet',
+                                        fillstyle='none')
+                        h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
+                                        marker='x', markersize=3, color=c_list[j],
+                                        label=r'Windtunnel ${}$ at ${}$ m'.format(var_name, time_series_eq[name][file].z))
                         try:
                             f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
-                            ref_specs = papy.get_reference_spectra(height,'../../../../palm/palm_python/reference_data/')
-                            E_min, E_max = papy.calc_ref_spectra(f_refspecs, ref_specs, var_name)
+                            ref_specs = papy.get_reference_spectra(height,
+                                            '../../../../palm/palm_python/reference_data/')
+                            E_min, E_max = papy.calc_ref_spectra(f_refspecs, 
+                                            ref_specs, var_name)
                             if var_name == 'u':
                                 h5 = ax.fill_between(f_refspecs, E_min, E_max,
                                                 facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
