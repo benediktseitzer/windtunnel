@@ -427,82 +427,77 @@ if mode == 3:
         grid_name = 'zu'
         z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
         for i,mask_name in enumerate(mask_name_list):
-            for height in height_list:
-                nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
-                try:
-                    time, time_unit = papy.read_nc_var_ms(nc_file_path, nc_file,'time')   
-                except: 
-                    print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
-
-                print('\n HEIGHT = {} m'.format(height))
-            
-                var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)          
-                # f_sm, S_uu_sm, comp1_aliasing = papy.calc_spectra(
-                #                                             var,
-                #                                             time,
-                #                                             height,
-                #                                             palm_wtref)
-                spectra_data_palm = papy.calc_spectra(
-                                                var,
-                                                time,
-                                                height,
-                                                palm_wtref)
-                
-                print('    calculated PALM-spectra for {}'.format(var_name))
+            height = height_list[i]
+            nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
+            try:
+                time, time_unit = papy.read_nc_var_ms(nc_file_path, nc_file,'time')   
+            except: 
+                print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
         
+            var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)
+            spectra_data_palm[mask_name] = papy.calc_spectra(
+                                            var,
+                                            time,
+                                            height,
+                                            palm_wtref)
+        print('    calculated PALM-spectra for {}'.format(var_name))
+        
+        # plot all spectra cummulative
+        for i,mask_name in enumerate(mask_name_list):
+            plt.style.use('classic')
+            fig, ax = plt.subplots()
+            height_c = height_list[i]
 
-    for j,name in enumerate(namelist):
-        files = wt.get_files(path,name)
-        for file in files:
+            f_sm = spectra_data_palm[mask_name][0]
+            S_uu_sm = spectra_data_palm[mask_name][1]
+            comp1_aliasing = spectra_data_palm[mask_name][2]
+            f_sm = [f_sm][np.argmin([np.nanmax(f_sm)])]
+            f_sm = f_sm[:len(S_uu_sm)]
+            h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
+                            marker='o', markersize=3, color='darkviolet',
+                            label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, height_c, str(palm_wtref)[:-4]))
+            h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
+                            marker='o', markersize=3, color='violet',
+                            fillstyle='none')
+            for j,name in enumerate(namelist):
+                files = wt.get_files(path,name)
+                for file in files:
+                    if height_c == time_series_eq[name][file].z:
+                        print('plot height = {}'.format(height_c))
+                        file_c = file
+                        height = height_c
+                        f_sm_wt = spectra_data_wt[name][file][0]
+                        S_wt_sm = spectra_data_wt[name][file][1]
+                        wt_aliasing = spectra_data_wt[name][file][2]
+                        f_sm_wt = [f_sm_wt][np.argmin([np.nanmax(f_sm_wt)])]
+                        f_sm_wt = f_sm_wt[:len(S_wt_sm)]
+                        h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
+                                        marker='x', markersize=3, color=c_list[j],
+                                        label=r'Windtunnel ${}$ at ${}$ m'.format(var_name, time_series_eq[name][file].z))
+            try:
+                f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
+                ref_specs = papy.get_reference_spectra(height_c,
+                                '../../../../palm/palm_python/reference_data/')
+                E_min, E_max = papy.calc_ref_spectra(f_refspecs, 
+                                ref_specs, var_name)
+                if var_name == 'u':
+                    h5 = ax.fill_between(f_refspecs, E_min, E_max,
+                                    facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
+                                    label=r'VDI-range $S _{uu}$')
+                elif var_name == 'w':
+                    h5 = ax.fill_between(f_refspecs, E_min, E_max,
+                                    facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
+                                    label=r'VDI-range $S _{ww}$')
+            except:
+                print('\n There are no reference-spectra available for this flow \n')
 
-            for i,mask in mask_name:
-                height_c = height_list[i]
-                if height_c == time_series_eq[name][file].z:
-                    height = height_c
-                    # plot
-                    f_sm = [f_sm][np.argmin([np.nanmax(f_sm)])]
-                    f_sm = f_sm[:len(S_uu_sm)]
-
-                    f_sm_wt = [f_sm_wt][np.argmin([np.nanmax(f_sm_wt)])]
-                    f_sm_wt = f_sm_wt[:len(S_wt_sm)]
-
-                    plt.style.use('classic')
-                    fig, ax = plt.subplots()
-
-                    h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
-                                    marker='o', markersize=3, color='darkviolet',
-                                    label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, height, str(palm_wtref)[:-4]))
-                    h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
-                                    marker='o', markersize=3, color='violet',
-                                    fillstyle='none')
-                    h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
-                                    marker='x', markersize=3, color=c_list[j],
-                                    label=r'Windtunnel ${}$ at ${}$ m'.format(var_name, time_series_eq[name][file].z))
-                    try:
-                        f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
-                        ref_specs = papy.get_reference_spectra(height,
-                                        '../../../../palm/palm_python/reference_data/')
-                        E_min, E_max = papy.calc_ref_spectra(f_refspecs, 
-                                        ref_specs, var_name)
-                        if var_name == 'u':
-                            h5 = ax.fill_between(f_refspecs, E_min, E_max,
-                                            facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
-                                            label=r'VDI-range $S _{uu}$')
-                        elif var_name == 'w':
-                            h5 = ax.fill_between(f_refspecs, E_min, E_max,
-                                            facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
-                                            label=r'VDI-range $S _{ww}$')
-                    except:
-                        print('\n There are no reference-spectra available for this flow \n')
-
-                    ax.set_xlim([10**-4,150])
-                    ax.set_ylim([10 ** -4, 1])
-
-                    ax.set_xlabel(r"$f\cdot z\cdot u_{ref}^{-1}$")
-                    ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
-                    ax.legend(loc='lower right', fontsize=11)
-                    ax.grid()
-                    plt.savefig(plot_path + 'spectra_'+ var_name + '_' + file[:-4] + '.' + file_type, bbox_inches='tight')
+            ax.set_xlim([10**-4,150])
+            ax.set_ylim([10 ** -4, 1])
+            ax.set_xlabel(r"$f\cdot z\cdot u_{ref}^{-1}$")
+            ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
+            ax.legend(loc='lower right', fontsize=11)
+            ax.grid()
+            plt.savefig(plot_path + 'spectra_'+ var_name + '.' + file_type, bbox_inches='tight')
 
 # comparing mode for single palm simulations and wind tunnel measurements
 if mode == 5:
