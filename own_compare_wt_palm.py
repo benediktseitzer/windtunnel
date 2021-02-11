@@ -45,7 +45,11 @@ MAIN
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
 namelist = ['BA_BL_UW_001',
-            'BA_S8_L_UW_007']
+            'BA_S5_L_UW_002',
+            'BA_S6_L_UW_007',
+            'BA_S7_L_UW_007',
+            'BA_S8_L_UW_007',
+            'BA_BL_UW_010']
 
 x_val_shift = 100.
 
@@ -444,6 +448,7 @@ if mode == 3:
         
         # plot all spectra cummulative
         for i,mask_name in enumerate(mask_name_list):
+            plot_height = False
             plt.style.use('classic')
             fig, ax = plt.subplots()
             height_c = height_list[i]
@@ -463,6 +468,7 @@ if mode == 3:
                 files = wt.get_files(path,name)
                 for file in files:
                     if height_c == time_series_eq[name][file].z:
+                        plot_height = True
                         print('plot height = {}'.format(height_c))
                         file_c = file
                         height = height_c
@@ -473,7 +479,7 @@ if mode == 3:
                         f_sm_wt = f_sm_wt[:len(S_wt_sm)]
                         h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
                                         marker='x', markersize=3, color=c_list[j],
-                                        label=r'Windtunnel ${}$ at ${}$ m'.format(var_name, time_series_eq[name][file].z))
+                                        label=r'{} ${}$ at ${}$ m'.format(name, var_name, time_series_eq[name][file].z))
             try:
                 f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
                 ref_specs = papy.get_reference_spectra(height_c,
@@ -497,7 +503,11 @@ if mode == 3:
             ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
             ax.legend(loc='lower right', fontsize=11)
             ax.grid()
-            plt.savefig(plot_path + 'spectra_'+ var_name + '.' + file_type, bbox_inches='tight')
+            if plot_height:
+                plt.savefig(plot_path + 'spectra_'+ var_name + '_' + mask_name + '.' + file_type, bbox_inches='tight')
+            else:
+                plt.close()
+
 
 # comparing mode for single palm simulations and wind tunnel measurements
 if mode == 5:
