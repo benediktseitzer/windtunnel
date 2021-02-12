@@ -57,7 +57,7 @@ x_val_shift = 100.
 papy.globals.run_name = 'BA_BL_UW_001'
 papy.globals.run_number = '.005'
 papy.globals.run_numbers = ['.015', '.019']
-# PHYSICS
+# PHYSICS       
 papy.globals.z0 = 0.021
 papy.globals.alpha = 0.17
 papy.globals.ka = 0.41
@@ -404,12 +404,12 @@ if mode == 3:
 
         # calculation of spectra for wind tunnel data
         for j,name in enumerate(namelist):
+            print('     Started spectra-processing for wind tunnel: {} \n'.format(name))            
             files = wt.get_files(path,name)         
             spectra_data_wt[name] = {}
             spectra_data_wt[name].fromkeys(files)
 
             for file in files:
-                print('     Started spectra-processing for wind tunnel: {} \n'.format(file))
                 if var_name == 'u':
                     spectra_data_wt[name][file] = papy.calc_spectra(
                                                         time_series_eq[name][file].u_eq.dropna(), 
@@ -423,22 +423,27 @@ if mode == 3:
                                                         time_series_eq[name][file].z,
                                                         palm_wtref)
 
-                print('WTREF = {}'.format(time_series_eq[name][file].wtref))                                            
-                print('     Finished spectra-processing for wind tunnel: {} \n'.format(file))
+            print('     Finished spectra-processing for wind tunnel: {} \n'.format(name))
 
         # calculation of spectra for PALM-data
-        print('\n Compute at different heights: \n')
+        print('     Compute PALM-spectra for masked output: \n')
         grid_name = 'zu'
         z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
         for i,mask_name in enumerate(mask_name_list):
             height = height_list[i]
             nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
             try:
-                time, time_unit = papy.read_nc_var_ms(nc_file_path, nc_file,'time')   
+                time, time_unit = papy.read_nc_var_ms(
+                                            nc_file_path, 
+                                            nc_file, 
+                                            'time')   
             except: 
                 print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
         
-            var, var_unit = papy.read_nc_var_ms(nc_file_path,nc_file,var_name)
+            var, var_unit = papy.read_nc_var_ms(
+                                            nc_file_path, 
+                                            nc_file, 
+                                            var_name)
             spectra_data_palm[mask_name] = papy.calc_spectra(
                                             var,
                                             time,
@@ -460,16 +465,17 @@ if mode == 3:
             f_sm = f_sm[:len(S_uu_sm)]
             h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
                             marker='o', markersize=3, color='darkviolet',
-                            label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, height_c, str(palm_wtref)[:-4]))
+                            label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, 
+                            height_c, str(palm_wtref)[:-4]))
             h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
                             marker='o', markersize=3, color='violet',
                             fillstyle='none')
+            l = 0
             for j,name in enumerate(namelist):
                 files = wt.get_files(path,name)
                 for file in files:
                     if height_c == time_series_eq[name][file].z:
-                        plot_height = True
-                        print('plot height = {}'.format(height_c))
+                        l += 1
                         file_c = file
                         height = height_c
                         f_sm_wt = spectra_data_wt[name][file][0]
@@ -479,7 +485,8 @@ if mode == 3:
                         f_sm_wt = f_sm_wt[:len(S_wt_sm)]
                         h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
                                         marker='x', markersize=3, color=c_list[j],
-                                        label=r'{} ${}$ at ${}$ m'.format(name, var_name, time_series_eq[name][file].z))
+                                        label=r'{} ${}$ at ${}$ m'.format(name, 
+                                        var_name, time_series_eq[name][file].z))
             try:
                 f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
                 ref_specs = papy.get_reference_spectra(height_c,
@@ -503,8 +510,11 @@ if mode == 3:
             ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
             ax.legend(loc='lower right', fontsize=11)
             ax.grid()
+            if l == len(namelist):                       
+                plot_height = True
             if plot_height:
-                plt.savefig(plot_path + 'spectra_'+ var_name + '_' + mask_name + '.' + file_type, bbox_inches='tight')
+                plt.savefig(plot_path + 'spectra_'+ var_name + '_' + mask_name + '.' + file_type, 
+                            bbox_inches='tight')
             else:
                 plt.close()
 
