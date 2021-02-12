@@ -272,7 +272,7 @@ if calc_palm:
         var_u, var_unit_u = papy.read_nc_var_ms(nc_file_path, nc_file, 'u')
         var_v, var_unit_v = papy.read_nc_var_ms(nc_file_path, nc_file, 'v')
         var_w, var_unit_w = papy.read_nc_var_ms(nc_file_path, nc_file, 'w')
-        u_variance_old = np.std(var_u)
+        u_variance_old[i] = np.std(var_u)
         turbint_dat = papy.calc_turbint(var_u, var_v, var_w)
 
         palm_Iu[i] = turbint_dat[0]
@@ -286,12 +286,14 @@ if calc_palm:
     
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
     
-    plt.figure()
+    fig, ax = plt.subplots()
 
-    plt.semilogy(u_variance_old, height_list)
-    plt.semilogy(var_u, z)
-
+    ax.semilogy(u_variance_old, height_list, label='np.std()')
+    ax.semilogy(var_u[-1], z, label='pr: u*2')
+    ax.grid()
+    ax.legend()
     plt.show()
+    plt.close()
 
     print('\n calculated turbulence intensities scale for {}'.format(str(height)))    
 
