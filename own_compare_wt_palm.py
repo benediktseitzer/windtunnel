@@ -263,7 +263,7 @@ if calc_palm:
         palm_lux[i] = papy.calc_lux(np.abs(time[1]-time[0]),var)
         print('\n calculated integral length scale for {}'.format(str(height)))
     
-    # calculate turbulence intensities
+    # calculate PALM turbulence intensities
     palm_Iu = np.zeros(len(height_list))
     palm_Iv = np.zeros(len(height_list))
     palm_Iw = np.zeros(len(height_list))
@@ -281,6 +281,16 @@ if calc_palm:
         palm_Iu[i] = turbint_dat[0]
         palm_Iv[i] = turbint_dat[1]
         palm_Iw[i] = turbint_dat[2]
+
+    # other try
+    grid_name = 'zu'
+    z_flux, z_unit = papy.read_nc_grid(nc_file_path, nc_file, grid_name)
+    var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
+    var_v, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v*2')
+    var_w, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*2')
+        
+
+
         print('\n calculated turbulence intensities scale for {}'.format(str(height)))    
 
 for name in namelist:
@@ -717,6 +727,7 @@ if mode == 5:
         turb_data[name] = {}
         turb_data[name].fromkeys(files)
 
+        #wind tunnel data
         for file in files:
             heights.append((time_series[name][file].z))
             x_val = time_series[name][file].x
