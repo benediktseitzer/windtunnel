@@ -45,11 +45,7 @@ MAIN
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
 namelist = ['BA_BL_UW_001',
-            'BA_S5_L_UW_002',
-            'BA_S6_L_UW_007',
-            'BA_S7_L_UW_007',
-            'BA_S8_L_UW_007',
-            'BA_BL_UW_010']
+            'BA_S5_L_UW_002']
 
 x_val_shift = 100.
 
@@ -267,6 +263,7 @@ if calc_palm:
     palm_Iu = np.zeros(len(height_list))
     palm_Iv = np.zeros(len(height_list))
     palm_Iw = np.zeros(len(height_list))
+    u_variance_old = np.zeros(len(height_list))
 
     for i,mask_name in enumerate(mask_name_list): 
         nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
@@ -275,7 +272,7 @@ if calc_palm:
         var_u, var_unit_u = papy.read_nc_var_ms(nc_file_path, nc_file, 'u')
         var_v, var_unit_v = papy.read_nc_var_ms(nc_file_path, nc_file, 'v')
         var_w, var_unit_w = papy.read_nc_var_ms(nc_file_path, nc_file, 'w')
-
+        u_variance_old = np.std(var_u)
         turbint_dat = papy.calc_turbint(var_u, var_v, var_w)
 
         palm_Iu[i] = turbint_dat[0]
@@ -284,14 +281,19 @@ if calc_palm:
 
     # other try
     grid_name = 'zu'
-    z_flux, z_unit = papy.read_nc_grid(nc_file_path, nc_file, grid_name)
+    nc_file = '{}_pr{}.nc'.format(papy.globals.run_name, papy.globals.run_number)
+    z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
+    
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
-    var_v, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v*2')
-    var_w, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*2')
-        
+    
+    plt.figure()
 
+    plt.semilogy(u_variance_old, height_list)
+    plt.semilogy(var_u, z)
 
-        print('\n calculated turbulence intensities scale for {}'.format(str(height)))    
+    plt.show()
+
+    print('\n calculated turbulence intensities scale for {}'.format(str(height)))    
 
 for name in namelist:
     # shift of coordinate system
