@@ -439,7 +439,10 @@ if mode == 3:
                                             'time')   
             except: 
                 print('\n Mask {} not in dataset. \n Check {} and the corresponding heights in the *_p3d-file'.format(mask_name, nc_file_path))
-        
+            dt, dt_unit = papy.read_nc_var_ts(
+                            nc_file_path, 
+                            '{}_ts{}.nc'.format(papy.globals.run_name, papy.globals.run_number), 
+                            'dt')
             var, var_unit = papy.read_nc_var_ms(
                                             nc_file_path, 
                                             nc_file, 
@@ -463,13 +466,15 @@ if mode == 3:
             comp1_aliasing = spectra_data_palm[mask_name][2]
             f_sm = [f_sm][np.argmin([np.nanmax(f_sm)])]
             f_sm = f_sm[:len(S_uu_sm)]
+            gridsize = 2.
+            filter_width_scaled = gridsize/(palm_wtref*np.mean(dt))
             h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
                             marker='o', markersize=3, color='darkviolet',
                             label=r'PALM at $z={}$'.format(height_c))
             h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
                             marker='o', markersize=3, color='violet',
                             fillstyle='none')
-            hf = ax.axvline(x=(2./(palm_wtref*0.29)), color='g')
+            hf = ax.axvline(x=filter_width_scaled, ls= '--', color='gray')
 
             l = 0
             for j,name in enumerate(namelist):
@@ -520,7 +525,7 @@ if mode == 3:
             ax.set_ylim([10 ** -4, 1])
             ax.set_xlabel(r"$f\cdot z\cdot u_{ref}^{-1}$")
             ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
-            ax.legend(loc='lower right', fontsize=11)
+            ax.legend(loc='lower left')
             ax.grid()
             if l == len(namelist):                       
                 plot_height = True
