@@ -465,10 +465,12 @@ if mode == 3:
             f_sm = f_sm[:len(S_uu_sm)]
             h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
                             marker='o', markersize=3, color='darkviolet',
-                            label=r'PALM at $z={}$'.format(height_c)
+                            label=r'PALM at $z={}$'.format(height_c))
             h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
                             marker='o', markersize=3, color='violet',
                             fillstyle='none')
+            hf = ax.axvline(x=(2./(palm_wtref*0.29)), color='g')
+
             l = 0
             for j,name in enumerate(namelist):
                 files = wt.get_files(path,name)
