@@ -465,8 +465,7 @@ if mode == 3:
             f_sm = f_sm[:len(S_uu_sm)]
             h1 = ax.loglog(f_sm[:comp1_aliasing], S_uu_sm[:comp1_aliasing], 
                             marker='o', markersize=3, color='darkviolet',
-                            label=r'PALM - ${}$ at ${}$ m with ${}$ m/s'.format(var_name, 
-                            height_c, str(palm_wtref)[:-4]))
+                            label=r'PALM at $z={}$'.format(height_c)
             h2 = ax.loglog(f_sm[comp1_aliasing-1:], S_uu_sm[comp1_aliasing-1:], 
                             marker='o', markersize=3, color='violet',
                             fillstyle='none')
@@ -483,10 +482,21 @@ if mode == 3:
                         wt_aliasing = spectra_data_wt[name][file][2]
                         f_sm_wt = [f_sm_wt][np.argmin([np.nanmax(f_sm_wt)])]
                         f_sm_wt = f_sm_wt[:len(S_wt_sm)]
-                        h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
-                                        marker='x', markersize=3, color=c_list[j],
-                                        label=r'{} ${}$ at ${}$ m'.format(name, 
-                                        var_name, time_series_eq[name][file].z))
+                        if name == 'BA_BL_UW_001':
+                            h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
+                                            marker='x', markersize=3, color=c_list[j],
+                                            label=r'boundary layer at $z={}$m'.format( 
+                                            time_series_eq[name][file].z))
+                        elif name == 'BA_BL_UW_010':
+                            h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
+                                            marker='x', markersize=3, color=c_list[j],
+                                            label=r'smooth wall at $z={}$m'.format( 
+                                            time_series_eq[name][file].z))
+                        else:
+                            h3 = ax.loglog(f_sm_wt[:wt_aliasing+1], S_wt_sm[:wt_aliasing+1],
+                                            marker='x', markersize=3, color=c_list[j],
+                                            label=r'$s_b={}$m at $z={}$m'.format(name[4], 
+                                            time_series_eq[name][file].z))
             try:
                 f_refspecs = np.logspace(-4, 3, num=100, base = 10) 
                 ref_specs = papy.get_reference_spectra(height_c,
@@ -504,7 +514,7 @@ if mode == 3:
             except:
                 print('\n There are no reference-spectra available for this flow \n')
 
-            ax.set_xlim([10**-4,150])
+            ax.set_xlim([10**-4,300])
             ax.set_ylim([10 ** -4, 1])
             ax.set_xlabel(r"$f\cdot z\cdot u_{ref}^{-1}$")
             ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
