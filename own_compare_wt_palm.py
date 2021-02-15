@@ -264,6 +264,8 @@ if calc_palm:
     palm_Iv = np.zeros(len(height_list))
     palm_Iw = np.zeros(len(height_list))
     u_variance_old = np.zeros(len(height_list))
+    v_variance_old = np.zeros(len(height_list))
+    w_variance_old = np.zeros(len(height_list))
 
     for i,mask_name in enumerate(mask_name_list): 
         nc_file = '{}_masked_{}{}.nc'.format(papy.globals.run_name, mask_name, papy.globals.run_number)
@@ -272,7 +274,9 @@ if calc_palm:
         var_u, var_unit_u = papy.read_nc_var_ms(nc_file_path, nc_file, 'u')
         var_v, var_unit_v = papy.read_nc_var_ms(nc_file_path, nc_file, 'v')
         var_w, var_unit_w = papy.read_nc_var_ms(nc_file_path, nc_file, 'w')
-        u_variance_old[i] = np.std(var_u)
+        u_variance_old[i] = np.std(var_u)**2.
+        v_variance_old[i] = np.std(var_v)**2.
+        w_variance_old[i] = np.std(var_w)**2.
         turbint_dat = papy.calc_turbint(var_u, var_v, var_w)
 
         palm_Iu[i] = turbint_dat[0]
@@ -285,15 +289,34 @@ if calc_palm:
     z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
     
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
+    var_v, var_max_v, var_unit_v = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v*2')
+    var_w, var_max_w, var_unit_w = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*2')    
     
-    fig, ax = plt.subplots()
+    comp_list = ['u', 'v', 'w']
 
-    ax.semilogy(u_variance_old, height_list, label='np.std()')
-    ax.semilogy(var_u[-1], z, label='pr: u*2')
-    ax.grid()
-    ax.legend()
-    plt.show()
-    plt.close()
+    for comp in comp_list:
+        plt.style.use('classic')
+        fig, ax = plt.subplots()
+        if comp == 'u':
+            ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', label='PALM: masked output variance')
+            ax.semilogy(var_u[-1], z, label='PALM: u*2')
+            ax.set_xlabel(r'$\sigma_u$  $(m^2/s^2)$')
+        elif comp == 'v':
+            ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', label='PALM: masked output variance')
+            ax.semilogy(var_v[-1], z, label='PALM: v*2') 
+            ax.set_xlabel(r'$\sigma_v$  $(m^2/s^2)$')
+        elif comp == 'w':
+            ax.errorbar(w_variance_old, height_list, xerr=0.02*w_variance_old,fmt='o', label='PALM: masked output variance')
+            ax.semilogy(var_w[-1], z, label='PALM: w*2')   
+            ax.set_xlabel(r'$\sigma_w$  $(m^2/s^2)$')
+        ax.set_ylabel(r'$z$ $(m)$')
+        ax.set_ylim(0.,256.)
+        ax.grid()
+        ax.legend(loc='lower right', numpoints=1)
+        plt.savefig(plot_path_0 + 'compare_variance_' + comp + '.' + file_type, 
+                    bbox_inches='tight')
+        # plt.show()
+        plt.close()
 
     print('\n calculated turbulence intensities scale for {}'.format(str(height)))    
 
