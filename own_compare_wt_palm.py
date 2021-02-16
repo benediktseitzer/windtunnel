@@ -44,8 +44,7 @@ MAIN
 #             'BA_S7_L_UW_007', 'BA_S7_S_UW_006', 'BA_S7_D_UW_007',
 #             'BA_S8_L_UW_007', 'BA_S8_S_UW_006', 'BA_S8_D_UW_007']
 
-namelist = ['BA_BL_UW_001',
-            'BA_S5_L_UW_002']
+namelist = ['BA_BL_UW_001']
 
 x_val_shift = 100.
 
@@ -64,7 +63,9 @@ experiment = 'balcony'
 if len(namelist) == 1:
     config = namelist[0][3:5]
 else:
-    if namelist[1][-4:] == 'long':
+    if len(namelist) == 0:
+        print('no windtunnel data')
+    elif namelist[1][-4:] == 'long':
         config = 'LONG'    
     else:
         config = namelist[0][3:5]
@@ -274,9 +275,10 @@ if calc_palm:
         var_u, var_unit_u = papy.read_nc_var_ms(nc_file_path, nc_file, 'u')
         var_v, var_unit_v = papy.read_nc_var_ms(nc_file_path, nc_file, 'v')
         var_w, var_unit_w = papy.read_nc_var_ms(nc_file_path, nc_file, 'w')
-        u_variance_old[i] = np.std(var_u)**2.
-        v_variance_old[i] = np.std(var_v)**2.
-        w_variance_old[i] = np.std(var_w)**2.
+        mean_normalize = np.mean(np.sqrt(var_u**2.+var_v**2.+var_w**2.))
+        u_variance_old[i] = np.std(var_u)/mean_normalize
+        v_variance_old[i] = np.std(var_v)/mean_normalize
+        w_variance_old[i] = np.std(var_w)/mean_normalize
         turbint_dat = papy.calc_turbint(var_u, var_v, var_w)
 
         palm_Iu[i] = turbint_dat[0]
@@ -288,32 +290,43 @@ if calc_palm:
     nc_file = '{}_pr{}.nc'.format(papy.globals.run_name, papy.globals.run_number)
     z, z_unit = papy.read_nc_grid(nc_file_path,nc_file_grid,grid_name)
     
+    var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u')
+    var_v, var_max_v, var_unit_v = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v')
+    var_w, var_max_w, var_unit_w = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w')
+    mean_normalize_2 = np.zeros(len(var_u[-1]))
+    # hier Fehler weil var_u varianz ist und nicht mittlere geschwindigkeit
+    for i in range(len(var_u[-1])-1):
+        mean_normalize_2[i] = np.mean(np.sqrt(var_u[-1]**2.+ var_v[-1]**2.+ var_w[-1]**2.))
+
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
     var_v, var_max_v, var_unit_v = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v*2')
-    var_w, var_max_w, var_unit_w = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*2')    
-    
+    var_w, var_max_w, var_unit_w = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w*2')
+    var_u[-1] = np.sqrt(var_u[-1])/mean_normalize_2
+    var_v[-1] = np.sqrt(var_v[-1])/mean_normalize_2
+    var_w[-1] = np.sqrt(var_w[-1])/mean_normalize_2
+
     comp_list = ['u', 'v', 'w']
 
     for comp in comp_list:
         plt.style.use('classic')
         fig, ax = plt.subplots()
         if comp == 'u':
-            ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', label='PALM: masked output variance')
-            ax.semilogy(var_u[-1], z, label=r'PALM: u*2')
-            ax.set_xlabel(r'$\sigma_u$  $(m^2/s^2)$')
+            ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', label='PALM: masked output $I_u$')
+            ax.semilogy(var_u[-1], z, label=r'PALM: $I_u$')
+            ax.set_xlabel(r'$I_u$  $(-)$')
         elif comp == 'v':
-            ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', label='PALM: masked output variance')
-            ax.semilogy(var_v[-1], z, label='PALM: v*2') 
-            ax.set_xlabel(r'$\sigma_v$  $(m^2/s^2)$')
+            ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', label='PALM: masked output $I_v$')
+            ax.semilogy(var_v[-1], z, label=r'PALM: $I_v$')
+            ax.set_xlabel(r'$I_v$  $(-)$')
         elif comp == 'w':
-            ax.errorbar(w_variance_old, height_list, xerr=0.02*w_variance_old,fmt='o', label='PALM: masked output variance')
-            ax.semilogy(var_w[-1], z, label='PALM: w*2')   
-            ax.set_xlabel(r'$\sigma_w$  $(m^2/s^2)$')
+            ax.errorbar(w_variance_old, height_list, xerr=0.02*w_variance_old,fmt='o', label='PALM: masked output $I_w$')
+            ax.semilogy(var_w[-1], z, label=r'PALM: $I_w$')
+            ax.set_xlabel(r'$I_w$  $(-)$')
         ax.set_ylabel(r'$z$ $(m)$')
         ax.set_ylim(0.,256.)
-        ax.grid()
-        ax.legend(loc='lower right', numpoints=1)
-        plt.savefig(plot_path_0 + 'compare_variance_' + comp + '.' + file_type, 
+        ax.grid(True,'both','both')
+        ax.legend(loc='lower center', numpoints=1, bbox_to_anchor=(0.5, 1.0))
+        plt.savefig(plot_path_0 + 'compare_turbint_' + comp + '.' + file_type, 
                     bbox_inches='tight')
         # plt.show()
         plt.close()
