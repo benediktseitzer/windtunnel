@@ -109,7 +109,7 @@ elif data_nd == 0:
 # 5 = compare profiles
 # 6 = compare multiple palm to wind tunnel 
 # 7 = longitudinal profile
-mode = 3
+mode = 6
 calc_palm = True
 outdata_path = '../wt_outdata/'# format in npz
 
@@ -293,10 +293,9 @@ if calc_palm:
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u')
     var_v, var_max_v, var_unit_v = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v')
     var_w, var_max_w, var_unit_w = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'w')
-    mean_normalize_2 = np.zeros(len(var_u[-1]))
-    # hier Fehler weil var_u varianz ist und nicht mittlere geschwindigkeit
-    for i in range(len(var_u[-1])-1):
-        mean_normalize_2[i] = np.mean(np.sqrt(var_u[-1]**2.+ var_v[-1]**2.+ var_w[-1]**2.))
+    # mean_normalize_2 = np.zeros(len(var_u[-1]))
+
+    mean_normalize_2 = np.sqrt(var_u[-1]**2.+ var_v[-1]**2.+ var_w[-1]**2.)
 
     var_u, var_max_u, var_unit_u = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'u*2')
     var_v, var_max_v, var_unit_v = papy.read_nc_var_ver_pr(nc_file_path, nc_file, 'v*2')
@@ -311,21 +310,28 @@ if calc_palm:
         plt.style.use('classic')
         fig, ax = plt.subplots()
         if comp == 'u':
-            ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', label='PALM: masked output $I_u$')
-            ax.semilogy(var_u[-1], z, label=r'PALM: $I_u$')
+            ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', 
+                        label='PALM: masked output $I_u$')
+            ax.semilogy(var_u[-1], z, 
+                    label=r'PALM: $I_u$')
             ax.set_xlabel(r'$I_u$  $(-)$')
         elif comp == 'v':
-            ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', label='PALM: masked output $I_v$')
-            ax.semilogy(var_v[-1], z, label=r'PALM: $I_v$')
+            ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', 
+                    label='PALM: masked output $I_v$')
+            ax.semilogy(var_v[-1], z, 
+                    label=r'PALM: $I_v$')
             ax.set_xlabel(r'$I_v$  $(-)$')
         elif comp == 'w':
-            ax.errorbar(w_variance_old, height_list, xerr=0.02*w_variance_old,fmt='o', label='PALM: masked output $I_w$')
-            ax.semilogy(var_w[-1], z, label=r'PALM: $I_w$')
+            ax.errorbar(w_variance_old, height_list, xerr=0.02*w_variance_old,fmt='o', 
+                    label='PALM: masked output $I_w$')
+            ax.semilogy(var_w[-1], z, 
+                    label=r'PALM: $I_w$')
             ax.set_xlabel(r'$I_w$  $(-)$')
         ax.set_ylabel(r'$z$ $(m)$')
         ax.set_ylim(0.,256.)
         ax.grid(True,'both','both')
-        ax.legend(loc='lower center', numpoints=1, bbox_to_anchor=(0.5, 1.0))
+        ax.legend(loc='lower center', numpoints=1, 
+                    bbox_to_anchor=(0.5, 1.0))
         plt.savefig(plot_path_0 + 'compare_turbint_' + comp + '.' + file_type, 
                     bbox_inches='tight')
         # plt.show()
@@ -1098,11 +1104,14 @@ if mode == 6:
 
         for i in range(len(time)-1,len(time)):
             ax.fill_betweenx(z[:-1], palm_data[papy.globals.run_numbers[0]]['flux'][i,:-1], 
-                    palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], color ='thistle',
+                    palm_data[papy.globals.run_numbers[1]]['flux'][i,:-1], 
+                    color ='thistle',
                     label = 'PALM: $0.02 m<z_0<0.06 m$')
         for i in range(len(time_prof)-1,len(time_prof)):
             try:
-                ax.plot(palm_flux[i,:-1], z_flux[:-1], label='PALM: $z_0=0.021$ $m$', color = 'darkviolet')
+                ax.plot(palm_flux[i,:-1], z_flux[:-1], 
+                        label='PALM: $z_0=0.021$ $m$', 
+                        color = 'darkviolet')
             except:
                 print('Exception has occurred: StopIteration - plot_ver_profile')
 
@@ -1120,6 +1129,11 @@ if mode == 6:
         plt.grid(True,'both','both')    
         plt.savefig(plot_path_0 + 'cummulative_flux_log_range' + '.' + file_type,
                     bbox_inches='tight')
+
+
+    plot_turbint = True
+    if plot_turbint:
+        print('test')
 
     print(' End plotting of palm-runs of {} \n'.format(papy.globals.run_name))
 
