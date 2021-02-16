@@ -299,7 +299,7 @@ if calc_palm:
         fig, ax = plt.subplots()
         if comp == 'u':
             ax.errorbar(u_variance_old, height_list, xerr=0.02*u_variance_old,fmt='o', label='PALM: masked output variance')
-            ax.semilogy(var_u[-1], z, label='PALM: u*2')
+            ax.semilogy(var_u[-1], z, label=r'PALM: u*2')
             ax.set_xlabel(r'$\sigma_u$  $(m^2/s^2)$')
         elif comp == 'v':
             ax.errorbar(v_variance_old, height_list, xerr=0.02*v_variance_old,fmt='o', label='PALM: masked output variance')
