@@ -16,7 +16,7 @@ The windtunnel python module is a processing library developed by the EWTL Group
  - tkinter v8.6
  - logging v0.5.1.2
  - csv v1.0
- - tsp_solver ??
+ - tsp_solver 
  - os, sys, time, fnmatch, math, mpl_toolkits (all built-in modules)
  
 The listed versions represent minimum requirements; PAPE should run fine wih newer versions of the modules listed in Section 1.1. However, backwards compatability, especially with python v2.x, cannot be guaranteed. 
