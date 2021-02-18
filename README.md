@@ -3,6 +3,8 @@ The windtunnel python module is a processing library developed by the EWTL Group
 
 
 ## 1. Installation
+To set up the windtunnel-package, simply place it in a directory of your choice. Executing scripts can, but must not be placed in the same directory as the windtunnel module. 
+
 ### 1.1 Requirements
  - python 3.0 
  - the following python libraries:
@@ -19,14 +21,7 @@ The windtunnel python module is a processing library developed by the EWTL Group
  - tsp_solver 
  - os, sys, time, fnmatch, math, mpl_toolkits (all built-in modules)
  
-The listed versions represent minimum requirements. 
-
-PAPE should run fine wih newer versions of the modules listed in Section 1.1. However, backwards compatability, especially with python v2.x, cannot be guaranteed. 
-PAPE has been tested tested using Spyder 3.3.6 on a computer running Ubtuntu 20.04LTS, and using Spyder 3.2.3 on a computer running Windows 10, but should work on any distribution that supports the above requirements. Note that the purpose of the GUI installation is to run the program without the use of Spyder. 
-
-### 1.2 Installation
-
-To install PAPE, copy the program files to a directory of your choice. It is recommended to install the program in a directory to which you have read and write permission to avoid potential permission conflicts. If you want to run PAPE via the GUI, make sure that your system is set to allow the execution of python files as a program (varies depending on your OS, see below). 
+The listed versions represent minimum requirements.
 
 #### 1.2.1 Windows
 
