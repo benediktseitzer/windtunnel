@@ -907,13 +907,27 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
                    ymax = None):
     """ Plots the joint time frequency analysis using a short-time Fourier
     transform smoothed and raw for both wind components in one figure. Returns
-    the figure. To change overlap, 
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: t_eq: as defined by Timeseries
-    @parameter: height: z as defined by Timeseries
-    @parameter: second_comp, type = string: the name of the second measured wind component
-    @parameter: window_length, type = int: window length in ms"""
+    the figure. To change overlap.
+    
+    ----------
+    Parameters
+
+    u1: array like
+    v1: array like
+    height: array like
+    t_eq: array like
+    second_comp: string
+    window_length: integer
+    ncols: integer
+    kwargs: arbitrary
+    fixes_limits: array like
+    ymax: float
+
+    ----------
+    Returns
+
+    fig: figure object 
+    """
     
     #set the window size to 3500 ms - this seems to caputure the relevant 
     #frequency range
@@ -1049,14 +1063,18 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
     
     return fig
  
-def plot_stdevs(data, t_eq, tau, comp='u', ax=None, **kwargs):
+def plot_stdevs(data, t_eq, tau, ax=None, **kwargs):
     """ This function plots the spread of an array based on how many standard 
-    deviations each point is from the mean over each tau-long time period
-    @parameter: data, type = np.array (the array to be analysed)
-    @parameter: t_eq, type = np.array (corresponding times steps in [ms])
-    @parameter: tau, type = int or float (characteristic time scale (ms)
-    @parameter: ax, axis passed to function
-    @parameter kwargs : additional keyword arguments passed to ax.bar() """
+    deviations each point is from the mean over each tau-long time period.
+    
+    ----------
+    Parameters
+
+    data: array like
+    t_eq: array like
+    tau: integer
+    ax: axes object
+    """
     # Get current axis
     if ax is None:
         ax = plt.gca()
@@ -1103,12 +1121,17 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
                            bar_divider = 3000, second_comp = 'v'):
     """ Plots a detailed wind rose using only the perturbation component of
     the wind. Number of bars depends on bar_divider and length of u1.
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: total_mag: array containing magnitude of wind (not perturbation)
-    @parameter: total_direction: array containing direction of wind (not perturbation)
-    @parameter: bar_divider: inversely proportional to number of bars to be plotted
-    @parameter: second_comp, type = string: the name of the second measured wind component"""
+    
+    ----------
+    Parameters
+
+    u1: array like
+    v1: array like
+    total_mag: array like
+    total_direction: array like
+    bar_divider: float
+    second_comp: string
+    """
     
     u1 = np.asarray(u1)
     v1 = np.asarray(v1)
@@ -1141,11 +1164,23 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
     """ 
     Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
 
-    @parameter: delta_t_arr: inter arrival times
-    @parameter: arrival law: theoretical data rates
-    @parameter: binscenters: distribution inter arrival times
-    @parameter: data_entries: distribution data rates
-    @parameter: popt: fitted data rate
+    ----------
+    Parameters
+
+    delta_t_arr: array like
+    arrival_law: array like
+    binscenters: float
+    data_entries: array like
+    popt: float
+    logplot: boolean
+    ax: axes object
+    kwargs: arbitrary
+
+    ----------
+    Returns
+
+    ret: axes object
+    lgd: legend object
     """
     if logplot == None:
         logplot = True
@@ -1198,9 +1233,17 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     """ 
     Plots transit-time distribution.
 
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: additional keywords arguments passed to plt.semilogy().
+    ----------
+    Parameters
+
+    transit time: array like
+    skew: float
+    ax: axes object
+
+    ----------
+    Returns
+
+    ret: axes object
     """
 
     if ax is None:
@@ -1213,6 +1256,5 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     ax.grid()
     ax.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
                 transform=ax.transAxes)
-
 
     return ret
