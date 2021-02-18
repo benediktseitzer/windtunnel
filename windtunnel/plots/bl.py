@@ -32,11 +32,21 @@ __all__ = [
 
 def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
     """ Plot helper function to switch abscissa and ordinate.
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: lat, type = boolean
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.errorbar()
+
+    ----------
+    Parameters
+
+    x: array like
+    y: array like
+    lat: boolean
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: axes object
+
     """
     if ax is None:
         ax = plt.gca()
@@ -57,11 +67,20 @@ def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
 def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
     components mean value are coloured in orange.
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: std_mask, float
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.scatter()
+
+    ----------
+    Parameters
+
+    x: array like
+    y: array like
+    std_mask: float
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: axes object
     """
     # Get current axis
     if ax is None:
@@ -90,12 +109,21 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y using time transit time weighted 
     statistics. All outliers outside of 5 STDs of the components mean value are
     coloured in orange, as default.
-    @parameter: transit_time, type = np.array
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: std_mask, float
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.scatter()
+
+    ----------
+    Parameters
+
+    transit_time: array like
+    x: array like
+    y: array like
+    std_mask: float
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: axes object
     """
     # Get current axis
     if ax is None:
@@ -137,10 +165,9 @@ def plot_hist(data,ax=None,**kwargs):
     
     ----------
     Returns
+
     ret: 
     """
-	#edit 08/01/2019: convert data from times series to array manually, to avoid
-    #compatibility issues with python 3.6 & pandas 0.24
     
     # Get current axis
     if ax is None:
@@ -174,14 +201,25 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     """ Plots turbulence intensities from data with VDI reference data for 
     their respective height. yerr specifies the uncertainty. Its default value
     is 0. If lat is True then a lateral profile is created.
-    @parameter: data, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: component, type = string
-    @parameter: lat, type = boolean
-    @parameter: ref_path, type = string
-    @parameter: ax, axis passed to function    
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    ----------
+    Parameters
+
+    data: array like
+    heights: array like
+    yerr: float
+    component: string
+    var_lat: string, integer, float
+    lat: boolean
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: axes object
+    """
     if ax is None:
        ax = plt.gca()
 
@@ -360,14 +398,26 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
     """ Plots wind components and wind magnitude for their respective height.
     yerr specifies the uncertainty. Its default value is 0. If lat is True then
     a lateral profile is created.
-    @parameter: mean_magnitude, type = list or np.array
-    @parameter: u_mean, type = list or np.array
-    @parameter: v_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: lat, type = boolean
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    
+    ----------
+    Parameters
+
+    mean_magnitude: array like
+    u_mean: array like
+    v_mean: array like
+    heights: array like        
+    yerr: float
+    var_lat: string, integer, float 
+    lat: boolean
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: list of axes objects
+    lgd: axes object
+    """
     if ax is None:
        ax = plt.gca()
 
@@ -421,13 +471,25 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
                       **kwargs):
     """Plots wind components and wind magnitude for their respective height on
     a log scale. yerr specifies the uncertainty. Its default value is 0.
-    @parameter: mean_magnitude, type = list or np.array
-    @parameter: u_mean, type = list or np.array
-    @parameter: v_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: ax, axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    
+    ----------
+    Parameters
+
+    mean_magnitude: array like
+    u_mean: array like
+    v_mean: array like
+    heights: array like        
+    yerr: float
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: list of axes objects
+    lgd: axes object
+
+    """
     if ax is None:
        ax = plt.gca()
     
@@ -456,13 +518,24 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
     """Plots Lux data on a double logarithmic scale with reference data. yerr
     specifies the uncertainty. Its default value is 0. If lat
     is True then a lateral profile, without a loglog scale, is created.
-    @parameter: Lux, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: err, type = int or float
-    @parameter: lat, type = boolean
-    @parameter: ref_path = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    ----------
+    Parameters
+
+    Lux: array like
+    heights: array like        
+    err: float
+    var_lat: string, integer, float 
+    lat: boolean
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    ret: list of axes objects
+    """
 	#edit 08/02/2019: moved labels to ax.plot, to ensure proper plotting of legend, and removing need for extra labels variable.
     if ax is None:
        ax = plt.gca()
@@ -513,14 +586,34 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         
     return ret
 
-def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
-                 uv_aliasing, wind_comps, height, ref_path=None,
+def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
+                 wind_comps, height, ref_path=None,
                  ax=None, **kwargs):
     """Plots spectra using INPUT with reference data.
-    @parameter: ???
-    @parameter: ref_path, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    ----------
+    Parameters
+
+    f_sm: array like
+    S_uu_sm: array like        
+    S_vv_sm: array like
+    u_aliasing: integer
+    v_aliasing: integer
+    wind_comps: list
+    height: float
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    ----------
+    Returns
+
+    h1: axes object
+    h2: axes object
+    h3: axes object
+    h4: axes object    
+    
+    """
     if ax is None:
         ax = plt.gca()
     
@@ -573,7 +666,28 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
     @parameter: ???
     @parameter: ref_path, type = string
     @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    @parameter kwargs : additional keyword arguments passed to plt.plot() 
+    
+    ----------
+    Parameters
+
+    f_comp1_sm: array like
+    f_comp2_sm: array like
+    S_comp1_sm: array like        
+    S_comp2_sm: array like
+    comp1_aliasing: integer
+    comp2_aliasing: integer
+    wind_comps: list
+    height: float
+    ref_path: string
+    set_limits: boolean
+
+    ----------
+    Returns
+
+    h1: axes object
+    h2: axes object   
+    """
 
 
     f_sm = [f_comp1_sm,f_comp2_sm][np.argmin([np.nanmax(f_comp1_sm),np.nanmax(f_comp2_sm)])]
