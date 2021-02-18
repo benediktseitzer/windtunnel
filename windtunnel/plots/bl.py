@@ -663,10 +663,6 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
 def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
                  comp1_aliasing,comp2_aliasing,wind_comps, height, ref_path=None, set_limits=True):
     """Plots spectra using INPUT with reference data.
-    @parameter: ???
-    @parameter: ref_path, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() 
     
     ----------
     Parameters
@@ -686,7 +682,7 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
     Returns
 
     h1: axes object
-    h2: axes object   
+    h2: axes object
     """
 
 
@@ -745,11 +741,23 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     """ Plots the results for a Reynolds Number Independence test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
-    @parameter: data, type = np.array or list
-    @parameter: wtref, type = np.array or list
-    @parameter: yerr, type = int or float
-    @parameter: ax: axis passed to function
-    @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
+    
+    ----------
+    Parameters
+
+    data: array like
+    wtref: array like
+    ymin: float
+    ymax: float
+    yerr: float
+    ax: axes object
+    kwargs: arbitrary
+
+    ----------
+    Returns
+
+    ret: list
+    """
     if ax is None:
         ax=plt.gca()
     if ymin is None:
@@ -779,11 +787,22 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Repeatability test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
-    @parameter: data, type = np.array or list
-    @parameter: wtref, type = np.array or list
-    @parameter: yerr, type = int or float
-    @parameter: ax: axis passed to function
-    @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
+    
+    ----------
+    Parameters
+
+    mean_magnitude: array like
+    heights: array like
+    wtref: array like
+    yerr: float
+    ax: axes object
+    kwargs: arbitrary
+
+    ----------
+    Returns
+
+    ret: list    
+    """
     if ax is None:
         ax=plt.gca()
 
@@ -801,7 +820,6 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     ax.legend(labels,loc='lower right',fontsize=14)
     ax.grid(True)
    
-    
     return ret         
 
 def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
@@ -811,12 +829,24 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
     rest results using dictionaries as input objects. wtref, ref_length and 
     scale are used to determine a dimensionless time unit on the x-axis. 
     Default values for each are 1.
-    @parameter: data_dict, type = dictionary
-    @parameter: wtref, type = float or int
-    @parameter: ref_length, type = float or int
-    @parameter: scale, type = float or int
-    @parameter: ylabel, type = string
-    @parameter: ax: axis passed to function"""
+    
+    ----------
+    Parameters
+
+    data: array like
+    wtref: float
+    ref_length: float
+    scale: float
+    ylabel: string
+    title: string
+    ax: axes object
+    kwargs: arbitrary
+
+    ----------
+    Returns
+
+    handles: list    
+    """
 
     if ax is None:
         ax = plt.gca()
@@ -851,9 +881,19 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
     the output plot. kwargs contains any parameters to be passed to
     plot_convergence_test, such as wtref, ref_length and scale. See doc_string
     of plot_convergence_test for more details.
-    @parameter: data_dict, type = dictionary
-    @parameter: ncols, type = int
-    @parameter: kwargs keyword arguments passed to plot_convergence_test"""
+    
+    ----------
+    Parameters
+
+    data_dict: dictionary
+    ncols: integer
+    kwargs: arbitrary
+
+    ----------
+    Returns
+
+    axes: axes object 
+    """
 
     fig, axes = plt.subplots(ncols,int(np.ceil(len(data_dict.keys())/ncols)),
                              figsize=(24,14))
