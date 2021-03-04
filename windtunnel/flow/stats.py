@@ -348,7 +348,7 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
     @parameter: t_eq, type = np.array or list """
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp),t_eq[1]-t_eq[0])
-
+    
     ## FFT
     fft_u = np.fft.fft(u_comp)*1./np.size(u_comp)        #  normalized fft
     fft_v = np.fft.fft(v_comp)*1./np.size(v_comp) 
