@@ -229,43 +229,53 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     ret = []
     for turb_int, height in zip(data, heights):  
         if lat == False:
-            l = ax.errorbar(turb_int,height,yerr=yerr,fmt='o',
-                            color='dodgerblue',
-                            label=r'turbulence intensity '+component,**kwargs)
+
+            if component == 'I_u':
+                l = ax.errorbar(turb_int,height,yerr=yerr,fmt='^',
+                                color='orangered',
+                                label=r'$I_u$',**kwargs)
+            else:         
+                l = ax.errorbar(turb_int,height,yerr=yerr,fmt='^',
+                                color='orangered',
+                                label=r'$I_w$',**kwargs)
             s = ax.plot(slight[1,:],slight[0,:],'k-',linewidth=0.5,
                          label='VDI slightly rough (lower bound)')
-            m = ax.plot(moderate[1,:],moderate[0,:],'k-',linewidth=0.5,
+            m = ax.plot(moderate[1,:],moderate[0,:],'k--',linewidth=0.5,
                          label='VDI moderately rough (lower bound)')
-            r = ax.plot(rough[1,:],rough[0,:],'k-',linewidth=0.5,
+            r = ax.plot(rough[1,:],rough[0,:],'k-.',linewidth=0.5,
                          label='VDI rough (lower bound)')
-            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k-',linewidth=0.5,
+            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k:',linewidth=0.5,
                           label='VDI very rough (lower bound)')
             
-            labels = [r'turbulence intensity '+component,
+            labels = ['boundary layer',
                       'VDI slightly rough (lower bound)',
                       'VDI moderately rough (lower bound)',
                       'VDI rough (lower bound)',
                       'VDI very rough (lower bound)']
         else:
             l = ax.errorbar(height,turb_int,yerr=yerr,fmt='o',
-                             color='dodgerblue', **kwargs)
-            
-
-            labels = [r'turbulence intensity ' + component + ' (-)']
-            
+                             color='orangered', **kwargs)
+            if component == 'I_u':
+                labels = [r'$I_u$']
+            else:         
+                labels = [r'$I_w$']
         ret.append(l)
-        
+    
+    ax.set_ylim(0,100)
     ax.grid(True)
     if lat == False:
         ax.legend([l,s,m,r,vr],labels,bbox_to_anchor=(0.5, 1.04),loc=8,
-                   fontsize=14)
-        ax.set_xlabel(r'turbulence intensity ' + component + ' (-)')
-        ax.set_ylabel('z full-scale (m)')
+                    fontsize=14, numpoints= 1,ncol=2)
+        if component == 'I_u':
+            ax.set_xlabel(r'$I_u$ (-)', fontsize=18)
+        else:
+            ax.set_xlabel(r'$I_w$ (-)', fontsize=18)
+        ax.set_ylabel(r'$z$  (m)', fontsize=18)
     else:
-        ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
-                                                                  fontsize=14)
-        ax.set_xlabel(var_lat+' full-scale (m)')
-        ax.set_ylabel(r'turbulence intensity ' + component + ' (-)')
+        ax.legend([l,s,m,r,vr],labels,bbox_to_anchor=(0.5, 1.04),loc=8,
+                    numpoints=1, fontsize=14,ncol=2)
+        ax.set_xlabel(var_lat+' (m)', fontsize=18)
+        ax.set_ylabel(r'turbulence intensity ' + component + ' (-)', fontsize=18)
     
     return ret
 
@@ -302,16 +312,16 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
     ret = []
     for flux, height in zip(data, heights):
         if lat == False:
-            l = ax.errorbar(flux,height,xerr=yerr,fmt='o',color='dodgerblue',
+            l = ax.errorbar(flux,height,xerr=yerr,fmt='^',color='orangered',
                             **kwargs)
             
-            labels= [r'wind tunnel flux']
+            labels= [r'boundary layer']
         
         else:
-            l = ax.errorbar(height,flux,xerr=yerr,fmt='o',color='dodgerblue',
-                         label=r'wind tunnel flux', **kwargs)
+            l = ax.errorbar(height,flux,xerr=yerr,fmt='^',color='orangered',
+                         label=r'boundary layer', **kwargs)
             
-            labels= [r'wind tunnel flux']
+            labels= [r'boundary layer']
             
         ret.append(l)
         
@@ -323,17 +333,20 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
         ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
-        ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
-        ax.set_ylabel('z full-scale (m)')
+        ax.legend([l],labels,loc='best',fontsize=16,numpoints=1)
+        component = r'$w$'
+        ax.set_xlabel(r'$u$' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ (-)', fontsize=18)
+        ax.set_ylabel(r'$z$ (m)', fontsize=18)
+        ax.set_ylim(4,100)
         if np.nanmax(data)<0:
             ax.set_xlim([np.nanmin(data) * 1.1, 0])
         else:
             ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
-        ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ $(-)$')
-        ax.set_xlabel(var_lat+' full-scale (m)')
+        ax.legend([l],labels,loc='best',fontsize=16,numpoints=1)
+        component = r'$w$'
+        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ $(-)$', fontsize=18)
+        ax.set_xlabel(var_lat+' (m)', fontsize=18)
         
     return ret
 
@@ -365,12 +378,14 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     data = np.asarray(data)
     heights = np.asarray(heights)
     
+    component = r'$w$'
+
     ret = []
     for flux, height in zip(data, heights):
-        l = ax.errorbar(flux,height,xerr=yerr,fmt='o',color='dodgerblue',
+        l = ax.errorbar(flux,height,xerr=yerr,fmt='^',color='orangered',
                         **kwargs)
         
-        labels= [r'wind tunnel flux']
+        labels= [r'boundary layer']
         
         ret.append(l)
     # xlim is user-defined
@@ -384,8 +399,8 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
     ax.legend([l],labels,loc='best',fontsize=16, numpoints=1)
-    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ (-)')
-    ax.set_ylabel('$z$ (m)')
+    ax.set_xlabel(r'$u$' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ (-)', fontsize=18)
+    ax.set_ylabel('$z$ (m)', fontsize=18)
     ax.set_ylim(4.,100.)
     if np.nanmax(data) < 0:
         ax.set_xlim([np.nanmin(data) * 1.1, 0])
@@ -546,7 +561,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
 
     ret = []
     if lat == False:
-        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='cornflowerblue',label='wind tunnel')
+        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='^',color='orangered',label='boundary layer')
         ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1,label=r'$z_0=10\ m$ (theory)')
         ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1,label=r'$z_0=1\ m$ (theory)')
         ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
@@ -571,9 +586,9 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         ax.legend(loc='upper left', numpoints=1)
 
         ax.set_xlim([10,1000])
-        ax.set_ylim([min(heights),1000])
-        ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
-        ax.set_ylabel(r'$z$ full-scale (m)')    
+        ax.set_ylim([4,1000])
+        ax.set_xlabel(r'$L_{u}^{x}$ (m)', fontsize=18)
+        ax.set_ylabel(r'$z$ (m)', fontsize=18)    
         
     else:
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
@@ -581,8 +596,8 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         ax.grid(True)
         ax.legend([Lux],labels,bbox_to_anchor=(0.5,1.05),loc='upper center',
                   borderaxespad=0.,ncol=2,fontsize=16)
-        ax.set_xlabel(var_lat+' full-scale (m)')
-        ax.set_ylabel(r'$L_{u}^{x}$ full-scale (m)')    
+        ax.set_xlabel(var_lat+' (m)', fontsize=18)
+        ax.set_ylabel(r'$L_{u}^{x}$  (m)', fontsize=18)    
         
     return ret
 
