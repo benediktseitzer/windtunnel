@@ -16,6 +16,7 @@ __all__ = [
     'calc_exceedance_prob',
     'calc_wind_stats',
     'calc_wind_stats_wght',
+    'calc_turb_data_stats',
     'calc_turb_data',
     'calc_turb_data_wght',
     'calc_lux_data',
@@ -181,6 +182,29 @@ def calc_turb_data(u_comp,v_comp):
     
     data = np.array([I_u,I_v,flux])
     
+    return data
+
+def calc_turb_data_stats(u_comp,v_comp):
+    """ Calculate turbulence flux statistics from equidistant
+    times series of u and v components.
+    @parameter: u_comp: np.array or list
+    @parameter: v_comp: np.array or list""" 
+    
+    mask = mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(v_comp))    
+    u = np.asarray(u_comp[mask])
+    v = np.asarray(v_comp[mask])
+    
+    u_mean = np.mean(u)
+    v_mean = np.mean(v)
+    u_dev = u - u_mean
+    v_dev = v - v_mean
+    ##  TURBULENT FLUXES
+    flux = np.mean((u_dev*v_dev).round(7)).round(6)
+    flux_hist = np.histogram(u_dev*v_dev, bins='auto')
+
+    data = np.array([flux,flux_hist])
+
     return data
 
 def calc_turb_data_wght(transit_time,u_comp,v_comp):
