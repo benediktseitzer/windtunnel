@@ -202,7 +202,7 @@ def calc_turb_data_stats(u_comp,v_comp):
     ##  TURBULENT FLUXES
     flux = np.mean((u_dev*v_dev).round(7)).round(6)
     flux_hist = np.histogram(u_dev*v_dev, bins='auto')
-
+    print('         skewness = {}'.format(sc.skew(u_dev*v_dev)))
     data = np.array([flux,flux_hist])
 
     return data
