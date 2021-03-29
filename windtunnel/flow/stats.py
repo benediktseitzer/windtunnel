@@ -199,11 +199,13 @@ def calc_turb_data_stats(u_comp,v_comp):
     v_mean = np.mean(v)
     u_dev = u - u_mean
     v_dev = v - v_mean
+
     ##  TURBULENT FLUXES
-    flux = np.mean((u_dev*v_dev).round(7)).round(6)
-    flux_hist = np.histogram((u_dev*v_dev), bins='auto')
-    flux_skew = sc.skew(u_dev*v_dev)
-    flux_kurt = sc.kurtosis(u_dev*v_dev, fisher=False)
+    flux_calc = u_dev*v_dev
+    flux = np.mean(flux_calc.round(7)).round(6)
+    flux_hist = np.histogram(flux_calc, bins='auto')
+    flux_skew = sc.skew(flux_calc)
+    flux_kurt = sc.kurtosis(flux_calc, fisher=False)
 
     print('         skewness = {}'.format(flux_skew))
     print('         kurtosis = {}'.format(flux_kurt))
