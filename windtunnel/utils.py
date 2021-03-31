@@ -72,6 +72,8 @@ def get_files(path, filename):
         if fnmatch.fnmatch(file, filename + '*'):
             return_files.append(file)
 
+    return_files.sort()
+
     return return_files
 
 def get_pdf_max(data):
