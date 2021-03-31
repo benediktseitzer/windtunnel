@@ -23,7 +23,7 @@ To set up the windtunnel-package, simply place it in a directory of your choice.
 The listed versions represent minimum requirements.
 
 #### 1.2. Windows
-Simon, gibts da was besonderes zu beachten?
+not yet documented
 
 #### 1.3. Linux and MacOs
 You can pip install all the packages by simply typing:
