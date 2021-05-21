@@ -27,9 +27,21 @@ __all__ = [
 def find_block(indata, length, tolerance):
     """ Finds block of size length in indata. Tolerance allows some leeway.
     Returns array.
-    @parameter: indata, type = np.array (1D)
-    @parameter: length, type = int
-    @parameter: tolerance, type = int """
+
+    ----------
+    Parameters
+
+    indata:  np.array (1D)
+    length:  int
+    tolerance:  int 
+
+    ----------
+    Returns
+
+    block:
+    
+    
+    """
 
     for i in range(0, np.size(indata) - length):
         block = indata[i:i + length]
@@ -42,9 +54,22 @@ def equ_dist_ts(arrival_time, eq_dist_array, data):
     """ Create a time series with constant time steps. The nearest point of the
    original time series is used for the corresponding time of the equi-distant
    time series.
-   @parameter: arrival_time, type = np.array
-   @parameter: eq_dist_array, type = np.array
-   @parameter: data, type = np.array"""
+
+   ----------
+   Parameters
+   
+   arrival_time: np.array
+   eq_dist_array:np.array
+   data: np.array
+   
+   
+   ----------
+   Returns
+
+   eq_dist_array: array
+    
+    
+    """
 
     valid = ~np.isnan(data)
 
@@ -56,15 +81,42 @@ def equ_dist_ts(arrival_time, eq_dist_array, data):
 
 def trunc_at(string, delimiter, n=3):
     """ Returns string truncated at the n'th (3rd by default) occurrence of the
-    delimiter."""
+    delimiter.
+    
+    ----------
+    Parameters
+    
+    string:
+    delimiter:
+    n:
+
+    ----------
+    Returns
+
+
+    """
 
     return delimiter.join(string.split(delimiter, n)[:n])
     
 def get_files(path, filename):
     """Finds files with filename in path as specified. Filename supports the
     Unix shell-style wildcards.
-    @parameter: path, type = string
-    @parameter: filename, type = string """
+
+    ----------
+    Parameters
+
+    path: string
+    filename: string 
+    
+    
+    
+    ----------
+    Returns
+
+    return_files:
+
+
+    """
 
     all_files = os.listdir(path)
     return_files = []
@@ -78,7 +130,19 @@ def get_files(path, filename):
 
 def get_pdf_max(data):
     """Finds maximum of the probability distribution of data.
-    @parameter data: np.array"""
+    
+    ----------
+    Parameters
+
+    data: np.array
+    
+    
+    ----------
+    Returns
+
+    result
+
+    """
 
     df = pd.DataFrame(data, columns=['data'])
     nparam_density = sc.kde.gaussian_kde(df.values.ravel())
@@ -90,7 +154,14 @@ def get_pdf_max(data):
 
 def check_directory(directory):
     """ Checks if directory exists. If directory doesn't exist, it is created.
-    @parameter: directory, type = string """
+
+    ----------
+    Parameters
+    
+    directory: string 
+    
+    
+    """
     if not os.path.exists(directory):
         os.makedirs(directory)
         print("Desired directory created.")
@@ -98,8 +169,21 @@ def check_directory(directory):
 def get_percentiles(data_dict, percentile_list):
     """ Get percentiles from each entry in data_dict specified in
     percentile_list. Returns a dictionary with the results.
-    @parameter: data_dict, type = dict
-    @parameter: percentile_list, type = list """
+    
+    ----------
+    Parameters
+    
+    data_dict:dict
+    percentile_list: list 
+    
+    
+    
+    ----------
+    Returns
+
+    percentile_dict:
+
+    """
 
     # Generate namelist from dict keys
     namelist = list(data_dict.keys())

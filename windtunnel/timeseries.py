@@ -17,14 +17,20 @@ class Timeseries(pd.DataFrame):
     The raw timeseries can be processed by nondimensionalising it, adapting the
     scale, making it equidistant and masking outliers. All the information in
     a Timeseries object can be saved to a txt file.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: x, type = float
-    @parameter: y, type = float
-    @parameter: z, type = float
-    @parameter: t_arr, type = np.array
-    @parameter: t_transit, type = np.array
-    @parameter: tau, type = int or float - time scale in milliseconds"""
+
+    ----------
+    Parameters
+
+    u, type = np.array
+    v, type = np.array
+    x, type = float
+    y, type = float
+    z, type = float
+    t_arr, type = np.array
+    t_transit, type = np.array
+    tau, type = int or float - time scale in milliseconds
+    
+    """
     def __init__(self,u,u_eq,v,v_eq,x=None,y=None,z=None,t_arr=None,t_transit=None,
                  tau=10000):
         """ Initialise Timerseries() object. """
@@ -56,19 +62,46 @@ class Timeseries(pd.DataFrame):
         self.v1 = None
         
     def __repr__(self):
-        """ Return the x, y and z coordinate of the Timeseries object. """
+        """ Return the x, y and z coordinate of the Timeseries object.
+        
+        
+        ----------
+        Returns
+
+        Timeseries
+        
+        """
         return 'Timeseries(x={x}, y={y}, z={z})'.format(x=self.x,
                                                         y=self.y,
                                                         z=self.z)
 
     def __eq__(self, other):
         """ Two Timeseries objects are considered equal, if their x and y
-        coordinates are the same. """
+        coordinates are the same. 
+        
+        ----------
+        Returns
+
+
+        """
         return self.x == other.x and self.y == other.y
 
     @classmethod
     def from_file(cls,filename):
-        """ Create Timeseries object from file."""
+        """ Create Timeseries object from file.
+        
+        ----------
+        Parameters
+
+        cls:
+        filename:
+
+        ----------
+        Returns
+
+        ret
+
+        """
         with open(filename) as file:
             for i, line in enumerate(file):
                 if i == 3:
@@ -96,10 +129,18 @@ class Timeseries(pd.DataFrame):
         scales wtref with vscale. vscale is set to 1 as standard. index
         accesses only the one wtref value that is associated to the current
         file.
-        @parameter: path, type = string
-        @parameter: filename, type = string
-        @parameter: index, type = int
-        @parameter: vscale, type = float """
+
+        ----------
+        Parameters
+
+
+        path: string
+        filename: string
+        index: int
+        vscale: float 
+        
+        
+        """
 
         wtreffile = wtref_path + filename + '_wtref.txt'.format(
                                                         filename.split('.')[0])
@@ -115,7 +156,13 @@ class Timeseries(pd.DataFrame):
 
     def get_wind_comps(self,filename):
         """ Get wind components from filename.
-        @parameter: filename, type = str """
+        
+        ----------
+        Parameters
+        
+        filename: string 
+
+        """
         with open(filename) as file:
             try:
                 name = filename.upper().split('/',-1)[-1]

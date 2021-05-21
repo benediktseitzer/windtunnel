@@ -39,9 +39,24 @@ def calc_intervalmean(indata,intervals,DD=False):
     """ Calculates interval means of indata. If DD is set to True the means are 
     calculated for circular quantities. Returns a dictionary with 
     intervals as keys. If intervals has length 1 the function returns an array.
-    @parameter: indata, type = any
-    @parameter: intervals, type = list
-    @parameter: DD, type = boolean"""
+
+
+    ----------
+    Parameters
+
+
+    indata: any
+    intervals: list
+    DD: boolean
+
+
+    ----------
+    Returns
+
+    outdata: np.array
+
+    
+    """
    
     outdata = {}
     outdata.fromkeys(intervals)
@@ -69,8 +84,24 @@ def calc_intervalmean(indata,intervals,DD=False):
 def calc_stats(sets,DD=False):
     """Returns mean, standard deviation and variance of data in sets. If DD is 
     true then the circular equivalents are calculated. TO BE USED WITH CAUTION
-    @parameter sets: iterable set of data
-    @parameter DD: boolean"""
+
+
+    ----------
+    Parameters
+
+    sets: iterable set of data
+    DD: boolean
+    
+    ----------
+    Returns
+
+    means: np.array
+    var: np.array
+    stds: np.array
+    
+    
+    
+    """
        
     means = np.array([])
     var = np.array([])
@@ -95,8 +126,21 @@ def calc_stats(sets,DD=False):
 def calc_exceedance_prob(data,threshold):
     """ Calculates exceedance probability of threshold in data. Returns 
     threshold and exceedance probability in percent.
-    @parameter data: 
-    @parameter threshold: int """
+
+    ----------
+    Parameters
+    
+    data: np.array
+    threshold: int
+    
+    
+    ----------
+    Returns
+
+    threshold: int
+    exceed_prob: int
+
+    """
     
     tmp = data[data>threshold]
     exceed_prob = (np.size(tmp)/np.size(data))*100
@@ -106,9 +150,20 @@ def calc_exceedance_prob(data,threshold):
 def calc_wind_stats(u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
-    @parameter: u_comp: np.array or list
-    @parameter: v_comp: np.array or list
-    @parameter: wdir: int"""
+
+    ----------
+    Parameters
+
+    u_comp: np.array or list
+    v_comp: np.array or list
+    wdir: int
+    
+    
+    ----------
+    Returns
+
+    data: np.array
+    """
     
     mask = mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))
@@ -131,12 +186,25 @@ def calc_wind_stats(u_comp,v_comp,wdir=0.):
 def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
-    @parameter: transit_time, type = np.array
-    @parameter: u_comp, type = np.array
-    @parameter: v_comp, type = np.array
-    @parameter: wdir: int"""
+
+
+    ----------
+    Parameters
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+    transit_time, type = np.array
+    u_comp, type = np.array
+    v_comp, type = np.array
+    wdir: int
+    
+    
+    ----------
+    Returns
+
+    data: np.array
+
+    """
+    
+    mask =  np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp),~np.isnan(transit_time))
     u = u_comp[mask]
     v = v_comp[mask]
@@ -159,8 +227,19 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
 def calc_turb_data(u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components.
-    @parameter: u_comp: np.array or list
-    @parameter: v_comp: np.array or list""" 
+
+    ----------
+    Parameters
+    
+    u_comp: np.array or list
+    v_comp: np.array or list 
+    
+    ----------
+    Returns
+
+    data: np.array
+
+    """ 
     
     mask = mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))    
@@ -187,9 +266,23 @@ def calc_turb_data(u_comp,v_comp):
 def calc_turb_data_wght(transit_time,u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components using transit time weighted statistics.
-    @parameter: transit_time. type = np.array
-    @parameter: u_compy type = np.array
-    @parameter: v_comp, type = np.array"""    
+
+
+    ----------
+    Parameters
+    
+    transit_time: np.array
+    u_compy: np.array
+    v_comp: np.array
+    
+    
+    ----------
+    Returns
+
+    data: np.array
+
+    
+    """    
     mask = mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))    
     u = u_comp[mask]
@@ -262,8 +355,20 @@ def calc_flux_autocorr(dt, u_comp, transit_time):
 def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
     from an equidistant time series of the u component using time step dt.
-    @parameter: t_eq, type = int or float
-    @parameter: u_comp, type = np.array or list """
+
+    ----------
+    Parameters
+
+    t_eq: int or float
+    u_comp: np.array or list 
+    
+    
+    ----------
+    Returns
+
+    Lux: float or int
+    
+    """
 
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
@@ -318,8 +423,21 @@ def calc_lux_data(dt, u_comp):
 def calc_lux_data_wght(transit_time, dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011)
     from an equidistant time series of the u component using time step dt.
-    @parameter: t_eq, type = int or float
-    @parameter: u_comp, type = np.array or list """
+
+    ----------
+    Parameters
+    
+    t_eq: int or float
+    u_comp: np.array or list 
+    
+    
+    ----------
+    Returns
+
+
+    Lux: float or int
+    
+    """
 
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
@@ -375,7 +493,20 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
 def calc_acorr(timeseries, maxlags):
     """ Full autocorrelation of time series for lags up to maxlags.
     @parameter timeseries: np.array or list
-    @parameter maxlags: int"""
+
+
+    ----------
+    Parameters
+
+    maxlags: int
+    
+    
+    ----------
+    Returns
+
+    autocorr: np.array or list
+    
+    """
 
     timeseries = timeseries[~np.isnan(timeseries)]
     acorr = np.asarray([1. if x == 0 else np.corrcoef(timeseries[x:], timeseries[:-x])[0][1] for x in range(maxlags)])
@@ -383,8 +514,20 @@ def calc_acorr(timeseries, maxlags):
 
 def calc_autocorr(timeseries, lag=1):
     """ Autocorrelation of time series with lag.
-    @parameter tiemseries: np.array or list
-    @parameter lag: int"""
+
+
+    ----------
+    Parameters
+    
+    tiemseries: np.array or list
+    lag: int
+    
+    ----------
+    Returns
+
+    autocorr: np.array or list
+    
+    """
 
     timeseries = timeseries[~np.isnan(timeseries)]
     autocorr = np.corrcoef(timeseries[0:np.size(timeseries) - lag],
@@ -394,9 +537,28 @@ def calc_autocorr(timeseries, lag=1):
 def calc_spectra(u_comp,v_comp,t_eq,height):
     """ Calculate dimensionless energy density spectra from an equidistant 
     time series.
-    @parameter: u_comp, type = np.array or list
-    @parameter: v_comp, type = np.array or list
-    @parameter: t_eq, type = np.array or list """
+
+    ----------
+    Parameters
+    
+    u_comp: np.array or list
+    v_comp: np.array or list
+    t_eq: np.array or list 
+    
+    ----------
+    Returns
+    
+    
+    f_sm: array like
+    S_uu_sm: array like
+    S_vv_sm: array like
+    S_uv_sm: array like
+    u_aliasing: array like
+    v_aliasing: array like
+    uv_aliasing: array like
+   
+    """
+
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp),t_eq[1]-t_eq[0])
 
@@ -496,8 +658,23 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
 def calc_spectra_nc(u_comp, t_eq, height):
     """ Calculate dimensionless energy density spectra from an equidistant
     time series.
-    @parameter: u_comp, type = np.array or list
-    @parameter: t_eq, type = np.array or list """
+
+
+    ----------
+    Parameters
+    
+    u_comp: np.array or list
+    t_eq: np.array or list
+    height: float
+
+    ----------
+    Returns
+    
+    f_sm: array like
+    S_uu_sm: array like
+    u_aliasing: array like
+    
+    """
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp), t_eq[1] - t_eq[0])
 
@@ -597,12 +774,21 @@ def calc_spectra_nc(u_comp, t_eq, height):
 
 def calc_ref_spectra(reduced_freq,a,b,c,d,e):
    """ Calculate dimensionless reference spectra. ???
-   @parameter: reduced_freq, type = ???
-   @parameter: a, type = ???
-   @parameter: b, type = ???
-   @parameter: c, type = ???
-   @parameter: d, type = ???
-   @parameter: e, type = ???"""
+
+    ----------
+    Parameters
+
+    reduced_freq: ???
+    a: ???
+    b: ???
+    c: ???
+    d: ???
+    e: ???
+   
+    ----------
+    Returns
+   
+   """
    # TODO: figure what's going on here
    e=e+0j
 
@@ -613,8 +799,22 @@ def convergence_test_1(data,blocksize=100):
     blocksize for the size of each increment. Returns a dictionary block_data.
     Each entry is named after its respective interval. blocksize's default 
     value is 100.
-    @parameter: data, type = np.array or list
-    @parameter: blocksize, type = int or float"""
+
+
+    ----------
+    Parameters
+
+    data: np.array or list
+    blocksize: int
+    
+    
+    ----------
+    Returns
+
+    intervals: int
+    block_data: int
+    
+    """
     
     if blocksize > 0.5*np.size(data):
         raise Exception('blocksize must be smaller than half of the length\
@@ -630,9 +830,23 @@ def convergence_test_2(data,interval=100,blocksize=100):
     blocksize for the size of each increment between intervals. Returns a 
     dictionary block_data. Each entry is named after its respective interval.
     blocksize's and interval's default values are 100.
-    @parameter: data, type = np.array or list
-    @parameter: interval, type = int
-    @parameter: blocksize, type = int"""
+
+
+    ----------
+    Parameters
+
+    data: np.array or list
+    interval: int
+    blocksize: int
+    
+    
+    ----------
+    Returns
+
+    intervals: int
+    block_data: int
+    
+    """
     
     if blocksize > 0.5*np.size(data):
         raise Exception('blocksize must be smaller than half of the length\
@@ -733,12 +947,27 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
 
 def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     """ Estimate power law profile.
-    @parameter: u_comp, type = int or float
-    @parameter: height, type = int or float
-    @parameter: u_ref, type = int or float
-    @parameter: z_ref, type = int or float
-    @parameter: alpha, type = int or float
-    @parameter: d0, type = int or float """
+
+
+    ----------
+    Parameters
+
+
+    u_comp: int or float
+    height: int or float
+    u_ref: int or float
+    z_ref: int or float
+    alpha: int or float
+    d0: int or float
+
+
+    ----------
+    Returns
+
+
+    
+    
+    """
    
     return np.abs(u_comp / u_ref - ((height-d0)/(z_ref-d0))**alpha)
 
@@ -749,6 +978,7 @@ def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=[]):
     There are two ways to pick the used data-points.
     Choose BL_height (the maximum height used to calculate alpha)
     Give array BL predifined by own script
+    
     ----------
     Parameters
 
@@ -805,6 +1035,7 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     Choose sfc_height (the maximum height used to calculate z0)
     Give array sfc_layer predifined by own script (e.g. <10% deviation 
     in fluxes or visual estimation)
+    
     ----------
     Parameters
 
@@ -872,7 +1103,31 @@ def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_he
     Avaliable modes are 'all' (calculates profile between min_height and max_height), and 
     'seperate', which calulates two profiles, one above and one below split_height.
     Setting minimum and maximum height to 'None' calculates profile to bottom and top of
-    data respectively. All heights assumed in m full-scale."""
+    data respectively. All heights assumed in m full-scale.
+    
+    
+    ----------
+    Parameters
+
+
+    mean_mag: np.asarry 
+    heights: float
+    wtref: np.array
+    z_ref: flpat     
+    d_0: float 
+    mode='all'
+    min_height: float 
+    max_height: float 
+    split_height: float 
+
+
+
+    ----------
+    Returns
+    
+    alpha_top: np.array
+    
+    """
     print("Warning: Assuming that wind data is non-dimensional, and that heights are in m full-scale. d_0 in mm.")
     #Note: heights should be in (m) full-scale. Change code if this is not the case!
     
