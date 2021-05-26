@@ -18,6 +18,7 @@ __all__ = [
     'calc_wind_stats_wght',
     'calc_turb_data',
     'calc_turb_data_wght',
+    'calc_flux_autocorr',
     'calc_lux_data',
     'calc_lux_data_wght',
     'calc_acorr',
@@ -207,6 +208,40 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     data = np.array([I_u,I_v,flux])
     
     return data
+
+
+def calc_flux_autocorr(dt, u_comp, transit_time):
+    """
+    Calculates the velocity fluctuation autocorrelation as a function of time lag.
+
+
+    """
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(transit_time))    
+    u = u_comp[mask]
+    tt = transit_time[mask]
+
+    tt_sum = np.sum(tt)
+    u_dev = (((u - np.mean(u)) ** 2) * (tt))/tt_sum
+
+    initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
+    if initial_guess >= len(u_dev):
+        initial_guess = int(len(u_dev) / 2)
+    lag_eq = np.arange(1, np.size(u_dev) + 1) * dt  # array of time lags
+
+    ret_lag = []
+    for lag in range(int(initial_guess), len(lag_eq), int(initial_guess)):
+        u_eq_acorr = calc_acorr(u_dev, lag)  # autocorrelation (one sided) of time series u_eq
+        ret_lag.append(lag)
+        if np.any(np.diff(u_eq_acorr) > 0):  # if a single value of the derivation autocorrelation is smaller than 0
+            # the iteration of the autocorrelation stops
+            break
+
+
+    print('dim_acorr = {}       dim_lag = {}'.format(len(u_eq_acorr), len(ret_lag)))
+
+    return u_eq_acorr, ret_lag
+
 
 def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
