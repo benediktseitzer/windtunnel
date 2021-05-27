@@ -214,6 +214,18 @@ def calc_flux_autocorr(dt, u_comp, transit_time):
     """
     Calculates the velocity fluctuation autocorrelation as a function of time lag.
 
+    ----------
+    Parameters
+
+    dt: float
+    u_comp: np.array
+    transit_time: np.array
+
+    ----------
+    Returns
+
+    u_dev_acorr: np.array
+    ret_lag: np.array
 
     """
     mask = np.logical_and(~np.isnan(u_comp),
@@ -222,7 +234,7 @@ def calc_flux_autocorr(dt, u_comp, transit_time):
     tt = transit_time[mask]
 
     tt_sum = np.sum(tt)
-    u_dev = (((u - np.mean(u)) ** 2) * (tt))/tt_sum
+    u_dev = ((u - np.mean(u)) * tt)/tt_sum
 
     initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
     if initial_guess >= len(u_dev):
@@ -230,17 +242,21 @@ def calc_flux_autocorr(dt, u_comp, transit_time):
     lag_eq = np.arange(1, np.size(u_dev) + 1) * dt  # array of time lags
 
     ret_lag = []
+    u_dev_acorr = []
     for lag in range(int(initial_guess), len(lag_eq), int(initial_guess)):
-        u_eq_acorr = calc_acorr(u_dev, lag)  # autocorrelation (one sided) of time series u_eq
-        ret_lag.append(lag)
-        if np.any(np.diff(u_eq_acorr) > 0):  # if a single value of the derivation autocorrelation is smaller than 0
-            # the iteration of the autocorrelation stops
+        for x in range(lag):
+            if x == 0:
+                u_dev_acorr.append(1.)
+                ret_lag.append(0.)
+            else:
+                u_dev_acorr.append(np.corrcoef(u_dev[x:], u_dev[:-x])[0][1])
+                ret_lag.append(float(x))
+        if np.any(np.diff(u_dev_acorr) > 0):
             break
+    u_dev_acorr = np.asarray(u_dev_acorr)
+    ret_lag = np.asarray(ret_lag)
 
-
-    print('dim_acorr = {}       dim_lag = {}'.format(len(u_eq_acorr), len(ret_lag)))
-
-    return u_eq_acorr, ret_lag
+    return u_dev_acorr, ret_lag
 
 
 def calc_lux_data(dt, u_comp):
