@@ -31,31 +31,26 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
-    'calc_alpha_profile',
-    'calc_normalization_params'
-]
+    'calc_alpha_profile']
 
 def calc_intervalmean(indata,intervals,DD=False):    
     """ Calculates interval means of indata. If DD is set to True the means are 
     calculated for circular quantities. Returns a dictionary with 
     intervals as keys. If intervals has length 1 the function returns an array.
 
-
     ----------
     Parameters
 
 
-    indata: any
+    indata: array-like
     intervals: list
     DD: boolean
-
 
     ----------
     Returns
 
     outdata: np.array
 
-    
     """
    
     outdata = {}
@@ -85,7 +80,6 @@ def calc_stats(sets,DD=False):
     """Returns mean, standard deviation and variance of data in sets. If DD is 
     true then the circular equivalents are calculated. TO BE USED WITH CAUTION
 
-
     ----------
     Parameters
 
@@ -98,9 +92,7 @@ def calc_stats(sets,DD=False):
     means: np.array
     var: np.array
     stds: np.array
-    
-    
-    
+        
     """
        
     means = np.array([])
@@ -133,7 +125,6 @@ def calc_exceedance_prob(data,threshold):
     data: np.array
     threshold: int
     
-    
     ----------
     Returns
 
@@ -157,7 +148,6 @@ def calc_wind_stats(u_comp,v_comp,wdir=0.):
     u_comp: np.array or list
     v_comp: np.array or list
     wdir: int
-    
     
     ----------
     Returns
@@ -187,7 +177,6 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
 
-
     ----------
     Parameters
     
@@ -195,7 +184,6 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     u_comp, type = np.array
     v_comp, type = np.array
     wdir: int
-    
     
     ----------
     Returns
@@ -267,21 +255,18 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components using transit time weighted statistics.
 
-
     ----------
     Parameters
     
     transit_time: np.array
     u_compy: np.array
     v_comp: np.array
-    
-    
+        
     ----------
     Returns
 
     data: np.array
 
-    
     """    
     mask = mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))    
@@ -362,11 +347,10 @@ def calc_lux_data(dt, u_comp):
     t_eq: int or float
     u_comp: np.array or list 
     
-    
     ----------
     Returns
 
-    Lux: float or int
+    Lux: float
     
     """
 
@@ -430,10 +414,8 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
     t_eq: int or float
     u_comp: np.array or list 
     
-    
     ----------
     Returns
-
 
     Lux: float or int
     
@@ -494,17 +476,15 @@ def calc_acorr(timeseries, maxlags):
     """ Full autocorrelation of time series for lags up to maxlags.
     @parameter timeseries: np.array or list
 
-
     ----------
     Parameters
 
     maxlags: int
-    
-    
+        
     ----------
     Returns
 
-    autocorr: np.array or list
+    autocorr: np.array
     
     """
 
@@ -515,17 +495,16 @@ def calc_acorr(timeseries, maxlags):
 def calc_autocorr(timeseries, lag=1):
     """ Autocorrelation of time series with lag.
 
-
     ----------
     Parameters
     
-    tiemseries: np.array or list
+    timeseries: np.array or list
     lag: int
     
     ----------
     Returns
 
-    autocorr: np.array or list
+    autocorr: np.array
     
     """
 
@@ -659,7 +638,6 @@ def calc_spectra_nc(u_comp, t_eq, height):
     """ Calculate dimensionless energy density spectra from an equidistant
     time series.
 
-
     ----------
     Parameters
     
@@ -778,12 +756,12 @@ def calc_ref_spectra(reduced_freq,a,b,c,d,e):
     ----------
     Parameters
 
-    reduced_freq: ???
-    a: ???
-    b: ???
-    c: ???
-    d: ???
-    e: ???
+    reduced_freq: array-like
+    a: float
+    b: float
+    c: float
+    d: float
+    e: float
    
     ----------
     Returns
@@ -800,13 +778,11 @@ def convergence_test_1(data,blocksize=100):
     Each entry is named after its respective interval. blocksize's default 
     value is 100.
 
-
     ----------
     Parameters
 
     data: np.array or list
     blocksize: int
-    
     
     ----------
     Returns
@@ -838,7 +814,6 @@ def convergence_test_2(data,interval=100,blocksize=100):
     data: np.array or list
     interval: int
     blocksize: int
-    
     
     ----------
     Returns
@@ -948,24 +923,18 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
 def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     """ Estimate power law profile.
 
-
     ----------
     Parameters
 
-
-    u_comp: int or float
-    height: int or float
-    u_ref: int or float
-    z_ref: int or float
-    alpha: int or float
-    d0: int or float
-
+    u_comp: float
+    height: float
+    u_ref: float
+    z_ref: float
+    alpha: float
+    d0: float
 
     ----------
     Returns
-
-
-    
     
     """
    
@@ -1104,11 +1073,9 @@ def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_he
     'seperate', which calulates two profiles, one above and one below split_height.
     Setting minimum and maximum height to 'None' calculates profile to bottom and top of
     data respectively. All heights assumed in m full-scale.
-    
-    
+        
     ----------
     Parameters
-
 
     mean_mag: np.asarry 
     heights: float
@@ -1119,8 +1086,6 @@ def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_he
     min_height: float 
     max_height: float 
     split_height: float 
-
-
 
     ----------
     Returns
@@ -1173,41 +1138,3 @@ def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_he
        print(alpha_top)  
        return alpha_top
 
-def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
-    num_data_points):
-    pass
-#    """ Calculate the normalized Fourier transform and frequency for the 
-#    Fourier transform of x
-#    Warning: A previous code version normalized segments, while this version 
-#    normalizes the entire data set at once. The previous version also included 
-#    a smoothing algorithm, which has been omitted for simplicity.
-#    @parameter: freqs, type = list or np.array
-#    @parameter: transform, type = list or np.array - this is the non-normalized
-#                                                     Fourier transform
-#    @parameter: t, type = float - this is time
-#    @parameter: height, type = float - z in the Timeseries object
-#    @parameter: mean_x, type = float - the mean of the parameter of the Fourier
-#                                       transform F(x)
-#    @parameter: sdev_x, type = float - the standard deviation of x
-#    @parameter: num_data_points, type = int - the number of elements in x 
-#                                              before the transform was found"""   
-#
-#    ## DISCRETE SPECTRA
-#    transform = transform/num_data_points
-#
-#
-#    E = transform ** 2
-#    S = E * len(t)*(t[1]-t[0])
-#   
-#    ##  REDUCED FREQUENCY (PLOT and reference spectra)
-#    reduced_freq = np.abs(freqs*height/mean_x)
-#    reduced_transform = np.abs(np.meshgrid(S[0],
-#                               freqs,sparse=True)[0]*S/sdev_x**2)
-#    reduced_transform = reduced_transform[0]
-#
-#    ##  ALIASING
-#    aliasing = reduced_freq.size - 9 + \
-#               np.hstack((np.where(np.diff(
-#                          reduced_transform[-10:])>=0.)[0],[9]))[0]
-#    
-#    return reduced_transform, reduced_freq, aliasing

@@ -322,19 +322,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         gas_factor: float
         full_scale_wtref: float
         full_scale_flow_rate: float
-        """	
-        #edit 10/21/2019: new function, which populates the individual variables representing
-        #the ambient conditions data based on data in ambient_conditions. Requires get_ambient_conditions
-        #to be called before calling function, further requires that get_ambient_conditions sucessfullly
-        #outputs the ambient_conditions array (i.e. requires the csv file containing the ambient
-        #conditions data to be in the proper format and location). function also assumes that csv 
-        #file (and thus the ambient_conditions array) is in the correct format and contains the variables
-        #x,y,z,pressure,temperature,wdir,calibration_curve,mass_flow_controller, calibration_factor,
-        #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
-        #full_scale_flow_rate. 
-        #edit 02/21/2020: changed position variables to source and measurement locations, also fixed previously 
-        #incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none  
-        #edit 05/13/2020: fixed incorrect variable labeling of source and measurment locations.           
+        """	           
  	   
         x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
         y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
@@ -383,8 +371,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         mass_flow_controller: float 
         calibration_factor: float
         
-        
-        
         """
         #edit 09/19/2019: new function,based on ambient_conditions in PointConcentration.py,
         #which collects ambient conditions during measurement. Pressure in [Pa]!	
@@ -414,7 +400,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Collect data necessary to scale the results. unit: [m], where
         applicable.
         
-        
         ----------
         Parameters
 
@@ -424,7 +409,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ref_length: float  
         ref_height: float 
         
-
         """
         #edit 09/19/2019: new function, based on scaling_information in PointConcentration.py,
         #which collects scaling data. Units (where applicable) is [m]	
@@ -440,7 +424,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Collect information on tracer gas used during measurement.
         Molecular weight in [kg/mol]. 
         
-        
         ----------
         Parameters
         
@@ -448,7 +431,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         gas_name: str
         mol_weight: float
         gas_factor: float
-        
         
         """
         #edit 09/19/2019: new function, based on tracer_information in PointConcentration.py,
@@ -465,10 +447,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         adjusted to standard atmosphere conditions.
         input in [kg/s], output in [m^3/s]. 
         
-        
         ----------
         Parameters
-
 
         full_scale_wtref: float
         full_scale_flow_rate: float
@@ -493,7 +473,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
     def calc_model_mass_flow_rate(self):
         """ Calculate the model scale flow rate in [kg/s]. 
-        
         
         ----------
         Returns
@@ -521,7 +500,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         
         self.full_scale_flow_rate: float 
         
-        
         """
         #edit 09/19/2019: new function, based on calc_full_scale_mass_flow_rate in PointConcentration.py,
         #which calculates the full scale mass flow rate in [m^3/s]			
@@ -533,7 +511,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         
     def calc_non_dimensional_flow_rate(self):
         """ Convert flow rate to non-dimensional flow rate in [m^3/s]. 
-        
         
         ----------
         Returns
@@ -558,7 +535,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         
         self.c_star: float 
         
-        
         """
         #edit 09/19/2019: new function, based on calc_c_star in PointConcentration.py,
         #which calculates the dimensionless concentration [unitless]			
@@ -577,7 +553,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         
         self.full_scale_concentration: float 
         
-        
         """
         #edit 09/19/2019: new function, based on calc_full_scale_concentration in
         #PointConcentration.py, which calculates the full scale concentration [ppmV]		
@@ -595,8 +570,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         Returns
         
         self.wtref_mean: float 
-        
-        
+
         """
        
         self.__check_sum = self.__check_sum + 1
@@ -644,7 +618,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
 
     def calc_net_concentration(self):
-        """ Calculate net concentration in [ppmV]. """
+        """ Calculate net concentration in [ppmV]. 
+        """
 		
         self.__check_sum = self.__check_sum + 1		
 		
@@ -680,7 +655,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         self.end_release_period: np.arrray 
         
-        
         """			
         indices = self.detect_end_release_index()	
         self.end_release_period = self.time[indices]
@@ -691,18 +665,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def detect_begin_release_index(self):
         """ Detects the indices of the beginning of each release period. Returns a
         list containing the index of the first timestamp of each release 
-        period. 
-        
-        
+        period.
+
         ----------
         Returns
         
         self.begin_release_index: list
 
-
         """
 
-        self.begin_release_index =(np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
+        self.begin_release_index = (np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
 
         return self.begin_release_index
 
@@ -715,7 +687,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         
         self.begin_release_period: np.arrray
         
-         """	
+        """	
         indices = self.detect_begin_release_index()		
         self.begin_release_period = self.time[indices]
 
@@ -726,11 +698,10 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Calculate the length of each release period. Returns an np.array
         containing the duration of each release period. 
         
-        
         ----------
         Returns
         
-       self.release_length: np.arrray
+        self.release_length: np.arrray
         
         """
 
@@ -747,7 +718,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.dosage = []
 
       
-		
         #for i in range(np.shape(beginnings)[0]):  
             #print(i)
             #if i<np.shape(beginnings)[0]-1:
@@ -771,7 +741,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
  
                    
     def get_mean_puff(self):
-        """Calcuate mean puff"""
+        """Calcuate mean puff 
+        """
        
         puffs_start = np.asarray(self.begin_release_index)
         self.mean_puff = []
@@ -802,27 +773,21 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.pct10_signal= np.percentile(self.signal_array, 10, axis=0)
         self.pct90_signal = np.percentile(self.signal_array, 90, axis=0)
 
-  
-
-        
 
     def detect_leaving_time(self,time_threshold=0.05):
         """ Detects the end of each puff. Returns an np.array 
         containing the last timestamp of each puff. 
-        
         
         ----------
         Parameters
 
         time_threshold: float
 
-
         ----------
         Returns
 
         self.arrival_time: np.array
         self.arrival_index: list
-        
         
         """
        		
@@ -855,14 +820,12 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         time_threshold: float
 
-
         ----------
         Returns
 
         self.arrival_time: np.array
         self.arrival_index: list
-        
-        
+    
         """
           
         self.arrival_time = []
@@ -890,7 +853,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                                      self.arrival_time)]
 
     def get_peak_concentration(self):
-        """ Acquire peak concentration of each puff. Returns a list. """
+        """ Acquire peak concentration of each puff. Returns a list. 
+        """
       	
         self.peak_concentration = []
         for i, begin in enumerate(self.arrival_index):
@@ -900,7 +864,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                 self.net_concentration[begin:end].max())               
 
     def get_peak_time(self):
-        """ Acquire peak time of each puff. Returns a list. """
+        """ Acquire peak time of each puff. Returns a list. 
+        """
         		
         self.peak_time = []
         log_peak=np.zeros(np.shape(self.arrival_index))		
@@ -956,7 +921,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                                    self.peak_time)]
 
     def offset_correction(self,method='mean'):
-        """ Correct a non-zero offset in the concentration measured. """
+        """ Correct a non-zero offset in the concentration measured. 
+        """
    	
 		
         avg_release = []
@@ -995,7 +961,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                 
     def check_against_avg_puff(self):
         """ Check each puff against the average puff of the time series. 
-        
         
         ----------
         Returns
@@ -1053,7 +1018,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.puff_deviations
 		
     def get_mask(self, threshold_concentration=0., threshold_dosage=0.,n_exclude=None):	
-        """ Return array that containts locations of unmaksed datapoints."""
+        """ Return array that containts locations of unmaksed datapoints. 
+        """
         
 
         if n_exclude==None:
@@ -1204,8 +1170,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         Parameters
         
         threshold_dosage: float
-         
-         
+
         """
 	
         
@@ -1265,7 +1230,8 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
     def clear_zeros(self):
 	    
-        """ Clear and count zeros in concentration measurements."""
+        """ Clear and count zeros in concentration measurements. 
+        """
 		
 		
         concentration_size = np.size(self.net_concentration)
@@ -1293,21 +1259,18 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ----------
         Parameters
         
-        
-        var1:
-        n_puffs:
-        path:
-        name=None:
-        full_scale=None:
-        axis_range:
-
+        var1: str
+        n_puffs: int
+        path: str
+        name: str
+        full_scale: str
+        axis_range: str
 
         ----------
         Returns
         
-        ret
+        ret: plt.object
         
-    
         """ 
        
         if hasattr(self,'signal')== False: 
@@ -1445,19 +1408,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ----------
         Parameters
         
-        path:
-        name:
-        stats:
-        dist:
-        full_scale:
-
+        path: str
+        name: str
+        stats: str
+        dist: str
+        full_scale: str
 
         ----------
         Returns
          
-        ret
-        
-        
+        ret: plt.object
         
         """ 
             
@@ -1563,12 +1523,10 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def get_puffs(self):
         """ Returns DataFrame with all puff information. 
         
-        
         ----------
         Returns
 
         return_data: pd.Dataframe
-        
         
         """
       
@@ -1591,7 +1549,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         Parameters
         
         filename: str
-        out_dir:str
+        out_dir: str
         
         """
         if out_dir is None:
@@ -1684,7 +1642,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
 
-         ----------
+        ----------
         Parameters
         
         filename: str
@@ -1879,12 +1837,10 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Get maximum number of puffs. Deduced from the length of 
         release_length. 
         
-        
         ----------
         Returns
 
         self.release_length: float
-        
         
         """
 
@@ -1893,7 +1849,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     @property
     def avg_arrival_time(self):
         """ Get average arrival time. 
-        
         
         ----------
         Returns
@@ -1939,7 +1894,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         self.peak_concentration: float
         
-        
         """
 
         return np.nanmean(self.peak_concentration)
@@ -1953,7 +1907,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
         self.ascent_time: float
         
-        
         """
 
         return np.nanmean(self.ascent_time)
@@ -1966,7 +1919,6 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         Returns
 
         self.descent_time: float
-        
         
         """
 
