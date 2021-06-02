@@ -304,7 +304,8 @@ class EnsembleAnalysis(pd.DataFrame):
                self.ensemble_std[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].std(axis=1)		
 			   
     def calc_n_classes(self,ensemble_size,n=None):
-        """Calculate number of classes, based on ensemble size. Method based on original C Program by Anne Philip.
+        """Calculate number of classes, based on ensemble size. 
+        Method based on original C Program by Anne Philip.
         
         
         ----------
@@ -366,10 +367,7 @@ class EnsembleAnalysis(pd.DataFrame):
 
 		#Similar to subsection of CalculationAndWritingFrequencyDistribution function from original C program written by Anne Philip.
 		#See Bachelor Thesis of Anne Philipp (2010) for more details. Requires calc_class_width to be called before calling function. 
-		#edit 08/13/2019: added error messages if n_classes is not an integer. Also changed code to iterate only to n_classes_raw instead of n_classes. This is because n_classes 
-		#actually represents twice the number of classes, and n_classes raw represents the actual number of classes. This confusing convention was taken directly from Anne Philip's
-		#original C program, and may be simplified in the future upon consultation with Bernd Leitl and/or Frank Harms.  
-		
+				
         if self.class_width is None:
            print('Error: class widths not found. Make sure that calc_class_width is called before calling calc_class_boundaries')
            return	
@@ -516,17 +514,17 @@ class EnsembleAnalysis(pd.DataFrame):
         ----------
         Parameters
 
-        key:
-        path:
-        name:
-        conv_step:
-        full_scale:
+        key: str
+        path: str
+        name: str
+        conv_step: int
+        full_scale: str
 
 
         ----------
         Return
         
-        ret
+        ret: plt.object
         
         """
        
@@ -593,16 +591,16 @@ class EnsembleAnalysis(pd.DataFrame):
         ----------
         Parameters
 
-        key:
-        path:
-        name:
-        full_scale:
+        key: str
+        path: str
+        name: str
+        full_scale: str
 
 
         ----------
         Return
         
-        ret
+        ret: plt.object
         
         
         """
@@ -765,7 +763,7 @@ class EnsembleAnalysis(pd.DataFrame):
         Parameters
         
         filename: str
-        out_dir:str
+        out_dir: str
         
         """
 		
