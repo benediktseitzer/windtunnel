@@ -331,9 +331,9 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     ----------
     Parameters
     
-    sets: array like
+    sets: array-like
     lablist: list of strings
-    error: integer or float
+    error: int or float
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
     

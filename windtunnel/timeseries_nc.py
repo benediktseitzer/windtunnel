@@ -18,7 +18,6 @@ class Timeseries_nc(pd.DataFrame):
     masking outliers. All the information in a Timeseries object can be saved
     to a txt file.
 
-
     ----------
     Parameters
 
@@ -29,7 +28,6 @@ class Timeseries_nc(pd.DataFrame):
     z: float
     t_arr: np.array
     t_transit: np.array
-
 
     ----------
     Returns
@@ -64,7 +62,6 @@ class Timeseries_nc(pd.DataFrame):
     def __repr__(self):
         """ Return the x, y and z coordinate of the Timeseries object. 
         
-        
         ----------
         Returns
         
@@ -81,14 +78,26 @@ class Timeseries_nc(pd.DataFrame):
         
         ----------
         Returns
-
         
         """
         return self.x == other.x and self.y == other.y
 
     @classmethod
     def from_file(cls,filename):
-        """ Create Timeseries object from file. """
+        """ Create Timeseries object from file. 
+        
+        ----------
+        Parameters
+
+        cls: class
+        filename: str
+
+        ----------
+        Returns
+
+        ret: class
+        
+        """
         with open(filename) as file:
             for i, line in enumerate(file):
                 if i == 3:
@@ -124,13 +133,6 @@ class Timeseries_nc(pd.DataFrame):
         filename:string
         index: int
         vscale: float 
-
-
-        ----------
-        Returns
-        
-        
-        
         
         """
 
@@ -150,12 +152,7 @@ class Timeseries_nc(pd.DataFrame):
 
         ----------
         Parameters
-        filename:string 
-        
-        
-        ----------
-        Returns
-
+        filename: str
 
         """
         with open(filename) as file:
@@ -171,13 +168,7 @@ class Timeseries_nc(pd.DataFrame):
 
     def nondimensionalise(self):
         """ Nondimensionalise the data. wtref is set to 1 if no wtref is
-        speciefied. 
-        
-        
-        ----------
-        Returns
-
-
+        speciefied.
         """
         if self.wtref is None:
             self.wtref = 1
@@ -194,10 +185,6 @@ class Timeseries_nc(pd.DataFrame):
         Parameters
         scale: float
 
-
-        ----------
-        Returns
-        
         """
         self.scale = scale
         self.x = self.x * self.scale/1000           #[m]
@@ -215,10 +202,7 @@ class Timeseries_nc(pd.DataFrame):
         Parameters
         
         atol: float or int 
-        
-        ----------
-        Returns
-        
+
         """
 
         tmp_1 = self.comp_1[np.where(np.isclose(self.t_arr_1,self.t_arr_2,
@@ -230,11 +214,6 @@ class Timeseries_nc(pd.DataFrame):
 
     def calc_equidistant_timesteps(self):
         """ Create equidistant time series. 
-        
-        ----------
-        Returns
-
-
         """
         self.t_eq_1 = np.linspace(self.t_arr_1[0], self.t_arr_1[-1], len(self.t_arr_1))
         self.t_eq_2 = np.linspace(self.t_arr_2[0], self.t_arr_2[-1], len(self.t_arr_2))
@@ -251,8 +230,8 @@ class Timeseries_nc(pd.DataFrame):
 
         ----------
         Parameters
-        std_mask:float
-        
+
+        std_mask: float
         """
         u_size = np.size(self.comp_1)
         v_size = np.size(self.comp_2)
@@ -284,11 +263,6 @@ class Timeseries_nc(pd.DataFrame):
 
     def calc_magnitude(self):
         """ Calculate wind magnitude from components. 
-        
-        ----------
-        Returns
-
-
         """
         if self.paired_components is None:
             self.pair_components()
@@ -299,10 +273,6 @@ class Timeseries_nc(pd.DataFrame):
 
     def calc_direction(self):
         """ Calculate wind direction from components. 
-        
-        ----------
-        Returns
-        
         """
         if self.paired_components is None:
             self.pair_components()
@@ -364,9 +334,6 @@ class Timeseries_nc(pd.DataFrame):
         
         ----------
         Returns
-
-        0
-        
         
         """
         #if self.magnitude is None:
@@ -374,6 +341,7 @@ class Timeseries_nc(pd.DataFrame):
         #
         #return np.mean(self.magnitude)
         return 0
+
     @property
     def mean_direction(self):
         """ Calculate mean wind direction from components relative to the wind
@@ -382,9 +350,6 @@ class Timeseries_nc(pd.DataFrame):
         ----------
         Returns
 
-        0
-        
-        
         """
         #if self.paired_components is None:
         #    self.pair_components()
@@ -397,6 +362,7 @@ class Timeseries_nc(pd.DataFrame):
         #
         #return mean_direction
         return 0
+
     def save2file(self,filename,out_dir=None):
         """ Save data from Timeseries object to txt file. filename must include
         '.txt' ending. If no out_dir directory is provided './' is set as
@@ -405,9 +371,8 @@ class Timeseries_nc(pd.DataFrame):
         ----------
         Parameters
 
-        filename: string
-        out_dir: string
-        
+        filename: str
+        out_dir: str
         
         ----------
         Returns
