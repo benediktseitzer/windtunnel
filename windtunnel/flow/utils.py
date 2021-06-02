@@ -26,7 +26,19 @@ __all__ = [
 
 def get_lux_referencedata(ref_path=None):
     """Reads and returns reference data for the integral length scale (Lux).
-    This function takes no parameters. """
+    This function takes no parameters. 
+    
+    ----------
+    Returns
+    
+    Lux_10: array-like
+    Lux_1: array-like
+    Lux_01: array-like
+    Lux_001:array-like
+    Lux_obs_smooth: array-like
+    Lux_obs_rough:array-like
+    
+    """
     if ref_path == None:
         ref_path = '//ewtl2/work/_EWTL Software/Python/Reference data/'
     Lux_10 = np.genfromtxt(ref_path + 'Lux_data.dat', skip_header=7, skip_footer=421,
@@ -47,7 +59,21 @@ def get_lux_referencedata(ref_path=None):
 def get_turb_referencedata(component, ref_path=None):
     """Reads and returns the VDI reference data for the turbulence intensity of
     component.
-    @parameter: component, type = string """
+
+    ----------
+    Parameters
+    
+    component: string 
+
+    ----------
+    Returns
+
+    I_u_slight: np.array
+    I_u_moderate: np.array
+    I_u_rough: np.array
+    I_u_very: np.array
+
+    """
     if ref_path == None:
         ref_path = '//ewtl2/work/_EWTL Software/Python/Reference data/'
     ###  READ turbulence intensity - reference: VDI
@@ -89,14 +115,37 @@ def get_turb_referencedata(component, ref_path=None):
 
 def find_nearest(array, value):
     """ Finds nearest element of array to value.
-    @parameter: array, np.array
-    @parameter: value, int or float """
+
+    ----------
+    Parameters
+    
+    array: np.array
+    value: int or float
+
+    ----------
+    Returns
+    
+    array[idx]: float
+    
+     """
     idx = (np.abs(array - value)).argmin()
 
     return array[idx]
 
 def get_reference_spectra(height, ref_path=None):
-    """ Get referemce spectra from pre-defined location."""
+    """ Get referemce spectra from pre-defined location.
+    
+    ----------
+    Parameters
+    
+    height: int or float
+
+    ----------
+    Returns
+
+    ref_specs: array-like
+    
+    """
     #  REFERENCE SPAECTRA RANGE FIT
     if ref_path == None:
         ref_path = '//ewtl2/work/_EWTL Software/Python/Reference data/'
@@ -112,8 +161,19 @@ def transit_time_weighted_mean(transit_time, component):
     measurement volume. This is analoguous to the processing of the raw
     data in the BSA software. Transit time weighting removes a possible
     bias towards higher wind velocities. Returns the weighted component mean.
-    @parameter: transit_time, type = np.arrray([])
-    @parameter: component,  type = np.arrray([])"""
+    
+    ----------
+    Parameters
+    
+    transit_time: np.arrray
+    component: np.arrray
+    
+    ----------
+    Returns
+
+    weighted_mean: float
+    
+    """
     #edit 05/27/2020: removed nan values from transit time array    
 
     transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
@@ -129,8 +189,17 @@ def transit_time_weighted_var(transit_time, component):
     data in the BSA software. Transit time weighting removes a possible
     bias towards higher wind velocities. Returns the weighted u and v
     component variance.
-    @parameter: transit_time, type = np.arrray([])
-    @parameter: component,  type = np.arrray([])"""
+
+    ----------
+    Parameters
+    transit_time: np.arrray
+    component: np.arrray
+    
+    ----------
+    Returns
+    weighted_var: float
+
+    """
     #edit 05/27/2020: removed nan values from transit time array    
 
     transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
@@ -146,9 +215,19 @@ def transit_time_weighted_flux(transit_time, component_1, component_2):
     """ Calculate mean flux using transit time weighted statistics. Transit
     time weighting removes a possible bias towards higher wind velocities.
     Returns a mean weighted flux.
-    @parameter: transit_time, type = np.arrray([])
-    @parameter: component_1,  type = np.arrray([])
-    @parameter: component_2,  type = np.arrray([])"""
+
+    ----------
+    Parameters
+    
+    transit_time: np.arrray
+    component_1: np.arrray
+    component_2: np.arrray
+    
+    ----------
+    Returns
+    weighted_flux: float
+
+    """
 
     transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
     weighted_flux = np.sum((component_1 - np.mean(component_1)) 
@@ -162,9 +241,20 @@ def calc_theo_arrival_law(t_arr, data_rate):
     """ 
     calculate theoretical particle arrival law. 
     if exponential, there is temporally uniform seeding.
+    Input parameters are the arrival times for each burst and the data rate of the measurement.
+
+    ----------
+    Parameters
+
+    t_arr:list or np.array
+    data_rate:float
+
+    ----------
+    Returns
+
+    delta_t_arr: array  
+    particle_arrival_law: array
     
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate from mean file 
     """
 
     # allocate
@@ -181,9 +271,20 @@ def calc_arrival_law(t_arr, data_rate):
     """ 
     calculate particle arrival law and fit the distribution. 
     if exponential, there is temporally uniform seeding.
+
+    ----------
+    Parameters
     
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate N/T
+    t_arr: list or np.array
+    data_rate: float
+
+    ----------
+    Returns
+
+    binscenters: list or array
+    data_entries: numpy object
+    popt: array
+
     """
 
     # allocate
@@ -195,14 +296,12 @@ def calc_arrival_law(t_arr, data_rate):
     data_entries, bins = np.histogram(delta_t_arr, bins='auto',density=True)
     binscenters = np.array([0.5 * (bins[i] + bins[i+1]) for i in range(len(bins)-1)])
 
-    def fit_function(x, A):
+    def fit_function(x, A):         #No documentation available
         return (A * np.exp(-x * A) )
 
     popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries)
     print('     fitted data rate = {}'.format(popt))
     print('     expected data rate = {}'.format(data_rate))
-    # scale
-    # data_entries = data_entries * popt
 
     return binscenters, data_entries, popt
 
@@ -210,10 +309,15 @@ def calc_transit_time_distribution(transit_time):
     """ 
     calculate particle arrival law. 
     if exponential, there is temporally uniform seeding.
+
+    ----------
+    Parameters
     
-    @parameter: transit_time, type = list or np.array, 
-                                    time particle moves 
-                                    through measurement volume
+    transit_time: list or np.array
+    
+    ----------
+    Returns
+    
     """
 
     return sc.skew(transit_time, nan_policy='omit')

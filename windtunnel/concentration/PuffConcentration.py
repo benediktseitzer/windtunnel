@@ -23,12 +23,20 @@ class PuffConcentration(pd.DataFrame):
     or DataFrame.rolling().mean()) All the information in a
     PuffConcentration object can be saved to a txt file, as well as all
     file type offered by pandas.
-    @parameter: time, type = pd.Series
-    @parameter: wtref, type = np.array
-    @parameter: fast_FID, type = pd.Series
-    @parameter: slow_FID, type = pd.Series
-    @parameter: signal, type = np.array
-    @parameter: open_rate, type = np.array"""
+
+
+    ----------
+    Parameters
+
+
+    time: pd.Series
+    wtref: np.array
+    fast_FID: pd.Series
+    slow_FID: pd.Series
+    signal: np.array
+    open_rate: np.array
+    
+    """
 
     def __init__(self, time, wtref, slow_FID, fast_FID, signal, open_rate):
         """ Initialise PuffConcentration object. """
@@ -139,7 +147,14 @@ class PuffConcentration(pd.DataFrame):
     def from_file(cls, filename):
         """ Create PuffConcentration object from file. open_rate is converted
         to %.
-        :type filename: str"""
+        
+        ----------
+        Parameters
+        
+        filename: str
+        cls:str
+        
+        """
         time, wtref, slow_FID, fast_FID, signal, open_rate = np.genfromtxt(
             filename, usecols=(0, 1, 2, 3, 4, 5), unpack=True)
 
@@ -226,7 +241,13 @@ class PuffConcentration(pd.DataFrame):
     def get_ambient_conditions(path=None,name=None,input_file=None):
         """Read ambient conditions from csv file. If no such file exists, function
 		does nothing and instead ambient conditions are read from values in
-		example_puff_measurement.py."""	
+		example_puff_measurement.py.
+        
+        ----------
+        Returns
+        
+        ambient_conditions: str
+        """	
 		#edit 10/18/2019: new function, which reads ambient conditions during measurement 
 		#from seperate csv file. Assumes that the csv data is located in the same folder
         #as the measurement data, and that each column represents an input variable,
@@ -268,19 +289,40 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def read_ambient_conditions(ambient_conditions,name):
         """Populate individual variables representing ambient conditions based on data
-		in ambient_conditions array. """	
-        #edit 10/21/2019: new function, which populates the individual variables representing
-        #the ambient conditions data based on data in ambient_conditions. Requires get_ambient_conditions
-        #to be called before calling function, further requires that get_ambient_conditions sucessfullly
-        #outputs the ambient_conditions array (i.e. requires the csv file containing the ambient
-        #conditions data to be in the proper format and location). function also assumes that csv 
-        #file (and thus the ambient_conditions array) is in the correct format and contains the variables
-        #x,y,z,pressure,temperature,wdir,calibration_curve,mass_flow_controller, calibration_factor,
-        #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
-        #full_scale_flow_rate. 
-        #edit 02/21/2020: changed position variables to source and measurement locations, also fixed previously 
-        #incorrect handling of cases where x, y or z (now x_source, y_source, and z_source) equal to none  
-        #edit 05/13/2020: fixed incorrect variable labeling of source and measurment locations.           
+		in ambient_conditions array. 
+        
+        ----------
+        Parameters
+
+        ambient_conditions: str
+        name: str
+        
+         ----------
+        Returns
+        
+        
+        x_source: float
+        y_source: float
+        z_source: float
+        x_measure: float
+        y_measure: float
+        z_measure: float
+        pressure: float
+        temperature: float
+        wdir: float
+        calibration_curve: float
+        mass_flow_controller: str
+        calibration_factor: float
+        scaling_factor: float
+        scale: float
+        ref_length: float
+        ref_height: float
+        gas_name: str
+        mol_weight: float
+        gas_factor: float
+        full_scale_wtref: float
+        full_scale_flow_rate: float
+        """	           
  	   
         x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
         y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
@@ -311,7 +353,25 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def ambient_conditions(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],
-        temperature in [°C]. """
+        temperature in [°C]. 
+        
+        ----------
+        Parameters
+
+
+        x_source: float
+        y_source: float 
+        z_source: float 
+        x_measure: float 
+        y_measure: float 
+        z_measure: float 
+        pressure: float 
+        temperature: float 
+        calibration_curve: float
+        mass_flow_controller: float 
+        calibration_factor: float
+        
+        """
         #edit 09/19/2019: new function,based on ambient_conditions in PointConcentration.py,
         #which collects ambient conditions during measurement. Pressure in [Pa]!	
         #edit 02/21/2020: added handling of variables for source and measurement locations, added calculation of distance variable            
@@ -338,7 +398,18 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def scaling_information(self, scaling_factor, scale, ref_length, ref_height):
         """ Collect data necessary to scale the results. unit: [m], where
-        applicable."""
+        applicable.
+        
+        ----------
+        Parameters
+
+
+        scaling_factor: float  
+        scale: float  
+        ref_length: float  
+        ref_height: float 
+        
+        """
         #edit 09/19/2019: new function, based on scaling_information in PointConcentration.py,
         #which collects scaling data. Units (where applicable) is [m]	
         self.__check_sum = self.__check_sum + 1
@@ -351,7 +422,17 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def tracer_information(self, gas_name, mol_weight, gas_factor):
         """ Collect information on tracer gas used during measurement.
-        Molecular weight in [kg/mol]. """
+        Molecular weight in [kg/mol]. 
+        
+        ----------
+        Parameters
+        
+
+        gas_name: str
+        mol_weight: float
+        gas_factor: float
+        
+        """
         #edit 09/19/2019: new function, based on tracer_information in PointConcentration.py,
         #which collects tracer information. Units (where applicable) is [m].		
         self.__check_sum = self.__check_sum + 1
@@ -364,7 +445,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Collect information on desired full scale information.
         full_scale_wtref in [m/s]. full_scale_flow_rate is automatically
         adjusted to standard atmosphere conditions.
-        input in [kg/s], output in [m^3/s]. """
+        input in [kg/s], output in [m^3/s]. 
+        
+        ----------
+        Parameters
+
+        full_scale_wtref: float
+        full_scale_flow_rate: float
+        
+        """
         #edit 09/19/2019: new function, based on full_scale_information in PointConcentration.py,
         #which collects information on full scale information. full_scale_wtref is in [m/s], 
         #full_scale_flow_rate takes input in [kg/s], and outputs the flow rate in m^3/s, adjusted
@@ -383,7 +472,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.standard_temp_K = self.standard_temp + 273.15
 		
     def calc_model_mass_flow_rate(self):
-        """ Calculate the model scale flow rate in [kg/s]. """
+        """ Calculate the model scale flow rate in [kg/s]. 
+        
+        ----------
+        Returns
+        
+        self.mass_flow_rate: float 
+        
+        """
         #edit 09/19/2019: new function, based on calc_model_mass_flow_rate in PointConcentration.py,
         #which calculates the model scale mass flow rate in [kg/s]		
         self.__check_sum = self.__check_sum + 1
@@ -397,7 +493,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.mass_flow_rate	
 
     def calc_full_scale_flow_rate(self):
-        """ Convert flow rate to full scale flow rate in [m^3/s]. """
+        """ Convert flow rate to full scale flow rate in [m^3/s]. 
+        
+        ----------
+        Returns
+        
+        self.full_scale_flow_rate: float 
+        
+        """
         #edit 09/19/2019: new function, based on calc_full_scale_mass_flow_rate in PointConcentration.py,
         #which calculates the full scale mass flow rate in [m^3/s]			
         self.full_scale_flow_rate = (self.full_scale_flow_rate * self.R *
@@ -407,7 +510,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_flow_rate
         
     def calc_non_dimensional_flow_rate(self):
-        """ Convert flow rate to non-dimensional flow rate in [m^3/s]. """
+        """ Convert flow rate to non-dimensional flow rate in [m^3/s]. 
+        
+        ----------
+        Returns
+        
+        self.full_scale_flow_rate: float 
+        
+        """
         #edit 01/14/2020: new function, based on calc_full_scale_mass_flow_rate in PointConcentration.py,
         #which calculates the non-dimensional mass flow rate in [-]		
         #TODO: fix function!!        
@@ -418,7 +528,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_flow_rate        
 
     def calc_c_star(self):
-        """ Calculate dimensionless concentration. [-] """
+        """ Calculate dimensionless concentration. [-] 
+        
+        ----------
+        Returns
+        
+        self.c_star: float 
+        
+        """
         #edit 09/19/2019: new function, based on calc_c_star in PointConcentration.py,
         #which calculates the dimensionless concentration [unitless]			
         self.__check_sum = self.__check_sum + 1
@@ -429,7 +546,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.c_star
 		
     def calc_full_scale_concentration(self):
-        """ Calculate full scale concentration in [ppmV]. """
+        """ Calculate full scale concentration in [ppmV].
+        
+        ----------
+        Returns
+        
+        self.full_scale_concentration: float 
+        
+        """
         #edit 09/19/2019: new function, based on calc_full_scale_concentration in
         #PointConcentration.py, which calculates the full scale concentration [ppmV]		
         self.full_scale_concentration = self.c_star * \
@@ -440,9 +564,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_concentration
 		
     def calc_wtref_mean(self):
-        """ Calculate scaled wtref mean in [m/s]. """
-        #edit 09/19/2019: new function, based on calc_wtref_mean in
-        #PointConcentration.py, which calculates the scaled wtref mean in [m/s]		
+        """ Calculate scaled wtref mean in [m/s].
+        
+        ----------
+        Returns
+        
+        self.wtref_mean: float 
+
+        """
+       
         self.__check_sum = self.__check_sum + 1
 
         self.wtref_mean = self.scaling_factor * np.mean(self.wtref)
@@ -451,9 +581,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
 		
     def calc_full_scale_time(self):
-        """ Calculate full scale timesteps in [s]. """
-        #edit 09/19/2019: new function, based on calc_full_scale_time in
-        #PointConcentration.py, which calculates the full scale time step in [s]			
+        """ Calculate full scale timesteps in [s]. 
+        
+        ----------
+        Returns
+        
+        self.full_scale_time: float 
+        
+        """
+       		
         if self.wtref_mean is None:
             self.wtref_mean = PointConcentration.calc_wtref_mean()
 
@@ -464,11 +600,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_time	
 
     def calc_non_dimensional_time(self):
-        """ Calculate non-dimensional time step [-]. """
-        #edit 01/14/2020: new function, based on calc_full_scale_time, which
-        #calculates the non-dimensional time step [-]
-        #edit 07/27/2020: fix function output (function previously aoutput full
-        #scale time instead of non-dimensional time).        
+        """ Calculate non-dimensional time step [-]. 
+        
+        ----------
+        Returns
+        
+        self.non_dimensional_time: float 
+        
+        """        
         if self.wtref_mean is None:
             self.wtref_mean = PointConcentration.calc_wtref_mean()
 
@@ -479,12 +618,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
 
     def calc_net_concentration(self):
-        """ Calculate net concentration in [ppmV]. """
-		#edit 07/24/2019: changed 'net_concentration' from key to atribute,
-        #in alignment with the PointConcentration.py script
-		#edit 07/26/2019: changed clear_zeros to a standalone funciton, which is now called from 
-		#outside calc_net_concentration
-        #edit 09/19/2019: re-added __check_sum variable to allow for full scale analysis
+        """ Calculate net concentration in [ppmV]. 
+        """
+		
         self.__check_sum = self.__check_sum + 1		
 		
         self.net_concentration = self.fast_FID - self.slow_FID
@@ -494,8 +630,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def detect_end_release_index(self):
         """ Detects the indices of the end of each release period. Returns a
         list containing the index of the last timestamp of each release 
-        period. """
-        #edit 10/28/2019: ignore last puff if puff release extends beyond of the timeseries.
+        period. 
+        
+        ----------
+        Returns
+        
+        self.end_release_index: list 
+        
+        """
+      
         self.end_release_index =(np.argwhere(np.diff(self.signal) < 0).flatten()).tolist()
         if len(self.begin_release_index)> len(self.end_release_index):
             print('Time series terminates during puff release. '
@@ -505,7 +648,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def detect_end_release_period(self):
         """ Detects the end of each release period. Returns an np.array 
-        containing the last timestamp of each release period. """			
+        containing the last timestamp of each release period. 
+        
+        ----------
+        Returns
+
+        self.end_release_period: np.arrray 
+        
+        """			
         indices = self.detect_end_release_index()	
         self.end_release_period = self.time[indices]
 		
@@ -515,15 +665,29 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def detect_begin_release_index(self):
         """ Detects the indices of the beginning of each release period. Returns a
         list containing the index of the first timestamp of each release 
-        period. """
+        period.
 
-        self.begin_release_index =(np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
+        ----------
+        Returns
+        
+        self.begin_release_index: list
+
+        """
+
+        self.begin_release_index = (np.argwhere(np.diff(self.signal) > 0).flatten() + 1).tolist()
 
         return self.begin_release_index
 
     def detect_begin_release_period(self):
         """ Detects the beginning of each release period. Returns an np.array 
-        containing the first timestamp of each release period. """	
+        containing the first timestamp of each release period.
+        
+        ----------
+        Returns
+        
+        self.begin_release_period: np.arrray
+        
+        """	
         indices = self.detect_begin_release_index()		
         self.begin_release_period = self.time[indices]
 
@@ -532,7 +696,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def calc_release_length(self):
         """ Calculate the length of each release period. Returns an np.array
-        containing the duration of each release period. """
+        containing the duration of each release period. 
+        
+        ----------
+        Returns
+        
+        self.release_length: np.arrray
+        
+        """
 
         beginning = self.detect_begin_release_period()
         end = self.detect_end_release_period()
@@ -542,15 +713,11 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def get_dosage(self):
         """ Calculates the dosage of each puff between two release times. """
-		#edit 07/29/2019: added new algorithm to calcualte dosage to check the original algorithm. 
-        #The questionable results of orignal algorithm noted on 07/06/2019 have been attributed to incorrect indexing 
-        #in plot_puff function. The algorithm for calcuaitng the dosage thus seems to be working correctly. 		
+			
         beginnings = self.begin_release_index
         self.dosage = []
 
-        #edit 07/29/2019: alternative algorithm to determine dose. Should yield same results as algorithm below, assuming
-		#both are correct 
-		
+      
         #for i in range(np.shape(beginnings)[0]):  
             #print(i)
             #if i<np.shape(beginnings)[0]-1:
@@ -568,17 +735,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                 end = beginnings[i + 1]
                 self.dosage.append(self.net_concentration[begin:end].sum())
 
-        #edit 09/27/2019: compute dt, which is the sampling time interval, and multiply by dt to fix units of dosage. 
+      
         self.dt = np.mean(np.asarray(self.time[1:])-np.asarray(self.time[:-1]))
         self.dosage=[self.dt*l for l in self.dosage] 
  
                    
     def get_mean_puff(self):
-        """Calcuate mean puff"""
-        #edit 08/01/2019: new function, calculates mean puff, based on calculation in original C Program.
-        #See Bachelor Thesis of Anne Philipp (2010) for more details.
-		#Calculate minimum time between two puffs
-        #edit 08/02/2019: changed puffs_array to atribute, added computation of mean signal. 
+        """Calcuate mean puff 
+        """
+       
         puffs_start = np.asarray(self.begin_release_index)
         self.mean_puff = []
         self.mean_signal = []
@@ -608,23 +773,24 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.pct10_signal= np.percentile(self.signal_array, 10, axis=0)
         self.pct90_signal = np.percentile(self.signal_array, 90, axis=0)
 
-    #edit 08/02/2019: compute 10th and 90th percentile of puff and signal in addition to mean.
-
-        
 
     def detect_leaving_time(self,time_threshold=0.05):
         """ Detects the end of each puff. Returns an np.array 
-        containing the last timestamp of each puff. """
-        #edit 10/14/2019: write index of leaving time to attribute leaving_index
-        #edit 02/04/2020: add variable 'time_threshold' to control dosage threshold 
-        #for determinig leaving and arrival time to use for computing characteristic
-        #puff times. Note that a 'default' agreed-upon value for this variable 5%,
-        #however,this fails to properly capture the start and end times of several puffs.
-        #edit 02/27/2020: edited algorithm for computing dosage. New algorithm continuously 
-        #adds infinitesimal dosage to the previously integrated dosage, instead of calculating
-        #dosage from scratch on every iteration. This new algorithm is much faster (a sample 
-        #dataset which took 584 seconds to analzye in basic mode with the old algpriothm 
-        #takes 92 seconds to analyze in basic mode with the new algotihm).  		
+        containing the last timestamp of each puff. 
+        
+        ----------
+        Parameters
+
+        time_threshold: float
+
+        ----------
+        Returns
+
+        self.arrival_time: np.array
+        self.arrival_index: list
+        
+        """
+       		
         self.leaving_time = []
         self.leaving_index = []			
 
@@ -647,17 +813,21 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 
     def detect_arrival_time(self,time_threshold=0.05):
         """ Detects the beginning of each puff. Returns an np.array 
-        containing the first timestamp of each puff. """
-        #edit 10/14/2019: write index of arrival time to attribute arrival_index
-        #edit 02/04/2020: add variable 'time_threshold' to control dosage threshold 
-        #for determinig leaving and arrival time. Note that a 'default'
-        #agreed-upon value for this variable 5%, however,this fails to properly
-        #capture the start and end times of several puffs.	
-        #edit 02/27/2020: edited algorithm for computing dosage. New algorithm continuously 
-        #adds infinitesimal dosage to the previously integrated dosage, instead of calculating
-        #dosage from scratch on every iteration. This new algorithm is much faster (a sample 
-        #dataset which took 584 seconds to analzye in basic mode with the old algpriothm 
-        #takes 92 seconds to analyze in basic mode with the new algotihm).          
+        containing the first timestamp of each puff. 
+        
+        ----------
+        Parameters
+
+        time_threshold: float
+
+        ----------
+        Returns
+
+        self.arrival_time: np.array
+        self.arrival_index: list
+    
+        """
+          
         self.arrival_time = []
         self.arrival_index = []
 		
@@ -683,8 +853,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                                      self.arrival_time)]
 
     def get_peak_concentration(self):
-        """ Acquire peak concentration of each puff. Returns a list. """
-        #edit 10/14/2019: constrain peak concentration to between arrival time and leaving time		
+        """ Acquire peak concentration of each puff. Returns a list. 
+        """
+      	
         self.peak_concentration = []
         for i, begin in enumerate(self.arrival_index):
             end = self.leaving_index[i]
@@ -693,12 +864,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                 self.net_concentration[begin:end].max())               
 
     def get_peak_time(self):
-        """ Acquire peak time of each puff. Returns a list. """
-        #edit 10/14/2019: find peak time of peak concentration constrained to between arrival time
-        #and leaving time, consistent with updated algorithm for finding peak concentration (see function
-        #get_peak_concentration). Also added logging of puffs which have a concentration greater than
-        #the peak concentration before the arrival time or after the leaving time.
-        #edit 01/10/2020: delete puffs for which the arrival time is equal to the leaving time  		
+        """ Acquire peak time of each puff. Returns a list. 
+        """
+        		
         self.peak_time = []
         log_peak=np.zeros(np.shape(self.arrival_index))		
         for i, begin in enumerate(self.arrival_index):				
@@ -711,8 +879,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             time = self.time[begin:end]           
             if self.net_concentration[begin_release:begin_next_release].max() > self.net_concentration[begin:end].max() or begin==end:            
                log_peak[i]=1             
-            #edit 10/18/2019: set peak time to nan if peak concentration is nan. This occurs, among other scenarios, if
-            #the arrival time and the leaving time are identical. 			
+         			
             if np.isnan(self.peak_concentration[i]) == 1:			 
                self.peak_time.append(np.nan)                      
             else:		   
@@ -754,18 +921,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                                                    self.peak_time)]
 
     def offset_correction(self,method='mean'):
-        """ Correct a non-zero offset in the concentration measured. """
-        #edit 09/26/2019: calculate and subtract offset individually for each puff,
-        #and perform analysis for all puffs, not just the first 200. Based on algorithm 
-        #developed by Rasmus Fischer; see Dissertation of Rasmus Fischer (2011) for more
-        #details. 
-        #edit 10/17/2019: after consultation with Frank Harms, the algorithm now subtracts 
-        #the mean offset (i.e. the average of all individual offsets), instead of the 
-        #subtracting the offset individually for each puff. To allow for future changes
-        #to the methodology for calculaing the offset, a new input variable ("method")
-        #selects the method for caltuing the offset. Current valid options for "method"
-        #are 'mean' (average offset over all puffs) and ind (subtract individual offset
-		#for each puff). 	
+        """ Correct a non-zero offset in the concentration measured. 
+        """
+   	
 		
         avg_release = []
         beginnings = self.detect_begin_release_index()
@@ -802,7 +960,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.net_concentration 
                 
     def check_against_avg_puff(self):
-        """ Check each puff against the average puff of the time series. """
+        """ Check each puff against the average puff of the time series. 
+        
+        ----------
+        Returns
+        
+        self.puff_deviations: list
+        
+        """
         numbers = np.arange(np.size(self.dosage))
         puffs = {}
         puffs.fromkeys(numbers)
@@ -853,21 +1018,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.puff_deviations
 		
     def get_mask(self, threshold_concentration=0., threshold_dosage=0.,n_exclude=None):	
-        """ Return array that containts locations of unmaksed datapoints."""
-        #edit 07/29/2019: new fuction, returns the indeces of all data points which remain
-		#after applying threshold concentration & dosage. 
-        #edit 09/27/2019: added seperate variables which return both the indeces of data points
-        #masked (self.mask_full) and puffs masked (self.mask) sepeartely. Also added logging
-        #of msaked data points and puffs. 
-        #edit 03/17/2020: apply masking of data above maximum dosage and peak concentration,
-        #defined to be the dosage/peak concentration of the top five measurements if the data
-        #were normally distributed with a mean and standard deviation equal to that of the actual
-        #measured data. This is effectively a method to remove outliers. Note that at present 
-        #the logger still logs only the puffs which are below the threshold dosage/concentration,
-        #not above the maximum dosage/concentration. 
-        #edit 03/18/2020: add variable n_exclude which sets number of puffs at top of measurements
-        #to exclude as outliers. Default option (n_exclude=None) determines number of puffs to be 
-        #excluded based on the sample size. 
+        """ Return array that containts locations of unmaksed datapoints. 
+        """
+        
 
         if n_exclude==None:
            n_exclude=np.int(np.shape(self.peak_concentration)[0]/100)
@@ -931,8 +1084,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 	
     def calc_norm_distribution(self,var):
         "calculate normal distribution using mean and standard deviation of a given variable"
-        #edit 03/16/2020: new function, calculates normal distribution based on mean and
-        #standard deviation of a given input variable.
+       
 
         norm_dist=norm(np.nanmean(getattr(self,var)),np.nanstd(getattr(self,var)))
 
@@ -942,18 +1094,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Apply a given threshold concentration to peak_concentration to 
         remove weak puffs, and maximum concentration based on statistical 
         analysis to remove outliers. The default value for threshold_concentration 
-        is 0. (float). """
-	#edit 07/26/2019: added logging of puffs below threshold concentration
-        #edit 09/26/2019: added masked release index, to allow for proper masking of multiple variables. 
-        #edit 09/27/2019: fixed logger, now outputs outliers based on size of applicable mask variables, 
-        #which is equivalent to the number of data points which are masked by applying the threshold 
-        #concentration. Also outputs number of ensembles which fall below the threshold dosage sepeartely
-        #from the total number of masked data points. 
-        #edit 03/17/2020: added masking of data above maximum concentration, defined to be the concentraion
-        #of the top five measurements if the data were normally distributed with a mean and standard 
-        #deviation equal to that of the actual measured data. This is effectively a method to remove outliers. 
-        #Note that at present the logger still logs only the puffs which are below the threshold concentrtion,
-        #not above the maximum peak concentration.
+        is 0. (float). 
+        
+        ----------
+        Parameters
+
+        threshold_concentration: float
+        
+        """
+	
 
         
         #norm_dist_peak_concentration=self.calc_norm_distribution('peak_concentration')
@@ -1015,21 +1164,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 	
         """ Apply a given threshold concentration to dosage to 
         remove weak puffs. The default value for threshold_concentration 
-        is 0. (float). """
-		#edit 07/24/2019: new function, nearly identical to 'apply_threshold_concentration' above, but 
-		#here a threshold total dosage, in place of a threshold peak concentration, is used.
-        #edit 09/26/2019: added masked release index, to allow for proper masking of multiple variables. 
-        #edit 09/27/2019: fixed logger, now outputs outliers based on size of applicable mask variables, 
-        #which is equivalent to the number of data points which are masked by applying the threshold dosage. 
-        #Also outputs number of ensembles which fall below the threshold dosage sepeartely from the total 
-        #number of masked data points. Further, the logger now counts all data points/ensembles whcih fall below
-        #the threshold dosage (previously only data points which were below the threshold dosage but above the 
-        #threshold concentration were counted).  
-        #edit 03/17/2020: added masking of data above maximum dosage, defined to be the dosage
-        #of the top five measurements if the data were normally distributed with a mean and standard 
-        #deviation equal to that of the actual measured data. This is effectively a method to remove outliers. 
-        #Note that at present the logger still logs only the puffs which are below the threshold dosage,
-        #not above the maximum dosage.
+        is 0. (float).
+        
+        ----------
+        Parameters
+        
+        threshold_dosage: float
+
+        """
+	
         
 		
         #norm_dist_dosage=self.calc_norm_distribution('dosage')
@@ -1061,7 +1204,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                    continue
                 dosage_ts[begin:end]=self.dosage_unmasked[i]
 				
-        #edit 09/27/2019: set data before first puff to nan. This ensures it is removed by the threshold dosage. 
+         
         dosage_ts[:self.begin_release_index_unmasked[0]]=np.nan
         
         mask2 = np.where(np.asarray(dosage_ts) > self.threshold_dosage)
@@ -1087,12 +1230,9 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
     def clear_zeros(self):
 	    
-        """ Clear and count zeros in concentration measurements."""
-		#edit 07/24/2019: new function, nearly identical to 'clear_zeros' in PointConcentration.py, but
-		#the varibale 'signal' is also masked. Further, since no full scale concentration exists as this
-		#point, the mask is based on the sign of net_concentration. Aditionally, masking operation is not 
-		#performed on the variables, c*, full_scale concentration, and full_scale_time, which are 
-		#(currently) not calculated in this script. 
+        """ Clear and count zeros in concentration measurements. 
+        """
+		
 		
         concentration_size = np.size(self.net_concentration)
 
@@ -1114,17 +1254,25 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def plot_puff(self,var1='net_concentration',n_puffs=5,path=None,name=None,full_scale=None,axis_range='auto'):
 	
         """ Plot time series of selected variable for first n_puffs puffs.
-        Default configuration plots net_concentration for first 5 puffs""" 
-        #edit 07/24/2019: new function, which plots time series of slected variables		
-		#edit 07/26/2019: data confirms no puff before start of data aquisiton
-        #edit 07/29/2019: adjustments to account for masking of variables
-		#check to make sure that dataset has all necessary variables, and is in correct format 	
-        #edit 09/23/2019: added proper plotting of full scale data      
-        #edit 11/12/2019: plot signal at height of individual peak concentration for each puff,
-        #not at height of mean peak concentration		
-        #edit 01/28/2020: added plotting of non-dimensional data; added plotting of arrival and leaving time for first puff     
-        #edit 03/10/2020: determine tickmark spacing automatically based on length of time series, added plotting of more puffs
-        #by enabling a fallback to minimum puff length if no puff length can be determined.  
+        Default configuration plots net_concentration for first 5 puffs
+        
+        ----------
+        Parameters
+        
+        var1: str
+        n_puffs: int
+        path: str
+        name: str
+        full_scale: str
+        axis_range: str
+
+        ----------
+        Returns
+        
+        ret: plt.object
+        
+        """ 
+       
         if hasattr(self,'signal')== False: 
            print('Error: No puff release signal found. Check integrity of dataset.')
            return
@@ -1250,24 +1398,29 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                      plt.close()
             plt.close()
             index=index+1             
-            #edit 03/05/2020: moved return command inside loop. Unknown why this works,
-            #and in particular why the script does not run properly if return command 
-            #is outside the loop.
-            #edit 03/06/2020: moved return command back outside loop, as script only 
-            #saves 1 puff if return is inside loop
+           
         return ret 
 		
     def plot_mean_puff(self,path,name,stats='off',dist='off',full_scale=None):    
 	
-        """ Plot time series of mean puff, calcualted above in get_mean_puff""" 
-        #edit 08/01/2019: new function, which plots the time series of the mean puff, as calculated in 
-        #get_mean_puff above, as a function of time. 
-		#edit 08/02/2019: added plotting of mean signal. Also, added new input variables stats and dist. If stats is 
-        #set to on, function also plots the mean dosage, arrival time, leaving time, and peak time. If dist is set to 
-		#on, function also plots the 10th and 90th percentile of the puff and signal. 
-        #edit 09/23/2019: added proper plotting of full scale data and revisions to plot formatting, including larger figure, larger text, larger markers, and specified tickmark locations
-        #edit 01/28/2020: added plotting of non-dimensional data   
-        #edit 03/10/2020: determine tickmark spacing automatically based on length of time series        
+        """ Plot time series of mean puff, calcualted above in get_mean_puff
+        
+        ----------
+        Parameters
+        
+        path: str
+        name: str
+        stats: str
+        dist: str
+        full_scale: str
+
+        ----------
+        Returns
+         
+        ret: plt.object
+        
+        """ 
+            
         if hasattr(self,'mean_puff')== False: 
            print('Error: mean_puff varibale not found. Check function input!')
            return 	
@@ -1368,10 +1521,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
 		
 		
     def get_puffs(self):
-        """ Returns DataFrame with all puff information. """
-        #edit 08/08/2019: renamed function to get_puffs. This is mainly to avoid confusion with the new calc_puff_statistics 
-		#function below, and to clarify that the function get_puffs does not actually perform any statistical analysis (unlike 
-		#calc_puff_statistics)
+        """ Returns DataFrame with all puff information. 
+        
+        ----------
+        Returns
+
+        return_data: pd.Dataframe
+        
+        """
+      
         data = {'arrival time': self.arrival_time,
                 'leaving time': self.leaving_time,
                 'peak time': self.peak_time,
@@ -1386,14 +1544,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save model scale data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-		#edit 10/01/2019: new function, similar to save2file_ms in PuffConcentration.py, saves model scale data to file, for (among other things),
-        #plotting the data in Tecplot. Generates a total of 2 different txt files, for puff data, and basic statistics.
-		#Note that data here is dimensional. 	
-        #edit 10/04.2019: added proper labeling of rows and columns in txt files to make them more readable.
-		#edit 02/21/2020: added handling of variables for source and measurement locations, added recording of distance variable
-        #edit 02/25/2020: added compatability with tecplot         
+
+        ----------
+        Parameters
+        
+        filename: str
+        out_dir: str
+        
+        """
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
@@ -1418,8 +1576,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
             #puffs_header=puffs_header+ " \"Puff "+str(i)+"\""			
         output_file_puffs = out_dir + 'puffs_ms_' + filename	
         output_file_stats = out_dir + 'stats_ms_' + filename	
-        #edit 10/07/2019: original _ms files depreciated in favor of puff files		
-        #edit 03/05/2020: moved masking of puffs array to get_mean_puff function
+       
         np.savetxt(output_file_puffs, np.vstack((self.time[:self.min_puff_length],
                                            np.squeeze(self.puffs_array))
                                           ).transpose(),
@@ -1484,9 +1641,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save full scale data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-		#edit 02/25/2020: new function, similar to save2file_ms, but for full-scale data 
+
+        ----------
+        Parameters
+        
+        filename: str
+        out_dir: str
+        
+        """
+		
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
@@ -1576,8 +1739,14 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save non-dimensional data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
+        
+        ----------
+        Parameters
+        
+        filename: str
+        out_dir:str
+        
+        """
 		#edit 02/25/2020: new function, similar to save2file_ms and save2file_fs, but for non-dimensional data     
         if out_dir is None:
             out_dir = './'
@@ -1666,43 +1835,92 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     @property
     def max_puffs(self):
         """ Get maximum number of puffs. Deduced from the length of 
-        release_length. """
+        release_length. 
+        
+        ----------
+        Returns
+
+        self.release_length: float
+        
+        """
 
         return np.size(self.release_length)
 
     @property
     def avg_arrival_time(self):
-        """ Get average arrival time. """
+        """ Get average arrival time. 
+        
+        ----------
+        Returns
+
+        self.arrival_time: float
+        
+        """
 
         return np.nanmean(self.arrival_time)
 
     @property
     def avg_leaving_time(self):
-        """ Get average leaving time. """
+        """ Get average leaving time. 
+        
+        ----------
+        Returns
+
+        self.leaving_time: float
+        
+        """
 
         return np.nanmean(self.leaving_time)
 
     @property
     def avg_peak_time(self):
-        """ Get average peak time. """
+        """ Get average peak time. 
+        
+        ----------
+        Returns
+
+        self.peak_time: float
+        
+        """
 
         return np.nanmean(self.peak_time)
 
     @property
     def avg_peak_concentration(self):
-        """ Get average peak concentration. """
+        """ Get average peak concentration. 
+        
+        ----------
+        Returns
+
+        self.peak_concentration: float
+        
+        """
 
         return np.nanmean(self.peak_concentration)
 
     @property
     def avg_ascent_time(self):
-        """ Get average ascent time. """
+        """ Get average ascent time. 
+        
+        ----------
+        Returns
+
+        self.ascent_time: float
+        
+        """
 
         return np.nanmean(self.ascent_time)
 
     @property
     def avg_descent_time(self):
-        """ Get average descent time. """
+        """ Get average descent time. 
+        
+        ----------
+        Returns
+
+        self.descent_time: float
+        
+        """
 
         return np.nanmean(self.descent_time)
 

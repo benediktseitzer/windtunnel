@@ -17,14 +17,20 @@ class Timeseries(pd.DataFrame):
     The raw timeseries can be processed by nondimensionalising it, adapting the
     scale, making it equidistant and masking outliers. All the information in
     a Timeseries object can be saved to a txt file.
-    @parameter: u, type = np.array
-    @parameter: v, type = np.array
-    @parameter: x, type = float
-    @parameter: y, type = float
-    @parameter: z, type = float
-    @parameter: t_arr, type = np.array
-    @parameter: t_transit, type = np.array
-    @parameter: tau, type = int or float - time scale in milliseconds"""
+
+    ----------
+    Parameters
+
+    u: np.array
+    v: np.array
+    x: float
+    y: float
+    z: float
+    t_arr: np.array
+    t_transit: np.array
+    tau: int or float - time scale in milliseconds
+    
+    """
     def __init__(self,u,u_eq,v,v_eq,x=None,y=None,z=None,t_arr=None,t_transit=None,
                  tau=10000):
         """ Initialise Timerseries() object. """
@@ -56,19 +62,45 @@ class Timeseries(pd.DataFrame):
         self.v1 = None
         
     def __repr__(self):
-        """ Return the x, y and z coordinate of the Timeseries object. """
+        """ Return the x, y and z coordinate of the Timeseries object.
+        
+        
+        ----------
+        Returns
+
+        Timeseries
+        
+        """
         return 'Timeseries(x={x}, y={y}, z={z})'.format(x=self.x,
                                                         y=self.y,
                                                         z=self.z)
 
     def __eq__(self, other):
         """ Two Timeseries objects are considered equal, if their x and y
-        coordinates are the same. """
+        coordinates are the same. 
+        
+        ----------
+        Returns
+
+        """
         return self.x == other.x and self.y == other.y
 
     @classmethod
     def from_file(cls,filename):
-        """ Create Timeseries object from file."""
+        """ Create Timeseries object from file.
+        
+        ----------
+        Parameters
+
+        cls: class
+        filename: str
+
+        ----------
+        Returns
+
+        ret: class
+
+        """
         with open(filename) as file:
             for i, line in enumerate(file):
                 if i == 3:
@@ -80,13 +112,12 @@ class Timeseries(pd.DataFrame):
         t_arr, t_transit, u, v = np.genfromtxt(filename,usecols=(1,2,3,4),
                                                skip_header=6,unpack=True)
 
-        #edit 06/20/19: create dummy variables for equidistant time series
+        # create dummy variables for equidistant time series
         u_eq=u/u
         v_eq=v/v
         
         
-        ret = cls(u,u_eq,v,v_eq,x,y,z,t_arr,t_transit)
-        #edit 6/20/19: want to make time series equidistant in seperate function            
+        ret = cls(u,u_eq,v,v_eq,x,y,z,t_arr,t_transit)            
         #ret.calc_equidistant_timesteps()  
    
         return ret
@@ -96,10 +127,16 @@ class Timeseries(pd.DataFrame):
         scales wtref with vscale. vscale is set to 1 as standard. index
         accesses only the one wtref value that is associated to the current
         file.
-        @parameter: path, type = string
-        @parameter: filename, type = string
-        @parameter: index, type = int
-        @parameter: vscale, type = float """
+
+        ----------
+        Parameters
+
+        path: string
+        filename: string
+        index: int
+        vscale: float 
+        
+        """
 
         wtreffile = wtref_path + filename + '_wtref.txt'.format(
                                                         filename.split('.')[0])
@@ -115,7 +152,13 @@ class Timeseries(pd.DataFrame):
 
     def get_wind_comps(self,filename):
         """ Get wind components from filename.
-        @parameter: filename, type = str """
+        
+        ----------
+        Parameters
+        
+        filename: string 
+
+        """
         with open(filename) as file:
             try:
                 name = filename.upper().split('/',-1)[-1]
@@ -148,7 +191,13 @@ class Timeseries(pd.DataFrame):
 
     def adapt_scale(self,scale):
         """ Convert timeseries from model scale to full scale.
-        @parameter: scale, type = float"""
+        
+        ----------
+        Parameters
+        
+        scale: float
+        
+        """
         self.scale = scale
         self.x = self.x * self.scale/1000           #[m]
         self.y = self.y * self.scale/1000           #[m]
@@ -158,7 +207,14 @@ class Timeseries(pd.DataFrame):
         #self.t_eq = self.t_eq * self.scale/1000   #[s]  
 
     def rotate_coordinates(self,wdir):
-        """Rotates u and v components according to wind direction"""       
+        """Rotates u and v components according to wind direction
+        
+        ----------
+        Parameters
+
+        wdir: float
+
+        """       
         self.wind_vector=self.u+1j*self.v
         self.position_vector=self.x+1j*self.y        
         self.wind_vector=self.wind_vector*e**((np.pi*-wdir/180)*1j)
@@ -180,7 +236,13 @@ class Timeseries(pd.DataFrame):
         """ Mask outliers and print number of outliers. std_mask specifies the
         threshold for a value to be considered an outlier. 5 is the default
         value for std_mask.
-        @parameter: std_mask, type = float"""
+        
+        ----------
+        Parameters
+
+        std_mask: float
+
+        """
         #edit 6/12/19: added variables n_outliers_u and n_outliers_v to keep track of the number of outliers
         #edit 4/7/19: revised procedure for handling outliers. Outliers are npw set to nan by default.
         u_size = np.size(self.u)
@@ -220,7 +282,13 @@ class Timeseries(pd.DataFrame):
         threshold for a value to be considered an outlier. 5 is the default 
         value for std_mask. This function uses time transit time weighted 
         statistics.
-        @parameter: std_mask, type = float"""
+        
+        ----------
+        Parameters
+
+        std_mask: float
+        
+        """
         
         u_size = np.size(self.u)
         v_size = np.size(self.v)
@@ -282,14 +350,6 @@ class Timeseries(pd.DataFrame):
         self.u=u_tiltcorr
         self.v=v_tiltcorr
 
-        #"""Alternate Method:Represent u and v by a single set of complex numbers.""" 
-
-        #u_complex=self.u+1j*self.v
-        #u_complex=np.exp(-1j*self.tilt_angle_deg*np.pi/180)*u_complex
-		
-        #u_tiltcorr=np.real(u_complex)
-        #v_tiltcorr=np.imag(u_complex)				
-
     def tilt_coords_wght(self):
         """ Tilt the coordinate system so that the x-axis is always parallel to
         the local mean wind direction. The y-axis stays horizontal while being 
@@ -327,7 +387,14 @@ class Timeseries(pd.DataFrame):
                 self.direction.iloc[i] = value - 360
 
     def set_tau(self, milliseconds):
-        """ Give tau a new value """
+        """ Give tau a new value 
+        
+        ----------
+        Parameters
+
+        milliseconds: float
+        
+        """
         self.tau = milliseconds
 
     def calc_perturbations(self):
@@ -413,8 +480,14 @@ class Timeseries(pd.DataFrame):
         """ Save data from Timeseries object to txt file. filename must include
         '.txt' ending. If no out_dir directory is provided
         'C:/Users/[your_u_number]/Desktop/LDA-Analysis/' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
+        
+        ----------
+        Parameters
+
+        filename: str
+        out_dir: str
+        
+        """
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
