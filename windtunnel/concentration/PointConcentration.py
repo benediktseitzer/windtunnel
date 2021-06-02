@@ -214,8 +214,7 @@ class PointConcentration(pd.DataFrame):
     def read_ambient_conditions(ambient_conditions,name):
         """Populate individual variables representing ambient conditions based on data
 		in ambient_conditions array. """	
-       
- 	   
+    
         x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
         y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
         z_source=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
@@ -313,7 +312,6 @@ class PointConcentration(pd.DataFrame):
     def calc_model_mass_flow_rate(self):
         """ Calculate the model scale flow rate in [kg/s].
         
-        
         ----------
         Returns
 
@@ -332,7 +330,6 @@ class PointConcentration(pd.DataFrame):
 
     def calc_full_scale_flow_rate(self):
         """ Convert flow rate to full scale flow rate in [m^3/s].
-        
         
         ----------
         Returns
@@ -367,7 +364,6 @@ class PointConcentration(pd.DataFrame):
     def calc_net_concentration(self):
         """ Calculate net concentration in [ppmV]. 
         
-        
         ----------
         Returns
 
@@ -382,7 +378,6 @@ class PointConcentration(pd.DataFrame):
 
     def calc_c_star(self):
         """ Calculate dimensionless concentration. [-] 
-        
         
         ----------
         Returns
@@ -432,7 +427,6 @@ class PointConcentration(pd.DataFrame):
     def calc_full_scale_time(self):
         """ Calculate full scale timesteps in [s].
         
-        
         ----------
         Returns
 
@@ -461,7 +455,6 @@ class PointConcentration(pd.DataFrame):
         Returns
 
         self.non_dimensional_time: float
-        
         
          """
             
@@ -502,8 +495,6 @@ class PointConcentration(pd.DataFrame):
         var: str
         path: str 
         name: str
-
-
 
         ----------
         Returns
