@@ -31,12 +31,12 @@ def get_lux_referencedata(ref_path=None):
     ----------
     Returns
     
-    Lux_10:
-    Lux_1: 
-    Lux_01: 
-    Lux_001:
-    Lux_obs_smooth: 
-    Lux_obs_rough:
+    Lux_10: array-like
+    Lux_1: array-like
+    Lux_01: array-like
+    Lux_001:array-like
+    Lux_obs_smooth: array-like
+    Lux_obs_rough:array-like
     
     """
     if ref_path == None:
@@ -73,7 +73,6 @@ def get_turb_referencedata(component, ref_path=None):
     I_u_rough: np.array
     I_u_very: np.array
 
-    
     """
     if ref_path == None:
         ref_path = '//ewtl2/work/_EWTL Software/Python/Reference data/'
@@ -120,7 +119,6 @@ def find_nearest(array, value):
     ----------
     Parameters
     
-    
     array: np.array
     value: int or float
 
@@ -140,14 +138,12 @@ def get_reference_spectra(height, ref_path=None):
     ----------
     Parameters
     
-    height: array like
-
+    height: int or float
 
     ----------
     Returns
 
-    ref_specs: array like
-
+    ref_specs: array-like
     
     """
     #  REFERENCE SPAECTRA RANGE FIT
@@ -171,7 +167,6 @@ def transit_time_weighted_mean(transit_time, component):
     
     transit_time: np.arrray
     component: np.arrray
-    
     
     ----------
     Returns
@@ -283,7 +278,6 @@ def calc_arrival_law(t_arr, data_rate):
     t_arr: list or np.array
     data_rate: float
 
-
     ----------
     Returns
 
@@ -308,8 +302,6 @@ def calc_arrival_law(t_arr, data_rate):
     popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries)
     print('     fitted data rate = {}'.format(popt))
     print('     expected data rate = {}'.format(data_rate))
-    # scale
-    # data_entries = data_entries * popt
 
     return binscenters, data_entries, popt
 
@@ -325,8 +317,6 @@ def calc_transit_time_distribution(transit_time):
     
     ----------
     Returns
-
-    
     
     """
 

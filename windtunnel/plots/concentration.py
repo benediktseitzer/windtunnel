@@ -18,9 +18,9 @@ def plot_boxplots(data_dict, ylabel=None, **kwargs):
     ----------
     Parameters
     
-    data_dict: dict
+    data_dict: dictionary
     ylabel: string
-    ax: axes object
+    ax: axes-object
     kwargs : arbitrary
 
     """

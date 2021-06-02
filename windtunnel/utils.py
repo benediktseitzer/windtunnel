@@ -31,15 +31,14 @@ def find_block(indata, length, tolerance):
     ----------
     Parameters
 
-    indata:  np.array (1D)
-    length:  int
-    tolerance:  int 
+    indata: np.array (1D)
+    length: int
+    tolerance: int 
 
     ----------
     Returns
 
-    block:
-    
+    block: int or float
     
     """
 
@@ -55,20 +54,18 @@ def equ_dist_ts(arrival_time, eq_dist_array, data):
    original time series is used for the corresponding time of the equi-distant
    time series.
 
-   ----------
-   Parameters
+    ----------
+    Parameters
    
-   arrival_time: np.array
-   eq_dist_array:np.array
-   data: np.array
+    arrival_time: np.array
+    eq_dist_array: np.array
+    data: np.array
    
-   
-   ----------
-   Returns
+    ----------
+    Returns
 
-   eq_dist_array: array
-    
-    
+    eq_dist_array: array
+     
     """
 
     valid = ~np.isnan(data)
@@ -86,13 +83,12 @@ def trunc_at(string, delimiter, n=3):
     ----------
     Parameters
     
-    string:
-    delimiter:
-    n:
+    string: str
+    delimiter: str
+    n: int
 
     ----------
     Returns
-
 
     """
 
@@ -105,16 +101,13 @@ def get_files(path, filename):
     ----------
     Parameters
 
-    path: string
-    filename: string 
-    
-    
+    path: str
+    filename: str 
     
     ----------
     Returns
 
-    return_files:
-
+    return_files: list
 
     """
 
@@ -136,11 +129,10 @@ def get_pdf_max(data):
 
     data: np.array
     
-    
     ----------
     Returns
 
-    result
+    result: float
 
     """
 
@@ -158,8 +150,7 @@ def check_directory(directory):
     ----------
     Parameters
     
-    directory: string 
-    
+    directory: str 
     
     """
     if not os.path.exists(directory):
@@ -168,20 +159,18 @@ def check_directory(directory):
 
 def get_percentiles(data_dict, percentile_list):
     """ Get percentiles from each entry in data_dict specified in
-    percentile_list. Returns a dictionary with the results.
+    percentile_list.
     
     ----------
     Parameters
     
-    data_dict:dict
+    data_dict: dictionary
     percentile_list: list 
-    
-    
     
     ----------
     Returns
 
-    percentile_dict:
+    percentile_dict: dictionary
 
     """
 

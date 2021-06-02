@@ -42,7 +42,6 @@ def plot_windrose(inFF,inDD, num_bars = 10, ax = None, left_legend = False):
     10 degree classes for directional data. The representation of the windrose 
     in this function is more detailed than in plot_DWD_windrose().
    
-
     ----------
     Parameters
     
@@ -169,7 +168,6 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
 
     ----------
     Parameters
-    
     
     inFF:  np.array
     inDD:  np.array
@@ -339,7 +337,6 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
     
-    
     ----------
     Returns
 
@@ -379,7 +376,6 @@ def plot_cdfs(sets, lablist, ax=None, **kwargs):
     lablist: list of strings
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
-    
     
     ----------
     Returns
