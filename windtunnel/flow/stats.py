@@ -3,6 +3,7 @@
 """ Statistical and calculation tools for boundary layer analysis.
 """
 
+from os import ttyname
 import numpy as np
 import scipy.stats as sc
 import math as m
@@ -155,7 +156,7 @@ def calc_wind_stats(u_comp,v_comp,wdir=0.):
     data: np.array
     """
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+    mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))
     u = u_comp[mask]
     v = v_comp[mask]
@@ -229,18 +230,18 @@ def calc_turb_data(u_comp,v_comp):
 
     """ 
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+    mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))    
     u = np.asarray(u_comp[mask])
     v = np.asarray(v_comp[mask])
     
-    M = np.mean(np.sqrt(u_comp**2 +v_comp**2))
+    M = np.mean(np.sqrt(u**2 +v**2))
     u_mean = np.mean(u)
     v_mean = np.mean(v)
     u_dev = u - u_mean
     v_dev = v - v_mean
-    u_std = np.std(u_comp)
-    v_std = np.std(v_comp)
+    u_std = np.std(u)
+    v_std = np.std(v)
     ##  TURBULENCE INTENSITY
     I_u = u_std/np.mean(M)
     I_v = v_std/np.mean(M)
@@ -268,25 +269,27 @@ def calc_turb_data_wght(transit_time,u_comp,v_comp):
     data: np.array
 
     """    
-    mask = mask = np.logical_and(~np.isnan(u_comp),
-                          ~np.isnan(v_comp))    
+    
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(v_comp),
+                          ~np.isnan(transit_time))    
+    tt = transit_time[mask]
     u = u_comp[mask]
     v = v_comp[mask]
     
     # TODO: test ways of applying TT weighting to M
-    M = np.mean(np.sqrt(u_comp**2 +v_comp**2))
-    u_std = np.sqrt(wt.transit_time_weighted_var(transit_time,u))
-    v_std = np.sqrt(wt.transit_time_weighted_var(transit_time,v))
+    M = np.mean(np.sqrt(u**2 +v**2))
+    u_std = np.sqrt(wt.transit_time_weighted_var(tt,u))
+    v_std = np.sqrt(wt.transit_time_weighted_var(tt,v))
     # TURBULENCE INTENSITY
     I_u = u_std/np.mean(M)
     I_v = v_std/np.mean(M)
     # Fluxes
-    flux = wt.transit_time_weighted_flux(transit_time,u_comp,v_comp)
+    flux = wt.transit_time_weighted_flux(tt,u,v)
     
     data = np.array([I_u,I_v,flux])
     
     return data
-
 
 def calc_flux_autocorr(dt, u_comp, transit_time):
     """
@@ -401,7 +404,7 @@ def calc_lux_data(dt, u_comp):
         elif autc1 <= 0:
             break
 
-    Lux = abs(Lux * np.mean(u_comp) * dt)
+    Lux = abs(Lux * np.mean(u) * dt)
     return Lux
 
 def calc_lux_data_wght(transit_time, dt, u_comp):
@@ -424,9 +427,11 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
 
-    mask = np.where(~np.isnan(u_comp))
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(transit_time)) 
 
     u = u_comp[mask]
+    tt = transit_time[mask]
 
     initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
     if initial_guess >= len(u):
@@ -468,7 +473,7 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
         elif autc1 <= 0:
             break
 
-    Lux = abs(Lux * wt.transit_time_weighted_mean(transit_time, u_comp) * dt)
+    Lux = abs(Lux * wt.transit_time_weighted_mean(tt, u) * dt)
 
     return Lux
 
