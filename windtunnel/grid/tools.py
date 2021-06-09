@@ -18,7 +18,8 @@ __all__ = [
     'intersects',
     'get_metangle',
     'cost_func',
-    'optimize_grid'
+    'optimize_grid',
+    'rotate_via_numpy',
 ]
 
 class building():
@@ -27,9 +28,10 @@ class building():
     concentration experiment.
     """
 
-    def __init__(self, name, type, x, y, x_extent, y_extent, z_extent):
+    def __init__(self, name, type, x, y, x_extent, y_extent, z_extent,global_transform=0):
         self.name = name
         self.type = type
+        self.global_transform = global_transform
         self.x_pos = x
         self.y_pos = y
         self.x_extent = x_extent
@@ -38,10 +40,30 @@ class building():
 
         self.boundaries=[]
 
-        if type == 'rect':
+
+        if global_transform!=0:
+
+            self.coords = np.zeros([4,2])
+            self.coords[0][0] = x
+            self.coords[0][1] = y
+
+            self.coords[1][0] = x + x_extent
+            self.coords[1][1] = y
+
+            self.coords[2][0] = x + x_extent
+            self.coords[2][1] = y + y_extent
+
+            self.coords[3][0] = x
+            self.coords[3][1] = y + y_extent
+
+            self.coords_transformed = rotate_via_numpy(self.coords,self.global_transform)
+
+        if (type == 'rect') & (global_transform == 0):
             self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
                                             edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
-
+        else:
+            self.patch = patches.Polygon(self.coords_transformed,edgecolor='none',
+                                         linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
         self.calc_boundaries()
 
     def calc_boundaries(self):
@@ -50,15 +72,20 @@ class building():
         Returns
         -------
         '''
-        self.boundaries.append([[self.x_pos,self.y_pos],
-                                [self.x_pos+self.x_extent,self.y_pos]]) #lower
-        self.boundaries.append([[self.x_pos+self.x_extent,self.y_pos],
-                                [self.x_pos + self.x_extent, self.y_pos + self.y_extent]]) # right
-        self.boundaries.append([[self.x_pos + self.x_extent, self.y_pos + self.y_extent],
-                                [self.x_pos, self.y_pos + self.y_extent]])  # upper
-        self.boundaries.append([[self.x_pos, self.y_pos + self.y_extent],
-                                [self.x_pos, self.y_pos]])  # left
-
+        if self.global_transform==0:
+            self.boundaries.append([[self.x_pos,self.y_pos],
+                                    [self.x_pos+self.x_extent,self.y_pos]]) #lower
+            self.boundaries.append([[self.x_pos+self.x_extent,self.y_pos],
+                                    [self.x_pos + self.x_extent, self.y_pos + self.y_extent]]) # right
+            self.boundaries.append([[self.x_pos + self.x_extent, self.y_pos + self.y_extent],
+                                    [self.x_pos, self.y_pos + self.y_extent]])  # upper
+            self.boundaries.append([[self.x_pos, self.y_pos + self.y_extent],
+                                    [self.x_pos, self.y_pos]])  # left
+        else:
+            self.boundaries.append([self.coords_transformed[0, :], self.coords_transformed[1, :]])
+            self.boundaries.append([self.coords_transformed[1, :], self.coords_transformed[2, :]])
+            self.boundaries.append([self.coords_transformed[2, :], self.coords_transformed[3, :]])
+            self.boundaries.append([self.coords_transformed[3, :], self.coords_transformed[0, :]])
     def refresh_patches(self):
         if type == 'rect':
             self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
@@ -71,14 +98,14 @@ class configuration():
     Name    type(rect)  x_pos   y_pos   x_extent    y_extent    z_extent
     '''
 
-    def __init__(self,path):
-
+    def __init__(self,path,global_transform):
+        self.global_transform = global_transform
         self.buildings = []
         with open(path,'r') as file:
             for line in csv.reader(file,
                                    delimiter="\t"):  # You can also use delimiter="\t" rather than giving a dialect.
                 self.buildings.append(building(line[0], line[1], float(line[2]), float(line[3]), float(line[4]),
-                                                  float(line[5]), float(line[6])))
+                                                  float(line[5]), float(line[6]),global_transform))
 
         self.domain_extents = np.array([np.min([struct.x_pos for struct in self.buildings]) - 100,
                      np.max([struct.x_pos + struct.x_extent for struct in self.buildings]) + 100,
@@ -153,6 +180,12 @@ class configuration():
 
         x = np.outer(d, np.cos(np.radians(a)))-x_offset
         y = np.outer(d, np.sin(np.radians(a)))-y_offset
+
+        if self.global_transform != 0:
+            xy_transformed = rotate_via_numpy(np.stack([x, y]),self.global_transform)
+            x = xy_transformed[:,0]
+            y = xy_transformed[:,1]
+
         z,_ = np.meshgrid(z,z)
         x=np.diag(x)
         y=np.diag(y)
@@ -347,3 +380,20 @@ def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     path = solve_tsp(dist_all, endpoints=(0, None))
 
     return points[path]
+
+def rotate_via_numpy(xy, angle):
+    """Use numpy to build a rotation matrix and take the dot product."""
+    if len(xy.flatten())==2:
+        xy=[xy.astype(float)]
+    xy_tranformed = np.copy(xy)
+    radians = np.deg2rad(angle)
+    c, s = np.cos(radians), np.sin(radians)
+    j = np.matrix([[c, s], [-s, c]])
+
+    for i,point in enumerate(xy):
+        m = np.dot(j, [point[0], point[1]])
+        x_trans = m.T[0]
+        y_trans = m.T[1]
+        xy_tranformed[i] = np.stack([float(x_trans),float(y_trans)])
+
+    return xy_tranformed
