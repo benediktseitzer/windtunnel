@@ -41,6 +41,9 @@ Use the terminal or an Anaconda Prompt for the following steps:
 
 For more information follow:
 https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file    
+
+When using the Anaconda Navigator go to 'Environments' and then chose 'Import'.
+There enter a new environment name and select the environment.yml as the 'Specification File'.
 #### 1.3. Linux and MacOs
 You can pip install all the packages by simply typing:
 ```sh
