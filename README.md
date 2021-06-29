@@ -23,8 +23,24 @@ To set up the windtunnel-package, simply place it in a directory of your choice.
 The listed versions represent minimum requirements.
 
 #### 1.2. Windows
-Simon, gibts da was besonderes zu beachten?
+Use the terminal or an Anaconda Prompt for the following steps:
 
+    Create the environment from the environment.yml file:
+
+    conda env create -f environment.yml
+
+    The first line of the yml file sets the new environment's name. For details see Creating an environment file manually.
+
+    Activate the new environment: conda activate myenv
+
+    Verify that the new environment was installed correctly:
+
+    conda env list
+
+    You can also use conda info --envs.
+
+For more information follow:
+https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file    
 #### 1.3. Linux and MacOs
 You can pip install all the packages by simply typing:
 ```sh
