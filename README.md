@@ -43,7 +43,14 @@ For more information follow:
 https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file    
 
 When using the Anaconda Navigator go to 'Environments' and then chose 'Import'.
+
 There enter a new environment name and select the environment.yml as the 'Specification File'.
+
+This new python environment then has to be selected in your IDE (e.g. Spyder or Pycharm). For these two IDEs a link is attached.
+
+(Spyder: https://docs.spyder-ide.org/current/faq.html#using-existing-environment)
+
+(PyCharm: https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html#conda-requirements)
 #### 1.3. Linux and MacOs
 You can pip install all the packages by simply typing:
 ```sh
