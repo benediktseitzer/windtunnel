@@ -586,7 +586,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         
     return ret
 
-def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
+def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing, uv_aliasing, 
                  wind_comps, height, ref_path=None,
                  ax=None, **kwargs):
     """Plots spectra using INPUT with reference data.
@@ -597,8 +597,10 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
     f_sm: array like
     S_uu_sm: array like        
     S_vv_sm: array like
+    S_vv_sm: array like
     u_aliasing: integer
     v_aliasing: integer
+    uv_aliasing: integer
     wind_comps: list
     height: float
     ref_path: string
