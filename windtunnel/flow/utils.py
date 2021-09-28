@@ -21,8 +21,80 @@ __all__ = [
     'transit_time_weighted_flux',
     'calc_theo_arrival_law',
     'calc_arrival_law',
-    'calc_transit_time_distribution'
+    'calc_transit_time_distribution',
+    'NewVDI_referncecalculation',
+    'NewVDI_refernceplots'
 ]
+
+
+def NewVDI_referncecalculation():
+    Kappa = 0.4
+    zref = 10
+    d0 = 0
+    Uref = 5
+    z0 = np.array([0.00001, 0.005, 0.1, 0.5, 2])
+    
+    Ustar = ((Uref * Kappa)/np.log((zref-d0)/z0))
+    
+    
+    
+    tm = 3600
+    Ave = 0.18
+    Av = 1
+    fu = 2.4
+    fv = 2
+    fw = 1.3
+
+    z = np.arange(20, 145, 5)
+    
+    Iu = []
+    Iv = []
+    Iw = []
+    
+
+    
+    for i in range(1, len(z0)):
+       
+        
+        Sigmau=Av*fu*Ustar[i]
+    
+        Sigmav=Av*fv*Ustar[i]
+    
+        Sigmaw=Av*fw*Ustar[i]
+        
+        U = (Ustar[i]/Kappa)*np.log((z-d0)/z0[i])
+        
+        Iu.append(Sigmau/U)
+        Iv.append(Sigmav/U)
+        Iw.append(Sigmaw/U)
+        
+        
+        
+    return z, Iu, Iv, Iw
+
+def NewVDI_refernceplots(z, Iu, Iv, Iw):
+    z0 = np.array([0.005, 0.1, 0.5, 2])
+    components = ['Iu', 'Iv' , 'Iw']
+    
+    for j,I in enumerate([Iu, Iv, Iw]):
+        
+        
+        fig, ax = plt.subplots()
+        
+        for i, I_z0 in enumerate(I):
+            ax.plot(I_z0, z,linewidth=0.5, ls='-', label = '$z_{0}$ = '+ str(z0[i]))
+            
+            
+        ax.legend()
+        ax.set_xlabel('Turbulence Intensity ' + components[j])
+        ax.set_ylabel('z (m) ')
+        
+            
+
+
+z, Iu, Iv, Iw = NewVDI_referncecalculation()
+
+NewVDI_refernceplots(z, Iu, Iv, Iw)
 
 def get_lux_referencedata(ref_path=None):
     """Reads and returns reference data for the integral length scale (Lux).
