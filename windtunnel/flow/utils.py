@@ -7,7 +7,7 @@ import logging
 import scipy.stats as sc
 from math import e
 from scipy.optimize import curve_fit
-
+import matplotlib.pyplot as plt
 import windtunnel as wt
 
 logger = logging.getLogger()
@@ -22,12 +22,23 @@ __all__ = [
     'calc_theo_arrival_law',
     'calc_arrival_law',
     'calc_transit_time_distribution',
-    'NewVDI_referncecalculation',
-    'NewVDI_refernceplots'
+    'get_turb_reference_values',
 ]
 
 
-def NewVDI_referncecalculation():
+def get_turb_reference_values():
+    """Calculates and returns the new VDI reference data for the turbulence intensity of
+    component.
+
+    ----------
+    Returns
+
+    z: np.array
+    I_u: np.array
+    I_v: np.array
+    I_w: np.array
+
+    """
     Kappa = 0.4
     zref = 10
     d0 = 0
@@ -35,9 +46,7 @@ def NewVDI_referncecalculation():
     z0 = np.array([0.00001, 0.005, 0.1, 0.5, 2])
     
     Ustar = ((Uref * Kappa)/np.log((zref-d0)/z0))
-    
-    
-    
+
     tm = 3600
     Ave = 0.18
     Av = 1
@@ -45,7 +54,7 @@ def NewVDI_referncecalculation():
     fv = 2
     fw = 1.3
 
-    z = np.arange(20, 145, 5)
+    z = np.arange(20, 305, 5)
     
     Iu = []
     Iv = []
@@ -53,7 +62,7 @@ def NewVDI_referncecalculation():
     
 
     
-    for i in range(1, len(z0)):
+    for i in range(0, len(z0)-1):
        
         
         Sigmau=Av*fu*Ustar[i]
@@ -71,30 +80,6 @@ def NewVDI_referncecalculation():
         
         
     return z, Iu, Iv, Iw
-
-def NewVDI_refernceplots(z, Iu, Iv, Iw):
-    z0 = np.array([0.005, 0.1, 0.5, 2])
-    components = ['Iu', 'Iv' , 'Iw']
-    
-    for j,I in enumerate([Iu, Iv, Iw]):
-        
-        
-        fig, ax = plt.subplots()
-        
-        for i, I_z0 in enumerate(I):
-            ax.plot(I_z0, z,linewidth=0.5, ls='-', label = '$z_{0}$ = '+ str(z0[i]))
-            
-            
-        ax.legend()
-        ax.set_xlabel('Turbulence Intensity ' + components[j])
-        ax.set_ylabel('z (m) ')
-        
-            
-
-
-z, Iu, Iv, Iw = NewVDI_referncecalculation()
-
-NewVDI_refernceplots(z, Iu, Iv, Iw)
 
 def get_lux_referencedata(ref_path=None):
     """Reads and returns reference data for the integral length scale (Lux).
@@ -128,63 +113,6 @@ def get_lux_referencedata(ref_path=None):
 
     return Lux_10, Lux_1, Lux_01, Lux_001, Lux_obs_smooth, Lux_obs_rough
 
-def get_turb_referencedata(component, ref_path=None):
-    """Reads and returns the VDI reference data for the turbulence intensity of
-    component.
-
-    ----------
-    Parameters
-    
-    component: string 
-
-    ----------
-    Returns
-
-    I_u_slight: np.array
-    I_u_moderate: np.array
-    I_u_rough: np.array
-    I_u_very: np.array
-
-    """
-    if ref_path == None:
-        ref_path = '//ewtl2/work/_EWTL Software/Python/Reference data/'
-    ###  READ turbulence intensity - reference: VDI
-    if component == 'I_u':
-        I_u_slight = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=11,
-                                   skip_footer=367, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_u_moderate = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=41,
-                                     skip_footer=337, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_u_rough = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=69,
-                                  skip_footer=310, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_u_very = np.genfromtxt(ref_path + 'Iu_data.dat', skip_header=103,
-                                 skip_footer=269, usecols=(0, 1), unpack=True, encoding='latin1')
-
-        return I_u_slight, I_u_moderate, I_u_rough, I_u_very
-
-    if component == 'I_v':
-        I_v_slight = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=7,
-                                   skip_footer=40, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_v_moderate = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=20,
-                                     skip_footer=29, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_v_rough = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=31,
-                                  skip_footer=15, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_v_very = np.genfromtxt(ref_path + 'Iv_data.dat', skip_header=45,
-                                 skip_footer=0, usecols=(0, 1), unpack=True, encoding='latin1')
-
-        return I_v_slight, I_v_moderate, I_v_rough, I_v_very
-
-    if component == 'I_w':
-        I_w_slight = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=11,
-                                   skip_footer=347, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_w_moderate = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=37,
-                                     skip_footer=321, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_w_rough = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=63,
-                                  skip_footer=295, usecols=(0, 1), unpack=True, encoding='latin1')
-        I_w_very = np.genfromtxt(ref_path + 'Iw_data.dat', skip_header=89,
-                                 skip_footer=269, usecols=(0, 1), unpack=True, encoding='latin1')
-
-        return I_w_slight, I_w_moderate, I_w_rough, I_w_very
-
 def find_nearest(array, value):
     """ Finds nearest element of array to value.
 
@@ -205,7 +133,7 @@ def find_nearest(array, value):
     return array[idx]
 
 def get_reference_spectra(height, ref_path=None):
-    """ Get referemce spectra from pre-defined location.
+    """ Get reference spectra from pre-defined location.
     
     ----------
     Parameters
