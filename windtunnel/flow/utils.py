@@ -7,7 +7,6 @@ import logging
 import scipy.stats as sc
 from math import e
 from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 import windtunnel as wt
 
 logger = logging.getLogger()
