@@ -254,7 +254,6 @@ class Timeseries(pd.DataFrame):
         v_mask = np.abs(np.asarray(self.v) - np.mean(np.asarray(self.v))) < \
                  (std_mask*np.std(np.asarray(self.v)))
                  
-                 
         mask = np.logical_and(u_mask, v_mask)
         self.u = self.u[mask]
         self.v = self.v[mask]
@@ -262,7 +261,6 @@ class Timeseries(pd.DataFrame):
         self.v_eq = self.v_eq[mask]
         self.t_transit[mask==False] = np.nan
         self.t_arr[mask==False] = np.nan
-
 
         # Log outliers in console and to file
         logger.info('Outliers component 1: {} or {:.4f}%'.format(
@@ -317,7 +315,7 @@ class Timeseries(pd.DataFrame):
         self.t_transit = self.t_transit[mask]
         self.t_arr = self.t_arr[mask]
         self.t_eq = self.t_eq[mask]
-        
+
         # Log outliers in console and to file
         logger.info('Outliers component 1: {} or {:.4f}%'.format(
             np.size(np.where(~u_mask)),
