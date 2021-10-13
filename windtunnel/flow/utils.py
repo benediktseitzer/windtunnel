@@ -12,7 +12,6 @@ import windtunnel as wt
 logger = logging.getLogger()
 __all__ = [
     'get_lux_referencedata',
-    'get_turb_referencedata',
     'find_nearest',
     'get_reference_spectra',
     'transit_time_weighted_mean',
