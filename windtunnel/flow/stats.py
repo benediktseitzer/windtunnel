@@ -3,7 +3,6 @@
 """ Statistical and calculation tools for boundary layer analysis.
 """
 
-from os import ttyname
 import numpy as np
 import scipy.stats as sc
 import math as m

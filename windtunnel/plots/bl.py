@@ -20,7 +20,8 @@ __all__ = [
     'plot_lux',
     'plot_spectra',
     'plot_Re_independence',
-    'plot_repeat',    
+    'plot_repeat',
+    'turb_refernce_plot',
     'plot_convergence_test',
     'plot_convergence',
     'plot_JTFA_STFT',
@@ -224,23 +225,39 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
        ax = plt.gca()
 
     if lat == False:
-        slight,moderate,rough,very_rough = wt.get_turb_referencedata(component,
-                                                                     ref_path)
+        z,I_u,I_v,I_w = wt.get_turb_reference_values()
+
+    if component=='I_u':
+        slight = np.vstack([z,I_u[0]])
+        moderate = np.vstack([z,I_u[1]])
+        rough = np.vstack([z, I_u[2]])
+        very_rough = np.vstack([z, I_u[3]])
+    elif component == 'I_v':
+        slight = np.vstack([z,I_v[0]])
+        moderate = np.vstack([z,I_v[1]])
+        rough = np.vstack([z, I_v[2]])
+        very_rough = np.vstack([z, I_v[3]])
+    elif component == 'I_w':
+        slight = np.vstack([z,I_w[0]])
+        moderate = np.vstack([z,I_w[1]])
+        rough = np.vstack([z, I_w[2]])
+        very_rough = np.vstack([z, I_w[3]])
+
     ret = []
-    for turb_int, height in zip(data, heights):  
+    s = ax.plot(slight[1, :], slight[0, :], 'k-', linewidth=0.5,
+                label='VDI slightly rough (lower bound)')
+    m = ax.plot(moderate[1, :], moderate[0, :], 'k-', linewidth=0.5,
+                label='VDI moderately rough (lower bound)')
+    r = ax.plot(rough[1, :], rough[0, :], 'k-', linewidth=0.5,
+                label='VDI rough (lower bound)')
+    vr = ax.plot(very_rough[1, :], very_rough[0, :], 'k-', linewidth=0.5,
+                 label='VDI very rough (lower bound)')
+    for turb_int, height in zip(data, heights):
         if lat == False:
             l = ax.errorbar(turb_int,height,yerr=yerr,fmt='o',
                             color='dodgerblue',
                             label=r'turbulence intensity '+component,**kwargs)
-            s = ax.plot(slight[1,:],slight[0,:],'k-',linewidth=0.5,
-                         label='VDI slightly rough (lower bound)')
-            m = ax.plot(moderate[1,:],moderate[0,:],'k-',linewidth=0.5,
-                         label='VDI moderately rough (lower bound)')
-            r = ax.plot(rough[1,:],rough[0,:],'k-',linewidth=0.5,
-                         label='VDI rough (lower bound)')
-            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k-',linewidth=0.5,
-                          label='VDI very rough (lower bound)')
-            
+
             labels = [r'turbulence intensity '+component,
                       'VDI slightly rough (lower bound)',
                       'VDI moderately rough (lower bound)',
@@ -738,6 +755,22 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
     ax.grid(True)
 
     return h1, h2
+
+
+def turb_refernce_plot(z, Iu, Iv, Iw):
+    z0 = np.array([0.005, 0.1, 0.5, 2])
+    components = ['Iu', 'Iv', 'Iw']
+
+    for j, I in enumerate([Iu, Iv, Iw]):
+
+        fig, ax = plt.subplots()
+
+        for i, I_z0 in enumerate(I):
+            ax.plot(I_z0, z, linewidth=0.5, ls='-', label='$z_{0}$ = ' + str(z0[i]))
+
+        ax.legend()
+        ax.set_xlabel('Turbulence Intensity ' + components[j])
+        ax.set_ylabel('z (m) ')
 
 def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-
