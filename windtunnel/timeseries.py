@@ -314,7 +314,7 @@ class Timeseries(pd.DataFrame):
         self.v_eq = self.v_eq[mask]
         self.t_transit = self.t_transit[mask]
         self.t_arr = self.t_arr[mask]
-        self.t_eq = self.t_eq[mask]        
+        self.t_eq = self.t_eq[mask]
 
         # Log outliers in console and to file
         logger.info('Outliers component 1: {} or {:.4f}%'.format(
