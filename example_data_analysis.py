@@ -300,9 +300,7 @@ for name in namelist:
             plt.figure(files.index(file)+300)
             wt.plots.plot_hist(time_series[name][file].v)
             plt.savefig(plot_path + 'hist_v_' + file[:-4] + '.' + file_type)
-
-            
-            #edit 4/7/19: changed script to use dimensional wind values for calculating spectra to make sure that frequency is dimensionless
+            # calculate spectra using dimensional velocities
             spectra_data[name][file] = wt.calc_spectra(
                                                 time_series_eq[name][file].u_eq.dropna()*time_series_eq[name][file].wtref,
                                                 time_series_eq[name][file].v_eq.dropna()*time_series_eq[name][file].wtref,

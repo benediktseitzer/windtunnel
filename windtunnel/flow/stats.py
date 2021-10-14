@@ -544,7 +544,7 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
 
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp),t_eq[1]-t_eq[0])
-
+    
     ## FFT
     fft_u = np.fft.fft(u_comp)*1./np.size(u_comp)        #  normalized fft
     fft_v = np.fft.fft(v_comp)*1./np.size(v_comp) 
@@ -636,7 +636,7 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
     uv_aliasing = f_sm.size-9+np.hstack((np.where(
                                          np.diff(S_uv_sm[-10:])>=0.)[0],[9]))[0]
 
-    return f_sm,S_uu_sm,S_vv_sm,S_uv_sm,u_aliasing,v_aliasing,uv_aliasing
+    return f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing, uv_aliasing
 
 def calc_spectra_nc(u_comp, t_eq, height):
     """ Calculate dimensionless energy density spectra from an equidistant
