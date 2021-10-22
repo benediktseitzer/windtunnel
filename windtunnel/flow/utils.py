@@ -202,7 +202,7 @@ def transit_time_weighted_var(transit_time, component):
 
     transit_time_sum = np.sum(transit_time[~np.isnan(transit_time)])
 
-    tmp = (((component - np.mean(component)) ** 2) * \
+    tmp = (((component[~np.isnan(component)] - np.mean(component[~np.isnan(component)])) ** 2) * \
           (transit_time[~np.isnan(transit_time)])) / transit_time_sum
 
     weighted_var = np.sum(tmp)
