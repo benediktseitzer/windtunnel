@@ -226,32 +226,32 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
 
     if lat == False:
         z,I_u,I_v,I_w = wt.get_turb_reference_values()
+        if component=='I_u':
+            slight = np.vstack([z,I_u[0]])
+            moderate = np.vstack([z,I_u[1]])
+            rough = np.vstack([z, I_u[2]])
+            very_rough = np.vstack([z, I_u[3]])
+        elif component == 'I_v':
+            slight = np.vstack([z,I_v[0]])
+            moderate = np.vstack([z,I_v[1]])
+            rough = np.vstack([z, I_v[2]])
+            very_rough = np.vstack([z, I_v[3]])
+        elif component == 'I_w':
+            slight = np.vstack([z,I_w[0]])
+            moderate = np.vstack([z,I_w[1]])
+            rough = np.vstack([z, I_w[2]])
+            very_rough = np.vstack([z, I_w[3]])
 
-    if component=='I_u':
-        slight = np.vstack([z,I_u[0]])
-        moderate = np.vstack([z,I_u[1]])
-        rough = np.vstack([z, I_u[2]])
-        very_rough = np.vstack([z, I_u[3]])
-    elif component == 'I_v':
-        slight = np.vstack([z,I_v[0]])
-        moderate = np.vstack([z,I_v[1]])
-        rough = np.vstack([z, I_v[2]])
-        very_rough = np.vstack([z, I_v[3]])
-    elif component == 'I_w':
-        slight = np.vstack([z,I_w[0]])
-        moderate = np.vstack([z,I_w[1]])
-        rough = np.vstack([z, I_w[2]])
-        very_rough = np.vstack([z, I_w[3]])
+        s = ax.plot(slight[1, :], slight[0, :], 'k-', linewidth=0.5,
+                    label='VDI slightly rough (lower bound)')
+        m = ax.plot(moderate[1, :], moderate[0, :], 'k-', linewidth=0.5,
+                    label='VDI moderately rough (lower bound)')
+        r = ax.plot(rough[1, :], rough[0, :], 'k-', linewidth=0.5,
+                    label='VDI rough (lower bound)')
+        vr = ax.plot(very_rough[1, :], very_rough[0, :], 'k-', linewidth=0.5,
+                    label='VDI very rough (lower bound)')
 
     ret = []
-    s = ax.plot(slight[1, :], slight[0, :], 'k-', linewidth=0.5,
-                label='VDI slightly rough (lower bound)')
-    m = ax.plot(moderate[1, :], moderate[0, :], 'k-', linewidth=0.5,
-                label='VDI moderately rough (lower bound)')
-    r = ax.plot(rough[1, :], rough[0, :], 'k-', linewidth=0.5,
-                label='VDI rough (lower bound)')
-    vr = ax.plot(very_rough[1, :], very_rough[0, :], 'k-', linewidth=0.5,
-                 label='VDI very rough (lower bound)')
     for turb_int, height in zip(data, heights):
         if lat == False:
             l = ax.errorbar(turb_int,height,yerr=yerr,fmt='o',
@@ -603,7 +603,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         
     return ret
 
-def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing, uv_aliasing, 
+def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing, 
                  wind_comps, height, ref_path=None,
                  ax=None, **kwargs):
     """Plots spectra using INPUT with reference data.
@@ -670,7 +670,8 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing, uv_ali
                         facecolor=(0.6,0.6,1.),edgecolor='none',alpha=0.2,
                         label=r'reference range $ww$')
 
-    ax.set_xlim(xsmin,xsmax)
+    # ax.set_xlim(xsmin,xsmax)
+    ax.set_xlim(10**-3.,2.*10.**2.)
     ax.set_ylim([10**-6,10])
     ax.set_xlabel(r"$f\cdot z\cdot U^{-1}$")
     ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")

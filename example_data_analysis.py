@@ -325,12 +325,11 @@ for name in namelist:
             wt.plots.plot_spectra(spectra_data[name][file][0],
                                   spectra_data[name][file][1],
                                   spectra_data[name][file][2],
-                                  spectra_data[name][file][3],
                                   spectra_data[name][file][4],
                                   spectra_data[name][file][5],
-                                  spectra_data[name][file][6],
                                   wind_comps[name][file],
-                                  time_series[name][file].z,ref_path=ref_path)
+                                  time_series[name][file].z,
+                                  ref_path=ref_path)
             
             plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type)
             plt.close('all')
