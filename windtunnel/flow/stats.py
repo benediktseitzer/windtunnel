@@ -338,7 +338,6 @@ def calc_flux_autocorr(dt, u_comp, transit_time):
 
     return u_dev_acorr, ret_lag
 
-
 def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
     from an equidistant time series of the u component using time step dt.
@@ -713,46 +712,6 @@ def calc_spectra_nc(u_comp, t_eq, height):
         np.diff(S_uu_sm[-10:]) >= 0.)[0], [9]))[0]
 
     return f_sm, S_uu_sm, u_aliasing
-
-
-#    """ Calculate dimensionless energy density spectra from an equidistant 
-#    time series.
-#    @parameter: u_comp, type = np.array or list
-#    @parameter: v_comp, type = np.array or list
-#    @parameter: t_eq, type = np.array or list """
-#    ## FREQUENCY
-#    freq = np.fft.fftfreq(np.size(u_comp),t_eq[1]-t_eq[0])
-#
-#    ## FFT
-#    fft_u = np.fft.fft(u_comp)*1./np.size(u_comp)        #  normalized fft
-#    fft_v = np.fft.fft(v_comp)*1./np.size(v_comp) 
-#    uv_param = np.sqrt(fft_u * fft_v) # This is used in place of a true Fourier 
-#                                      # transform to calculate diagonal energy
-#    
-#    u_normalization_params = wt.calc_normalization_params(freq, fft_u, t_eq, 
-#                                                       height, 
-#                                                       np.nanmean(u_comp), 
-#                                                       np.std(u_comp), 
-#                                                       len(u_comp))
-#    v_normalization_params = wt.calc_normalization_params(freq, fft_v, t_eq, 
-#                                                       height, 
-#                                                       np.nanmean(v_comp), 
-#                                                       np.std(v_comp), 
-#                                                       len(v_comp))
-#    uv_normalization_params = wt.calc_normalization_params(freq, uv_param, 
-#                                                       t_eq, 
-#                                                       height, 
-#                                                       np.nanmean(
-#                                                       np.sqrt(v_comp*u_comp)), 
-#                                                       np.std(
-#                                                       np.sqrt(v_comp*u_comp)),
-#                                                       len(v_comp))
-#    
-#    return u_normalization_params[0],u_normalization_params[1],\
-#           v_normalization_params[1],uv_normalization_params[1],\
-#           u_normalization_params[2],v_normalization_params[2],\
-#           uv_normalization_params[2]
-
 
 def calc_ref_spectra(reduced_freq,a,b,c,d,e):
    """ Calculate dimensionless reference spectra. ???
