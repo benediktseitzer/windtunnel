@@ -1295,7 +1295,7 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
 
     return ret
 
-def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, ax=None):
+def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, z_val, ax=None):
     """ 
     Plots CWT-results as a contour-plot. 
     The Wavelet-Coefficients Wn(s,t) are plotted for each timestep in a defined range of scales. 
@@ -1307,6 +1307,7 @@ def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, ax=None):
     scale: array-like
     u_eq: array-like
     t_eq: array-like
+    z_val: float
     ax: axes object
 
     ----------
@@ -1318,7 +1319,7 @@ def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, ax=None):
     if ax is None:
         ax = plt.gca()
 
-    f_scale = y_val/(scale * np.mean(u_eq))
+    f_scale = z_val/(scale * np.mean(u_eq))
 
     im1 = ax.contour(t_eq,
                 f_scale, 
