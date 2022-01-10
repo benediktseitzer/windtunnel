@@ -31,7 +31,9 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
-    'calc_alpha_profile']
+    'calc_alpha_profile',
+    'calc_wavelet_transform'
+    ]
 
 def calc_intervalmean(indata,intervals,DD=False):    
     """ Calculates interval means of indata. If DD is set to True the means are 
@@ -1101,3 +1103,43 @@ def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_he
        print(alpha_top)  
        return alpha_top
 
+def calc_wavelet_transform(u_comp, t_eq, wavelet='morlet', omega_0=6., dj=1./8.):
+    """ Calculate the Continuous Wavelet Transform on the timeseries u_comp,
+    using either the morlet or the mexican hat-wavelet. 
+    The center frequency omega_0 as well as the scaling step dj should be chosen after a
+    proper investigation. Current values are standard values commonly used for turbulence studies.
+
+    ----------
+    Parameters
+
+    u_comp: array-like
+    t_eq: array-like 
+    wavelet: string
+    omega_0: float
+    
+    ----------
+    Returns
+
+    wave_coef: nxm-array
+    s: array-like
+
+    """    
+    # equidistant timestep and time interval
+    dt = t_eq[1]-t_eq[0]
+
+    # calculate scaling factor as Torrence and Compo (1997)
+    scale_0 = 1.*dt
+    # dj = 1./8.
+    J_scale = 1./dj * np.log2(len(t_eq)*dt/scale_0)
+    scale = scale_0*2.**(np.arange(0, J_scale, 1)*dj)
+
+    # center frequency
+    # omega_0 = 6.
+
+    # calculate CWT
+    if wavelet == 'morlet':
+        cwt_matr = signal.cwt(u_comp, signal.morlet2, scale, w=omega_0)
+    elif wavelet == 'mexican':
+        cwt_matr = signal.cwt(u_comp, signal.ricker, scale, w=omega_0)
+
+    return cwt_matr, scale
