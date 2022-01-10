@@ -1117,6 +1117,7 @@ def calc_wavelet_transform(u_comp, t_eq, wavelet='morlet', omega_0=6., dj=1./8.)
     t_eq: array-like 
     wavelet: string
     omega_0: float
+    dj: float
     
     ----------
     Returns
