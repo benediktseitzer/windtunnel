@@ -333,6 +333,32 @@ for name in namelist:
             
             plt.savefig(plot_path + 'spectra_' + file[:-4] + '.' + file_type)
             plt.close('all')
+
+            print('\n Start wavelet analysis for {}'.format(file))
+            wavelet, scale = wt.calc_wavelet_transform(time_series[name][file].u_eq,
+                                                    time_series[name][file].t_eq,
+                                                    wavelet='morlet')
+            # y_val = time_series[name][file].y-y_val_shift
+            y_val = time_series[name][file].z            
+            f_scale = y_val/(scale * np.mean(time_series[name][file].u_eq))
+
+            # plot wavelet transform
+            plt.figure(55)
+            plt.style.use('classic')    
+            wt.plots.plot_wavelet_transform(wavelet, 
+                                    scale, 
+                                    time_series[name][file].u_eq, 
+                                    time_series[name][file].t_eq,
+                                    y_val)
+
+            plt.savefig(plot_path +  'wavelet_analysis_' + file +  '.' + file_type,
+                        bbox_inches='tight', dpi=300)
+            print(' Saved plot to:'+ plot_path + 'wavelet_analysis_' + file +  '.' + file_type)
+            plt.close(55)
+            print(' Finished wavelet analysis for {}'.format(file))
+
+
+
     # Initiate lists for all quantitites
     x = []
     y = []
