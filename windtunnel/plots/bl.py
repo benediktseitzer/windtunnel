@@ -1297,7 +1297,8 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
 
 def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, ax=None):
     """ 
-    Plots transit-time distribution.
+    Plots CWT-results as a contour-plot. 
+    The Wavelet-Coefficients Wn(s,t) are plotted for each timestep in a defined range of scales. 
 
     ----------
     Parameters
