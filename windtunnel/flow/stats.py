@@ -7,6 +7,7 @@ import numpy as np
 import scipy.stats as sc
 import math as m
 from scipy.optimize import curve_fit
+from scipy import signal
 
 import windtunnel as wt
 
@@ -32,7 +33,7 @@ __all__ = [
     'calc_alpha',
     'calc_z0',
     'calc_alpha_profile',
-    'calc_wavelet_transform'
+    'calc_wavelet_transform',
     ]
 
 def calc_intervalmean(indata,intervals,DD=False):    
@@ -1129,12 +1130,8 @@ def calc_wavelet_transform(u_comp, t_eq, wavelet='morlet', omega_0=6., dj=1./8.)
 
     # calculate scaling factor as Torrence and Compo (1997)
     scale_0 = 1.*dt
-    # dj = 1./8.
     J_scale = 1./dj * np.log2(len(t_eq)*dt/scale_0)
     scale = scale_0*2.**(np.arange(0, J_scale, 1)*dj)
-
-    # center frequency
-    # omega_0 = 6.
 
     # calculate CWT
     if wavelet == 'morlet':
