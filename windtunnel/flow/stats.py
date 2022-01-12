@@ -1138,6 +1138,6 @@ def calc_wavelet_transform(u_comp, t_eq, wavelet='morlet', omega_0=6., dj=1./8.)
     if wavelet == 'morlet':
         cwt_matr = signal.cwt(u_comp, signal.morlet2, scale, w=omega_0)
     elif wavelet == 'mexican':
-        cwt_matr = signal.cwt(u_comp, signal.ricker, scale, a=omega_0)
+        cwt_matr = signal.cwt(u_comp, signal.ricker(points=100, a=omega_0), widths=scale)
 
     return cwt_matr, scale
