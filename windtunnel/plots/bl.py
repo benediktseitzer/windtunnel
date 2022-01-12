@@ -1324,12 +1324,12 @@ def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, z_val, ax=None):
     im1 = ax.contour(t_eq,
                 f_scale, 
                 np.abs(wavelet)**2. * np.std(u_eq)**-2.,
-                levels = 14,
+                levels = 15,
                 colors='gray')
     im2 = ax.contourf(t_eq,
                 f_scale, 
                 np.abs(wavelet)**2. * np.std(u_eq)**-2.,
-                levels = 14,
+                levels = 15,
                 cmap='YlGnBu')
     # plot cone of incidence
     pl1 = ax.plot(scale*2.**0.25,
