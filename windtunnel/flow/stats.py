@@ -1136,8 +1136,14 @@ def calc_wavelet_transform(u_comp, t_eq, wavelet='morlet', omega_0=6., dj=1./8.)
 
     # calculate CWT
     if wavelet == 'morlet':
-        cwt_matr = signal.cwt(u_comp, signal.morlet2, scale, w=omega_0)
+        cwt_matr = signal.cwt(u_comp, 
+                                signal.morlet2, 
+                                scale, 
+                                w=omega_0,
+                                dtype = 'complex128')
     elif wavelet == 'mexican':
-        cwt_matr = signal.cwt(u_comp, signal.ricker(points=100, a=omega_0), widths=scale)
+        cwt_matr = signal.cwt(u_comp, 
+                                signal.ricker, 
+                                widths=scale)
 
     return cwt_matr, scale
