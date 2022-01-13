@@ -1341,12 +1341,13 @@ def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, z_val, ax=None):
                 color='black',
                 linestyle='dashed')
     
-    plt.colorbar(im2, label=r'$|W_n(f,t)|^{2} \cdot \sigma_u^{-2}$ (-)')
+    # plt.colorbar(im2, label=r'$|W_n(f,t)|^{2} \cdot \sigma_u^{-2}$ (-)')
     ax.grid(True)
     ax.set_ylabel(r'$f \Delta y \cdot \overline{u}^{-1}$ (-)', fontsize=18)
     ax.set_xlabel(r'$t$ (s)', fontsize=18)
     ax.set_yscale('log')
-    ax.set_ylim(5*10**-3., 1.)
+    ax.set_box_aspect(0.5)    
+    ax.set_ylim(np.min(f_scale), 100.)
     ax.set_xlim(0., np.amax(t_eq))
 
     return im1, im2, pl1, pl2
