@@ -1341,9 +1341,10 @@ def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, z_val, ax=None):
                 color='black',
                 linestyle='dashed')
     
+    # if colorbar is wished:
     # plt.colorbar(im2, label=r'$|W_n(f,t)|^{2} \cdot \sigma_u^{-2}$ (-)')
     ax.grid(True)
-    ax.set_ylabel(r'$f \Delta y \cdot \overline{u}^{-1}$ (-)', fontsize=18)
+    ax.set_ylabel(r'$f z \cdot \overline{u}^{-1}$ (-)', fontsize=18)
     ax.set_xlabel(r'$t$ (s)', fontsize=18)
     ax.set_yscale('log')
     ax.set_box_aspect(0.5)    
