@@ -28,15 +28,16 @@ def find_block(indata, length, tolerance):
     """ Finds block of size length in indata. Tolerance allows some leeway.
     Returns array.
 
-    ----------
     Parameters
+    ----------
+    
 
     indata: np.array (1D)
     length: int
     tolerance: int 
 
-    ----------
     Returns
+    ----------
 
     block: int or float
     
@@ -54,15 +55,16 @@ def equ_dist_ts(arrival_time, eq_dist_array, data):
    original time series is used for the corresponding time of the equi-distant
    time series.
 
-    ----------
     Parameters
+    ----------
+    
    
     arrival_time: np.array
     eq_dist_array: np.array
     data: np.array
    
-    ----------
     Returns
+    ----------
 
     eq_dist_array: array
      
@@ -80,15 +82,15 @@ def trunc_at(string, delimiter, n=3):
     """ Returns string truncated at the n'th (3rd by default) occurrence of the
     delimiter.
     
-    ----------
     Parameters
+    ----------
     
     string: str
     delimiter: str
     n: int
 
-    ----------
     Returns
+    ----------
 
     """
 
@@ -98,14 +100,14 @@ def get_files(path, filename):
     """Finds files with filename in path as specified. Filename supports the
     Unix shell-style wildcards.
 
-    ----------
     Parameters
+    ----------
 
     path: str
     filename: str 
     
-    ----------
     Returns
+    ----------
 
     return_files: list
 
@@ -124,13 +126,13 @@ def get_files(path, filename):
 def get_pdf_max(data):
     """Finds maximum of the probability distribution of data.
     
-    ----------
     Parameters
+    ----------
 
     data: np.array
     
-    ----------
     Returns
+    ----------
 
     result: float
 
@@ -147,8 +149,8 @@ def get_pdf_max(data):
 def check_directory(directory):
     """ Checks if directory exists. If directory doesn't exist, it is created.
 
-    ----------
     Parameters
+    ----------
     
     directory: str 
     
@@ -161,14 +163,15 @@ def get_percentiles(data_dict, percentile_list):
     """ Get percentiles from each entry in data_dict specified in
     percentile_list.
     
-    ----------
     Parameters
+    ----------
     
     data_dict: dictionary
     percentile_list: list 
     
-    ----------
     Returns
+    ----------
+    
 
     percentile_dict: dictionary
 
