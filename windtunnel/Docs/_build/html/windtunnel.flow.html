@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>windtunnel.flow package &mdash; EWTL 1.009 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="windtunnel.grid package" href="windtunnel.grid.html" />
+    <link rel="prev" title="windtunnel.concentration package" href="windtunnel.concentration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EWTL
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="windtunnel.html">windtunnel package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="windtunnel.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">windtunnel.flow package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.flow.stats">windtunnel.flow.stats module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.flow.utils">windtunnel.flow.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.flow">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.grid.html">windtunnel.grid package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.plots.html">windtunnel.plots package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries">windtunnel.timeseries module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries_nc">windtunnel.timeseries_nc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.utils">windtunnel.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.plots.html">windtunnel.plots package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">windtunnel.flow package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.flow.stats">windtunnel.flow.stats module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.flow.utils">windtunnel.flow.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.flow">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.grid.html">windtunnel.grid package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EWTL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="windtunnel.html">windtunnel package</a> &raquo;</li>
+      <li>windtunnel.flow package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/windtunnel.flow.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="windtunnel-flow-package">
+<h1>windtunnel.flow package<a class="headerlink" href="#windtunnel-flow-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-windtunnel.flow.stats">
+<span id="windtunnel-flow-stats-module"></span><h2>windtunnel.flow.stats module<a class="headerlink" href="#module-windtunnel.flow.stats" title="Permalink to this headline"></a></h2>
+<p>Statistical and calculation tools for boundary layer analysis.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_acorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_acorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_acorr" title="Permalink to this definition"></a></dt>
+<dd><p>Full autocorrelation of time series for lags up to maxlags.
+&#64;parameter timeseries: np.array or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxlags</strong> (<em>int</em>) – </p></li>
+<li><p><strong>----------</strong> – </p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>autocorr</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_alpha">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BL_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_alpha" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the power law exponent alpha
+by fitting of the vertical profiles of the mean wind u_mean.
+There are two ways to pick the used data-points.
+Choose BL_height (the maximum height used to calculate alpha)
+Give array BL predifined by own script</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>BL_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>BL</strong> (<em>array like</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>alpha</strong> (<em>float</em>)</p></li>
+<li><p><strong>ref</strong> (<em>float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_alpha_profile">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_alpha_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_alpha_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate profile exponent alpha and roughness length z_0, and save data to excel file.
+Avaliable modes are ‘all’ (calculates profile between min_height and max_height), and
+‘seperate’, which calulates two profiles, one above and one below split_height.
+Setting minimum and maximum height to ‘None’ calculates profile to bottom and top of
+data respectively. All heights assumed in m full-scale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_mag</strong> (<em>np.asarry</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>float</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>z_ref</strong> (<em>flpat</em>) – </p></li>
+<li><p><strong>d_0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>mode='all'</strong> – </p></li>
+<li><p><strong>min_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>max_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>split_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>alpha_top</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_autocorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_autocorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_autocorr" title="Permalink to this definition"></a></dt>
+<dd><p>Autocorrelation of time series with lag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeseries</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>lag</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>autocorr</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_exceedance_prob">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_exceedance_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_exceedance_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates exceedance probability of threshold in data. Returns
+threshold and exceedance probability in percent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>threshold</strong> (<em>int</em>)</p></li>
+<li><p><strong>exceed_prob</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_flux_autocorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_flux_autocorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_flux_autocorr" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the velocity fluctuation autocorrelation as a function of time lag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>transit_time</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>u_dev_acorr</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>ret_lag</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_intervalmean">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_intervalmean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_intervalmean" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates interval means of indata. If DD is set to True the means are
+calculated for circular quantities. Returns a dictionary with
+intervals as keys. If intervals has length 1 the function returns an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indata</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>intervals</strong> (<em>list</em>) – </p></li>
+<li><p><strong>DD</strong> (<em>boolean</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>outdata</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_lux_data">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_lux_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_lux_data" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the integral length scale according to R. Fischer (2011)
+from an equidistant time series of the u component using time step dt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_eq</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Lux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_lux_data_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_lux_data_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_lux_data_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the integral length scale according to R. Fischer (2011)
+from an equidistant time series of the u component using time step dt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_eq</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Lux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_ref_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_ref_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_sm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_ref_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate dimensionless reference spectra using new VDI Guidlines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>a</strong> (<em>float</em>) – </p></li>
+<li><p><strong>a1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>a2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e2</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate dimensionless energy density spectra from an equidistant
+time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>t_eq</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_uu_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_vv_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_uv_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>u_aliasing</strong> (<em>array like</em>)</p></li>
+<li><p><strong>v_aliasing</strong> (<em>array like</em>)</p></li>
+<li><p><strong>uv_aliasing</strong> (<em>array like</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_stats">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Returns mean, standard deviation and variance of data in sets. If DD is
+true then the circular equivalents are calculated. TO BE USED WITH CAUTION</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>iterable set of data</em>) – </p></li>
+<li><p><strong>DD</strong> (<em>boolean</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>means</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>var</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>stds</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_turb_data">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_turb_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_turb_data" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate turbulence intensity and turbulent fluxes from equidistant
+times series of u and v components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_turb_data_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_turb_data_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_turb_data_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate turbulence intensity and turbulent fluxes from equidistant
+times series of u and v components using transit time weighted statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>u_compy</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_wind_stats">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_wind_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_wind_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate wind data from equidistant times series of u and
+v components. wdir is a reference wind direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>wdir</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_wind_stats_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_wind_stats_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_wind_stats_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate wind data from equidistant times series of u and
+v components. wdir is a reference wind direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> – </p></li>
+<li><p><strong>np.array</strong> (<em>type =</em>) – </p></li>
+<li><p><strong>u_comp</strong> – </p></li>
+<li><p><strong>np.array</strong> – </p></li>
+<li><p><strong>v_comp</strong> – </p></li>
+<li><p><strong>np.array</strong> – </p></li>
+<li><p><strong>wdir</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.calc_z0">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">calc_z0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.calc_z0" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the roughness length z0 and the power law exponent alpha
+by fitting of the vertical profiles of the mean wind u_mean.
+There are two ways to pick the used data-points.
+Choose sfc_height (the maximum height used to calculate z0)
+Give array sfc_layer predifined by own script (e.g. &lt;10% deviation
+in fluxes or visual estimation)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>sfc_layer</strong> (<em>array like</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>z0</strong> (<em>float</em>)</p></li>
+<li><p><strong>err</strong> (<em>float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.convergence_test">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">convergence_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_intervals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_stepsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.convergence_test" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a convergence test on non circular data by sequentially splitting the data into smaller fractions. The
+convergence test begins by calculating the total mean (1/1), then calculating the next smaller fractions (1/2) and
+so on (1/n). This continues until the max_num_intervals (default 100) or a minimum interval length (default 1000) is
+reached. If an overlap between the blocks is desired the calc_overlap flag should be set to True (is default). With
+the overlap active the blocks are overlapping each other. A maximum overlap of 1 (default) doesnt result in a
+complete overlap but rather a maximum overlap of 1 - overlap_stepsize (default 0.1) = 0.9.</p>
+<p>Returns a dictionary mean_vals. Each entry is named after its respective blocksize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>ndarray</em>) – </p></li>
+<li><p><strong>min_interval</strong> (<em>int</em>) – </p></li>
+<li><p><strong>max_num_intervals</strong> (<em>int</em>) – </p></li>
+<li><p><strong>calc_overlap</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>max_overlap</strong> (<em>float</em>) – </p></li>
+<li><p><strong>overlap_stepsize</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mean_vals</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.convergence_test_1">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">convergence_test_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.convergence_test_1" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a block-wise convergence test on non circular data using
+blocksize for the size of each increment. Returns a dictionary block_data.
+Each entry is named after its respective interval. blocksize’s default
+value is 100.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>blocksize</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>intervals</strong> (<em>int</em>)</p></li>
+<li><p><strong>block_data</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.convergence_test_2">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">convergence_test_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.convergence_test_2" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a block-wise convergence test on non circular data using
+blocksize for the size of each increment between intervals. Returns a
+dictionary block_data. Each entry is named after its respective interval.
+blocksize’s and interval’s default values are 100.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – </p></li>
+<li><p><strong>blocksize</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>intervals</strong> (<em>int</em>)</p></li>
+<li><p><strong>block_data</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.stats.power_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.stats.</span></span><span class="sig-name descname"><span class="pre">power_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.stats.power_law" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate power law profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>float</em>) – </p></li>
+<li><p><strong>height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>u_ref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>z_ref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-windtunnel.flow.utils">
+<span id="windtunnel-flow-utils-module"></span><h2>windtunnel.flow.utils module<a class="headerlink" href="#module-windtunnel.flow.utils" title="Permalink to this headline"></a></h2>
+<p>Utility functions for flow analysis.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.calc_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">calc_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.calc_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>calculate particle arrival law and fit the distribution.
+if exponential, there is temporally uniform seeding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_arr</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>data_rate</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>binscenters</strong> (<em>list or array</em>)</p></li>
+<li><p><strong>data_entries</strong> (<em>numpy object</em>)</p></li>
+<li><p><strong>popt</strong> (<em>array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.calc_theo_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">calc_theo_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.calc_theo_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>calculate theoretical particle arrival law.
+if exponential, there is temporally uniform seeding.
+Input parameters are the arrival times for each burst and the data rate of the measurement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_arr</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>data_rate</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>delta_t_arr</strong> (<em>array</em>)</p></li>
+<li><p><strong>particle_arrival_law</strong> (<em>array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.calc_transit_time_distribution">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">calc_transit_time_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.calc_transit_time_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>calculate particle arrival law.
+if exponential, there is temporally uniform seeding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transit_time</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.find_nearest">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">find_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.find_nearest" title="Permalink to this definition"></a></dt>
+<dd><p>Finds nearest element of array to value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>value</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array[idx]</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.get_lux_referencedata">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">get_lux_referencedata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.get_lux_referencedata" title="Permalink to this definition"></a></dt>
+<dd><p>Reads and returns reference data for the integral length scale (Lux).
+This function takes no parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>Lux_10</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_1</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_01</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_001</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_obs_smooth</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_obs_rough</strong> (<em>array-like</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.get_reference_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">get_reference_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.get_reference_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Get reference spectra from pre-defined location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>height</strong> (<em>int</em><em> or </em><em>float</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ref_specs</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.get_turb_reference_values">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">get_turb_reference_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.get_turb_reference_values" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates and returns the new VDI reference data for the turbulence intensity of
+component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>z</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_u</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_v</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_w</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.transit_time_weighted_flux">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.transit_time_weighted_flux" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate mean flux using transit time weighted statistics. Transit
+time weighting removes a possible bias towards higher wind velocities.
+Returns a mean weighted flux.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component_1</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component_2</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_flux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.transit_time_weighted_mean">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.transit_time_weighted_mean" title="Permalink to this definition"></a></dt>
+<dd><p>Weigh the flow component with its transit time through the
+measurement volume. This is analoguous to the processing of the raw
+data in the BSA software. Transit time weighting removes a possible
+bias towards higher wind velocities. Returns the weighted component mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_mean</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.utils.transit_time_weighted_var">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.utils.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.utils.transit_time_weighted_var" title="Permalink to this definition"></a></dt>
+<dd><p>Weigh the u and v component with its transit time through the
+measurement volume. This is analoguous to the processing of the raw
+data in the BSA software. Transit time weighting removes a possible
+bias towards higher wind velocities. Returns the weighted u and v
+component variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_var</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-windtunnel.flow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-windtunnel.flow" title="Permalink to this headline"></a></h2>
+<p>Created on Thu Nov 16 15:45:47 2017</p>
+<p>&#64;author: u300517</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_acorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_acorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_acorr" title="Permalink to this definition"></a></dt>
+<dd><p>Full autocorrelation of time series for lags up to maxlags.
+&#64;parameter timeseries: np.array or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxlags</strong> (<em>int</em>) – </p></li>
+<li><p><strong>----------</strong> – </p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>autocorr</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_alpha">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BL_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_alpha" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the power law exponent alpha
+by fitting of the vertical profiles of the mean wind u_mean.
+There are two ways to pick the used data-points.
+Choose BL_height (the maximum height used to calculate alpha)
+Give array BL predifined by own script</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>BL_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>BL</strong> (<em>array like</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>alpha</strong> (<em>float</em>)</p></li>
+<li><p><strong>ref</strong> (<em>float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_alpha_profile">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_alpha_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_alpha_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate profile exponent alpha and roughness length z_0, and save data to excel file.
+Avaliable modes are ‘all’ (calculates profile between min_height and max_height), and
+‘seperate’, which calulates two profiles, one above and one below split_height.
+Setting minimum and maximum height to ‘None’ calculates profile to bottom and top of
+data respectively. All heights assumed in m full-scale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_mag</strong> (<em>np.asarry</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>float</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>z_ref</strong> (<em>flpat</em>) – </p></li>
+<li><p><strong>d_0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>mode='all'</strong> – </p></li>
+<li><p><strong>min_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>max_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>split_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>alpha_top</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>calculate particle arrival law and fit the distribution.
+if exponential, there is temporally uniform seeding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_arr</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>data_rate</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>binscenters</strong> (<em>list or array</em>)</p></li>
+<li><p><strong>data_entries</strong> (<em>numpy object</em>)</p></li>
+<li><p><strong>popt</strong> (<em>array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_autocorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_autocorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_autocorr" title="Permalink to this definition"></a></dt>
+<dd><p>Autocorrelation of time series with lag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeseries</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>lag</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>autocorr</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_exceedance_prob">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_exceedance_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_exceedance_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates exceedance probability of threshold in data. Returns
+threshold and exceedance probability in percent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>threshold</strong> (<em>int</em>)</p></li>
+<li><p><strong>exceed_prob</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_flux_autocorr">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_flux_autocorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_flux_autocorr" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the velocity fluctuation autocorrelation as a function of time lag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>transit_time</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>u_dev_acorr</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>ret_lag</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_intervalmean">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_intervalmean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_intervalmean" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates interval means of indata. If DD is set to True the means are
+calculated for circular quantities. Returns a dictionary with
+intervals as keys. If intervals has length 1 the function returns an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indata</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>intervals</strong> (<em>list</em>) – </p></li>
+<li><p><strong>DD</strong> (<em>boolean</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>outdata</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_lux_data">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_lux_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_lux_data" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the integral length scale according to R. Fischer (2011)
+from an equidistant time series of the u component using time step dt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_eq</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Lux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_lux_data_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_lux_data_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_lux_data_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the integral length scale according to R. Fischer (2011)
+from an equidistant time series of the u component using time step dt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_eq</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Lux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_ref_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_ref_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_sm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_ref_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate dimensionless reference spectra using new VDI Guidlines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>a</strong> (<em>float</em>) – </p></li>
+<li><p><strong>a1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>a2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>b2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>c2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d2</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e1</strong> (<em>float</em>) – </p></li>
+<li><p><strong>e2</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate dimensionless energy density spectra from an equidistant
+time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>t_eq</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_uu_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_vv_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>S_uv_sm</strong> (<em>array like</em>)</p></li>
+<li><p><strong>u_aliasing</strong> (<em>array like</em>)</p></li>
+<li><p><strong>v_aliasing</strong> (<em>array like</em>)</p></li>
+<li><p><strong>uv_aliasing</strong> (<em>array like</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_stats">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Returns mean, standard deviation and variance of data in sets. If DD is
+true then the circular equivalents are calculated. TO BE USED WITH CAUTION</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>iterable set of data</em>) – </p></li>
+<li><p><strong>DD</strong> (<em>boolean</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>means</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>var</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>stds</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_theo_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_theo_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_theo_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>calculate theoretical particle arrival law.
+if exponential, there is temporally uniform seeding.
+Input parameters are the arrival times for each burst and the data rate of the measurement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_arr</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>data_rate</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>delta_t_arr</strong> (<em>array</em>)</p></li>
+<li><p><strong>particle_arrival_law</strong> (<em>array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_transit_time_distribution">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_transit_time_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_transit_time_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>calculate particle arrival law.
+if exponential, there is temporally uniform seeding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transit_time</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_turb_data">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_turb_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_turb_data" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate turbulence intensity and turbulent fluxes from equidistant
+times series of u and v components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_turb_data_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_turb_data_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_turb_data_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate turbulence intensity and turbulent fluxes from equidistant
+times series of u and v components using transit time weighted statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>u_compy</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_wind_stats">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_wind_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_wind_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate wind data from equidistant times series of u and
+v components. wdir is a reference wind direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>v_comp</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>wdir</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_wind_stats_wght">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_wind_stats_wght</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_wind_stats_wght" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate wind data from equidistant times series of u and
+v components. wdir is a reference wind direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> – </p></li>
+<li><p><strong>np.array</strong> (<em>type =</em>) – </p></li>
+<li><p><strong>u_comp</strong> – </p></li>
+<li><p><strong>np.array</strong> – </p></li>
+<li><p><strong>v_comp</strong> – </p></li>
+<li><p><strong>np.array</strong> – </p></li>
+<li><p><strong>wdir</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.calc_z0">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">calc_z0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.calc_z0" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the roughness length z0 and the power law exponent alpha
+by fitting of the vertical profiles of the mean wind u_mean.
+There are two ways to pick the used data-points.
+Choose sfc_height (the maximum height used to calculate z0)
+Give array sfc_layer predifined by own script (e.g. &lt;10% deviation
+in fluxes or visual estimation)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>sfc_layer</strong> (<em>array like</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>z0</strong> (<em>float</em>)</p></li>
+<li><p><strong>err</strong> (<em>float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.convergence_test">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">convergence_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_intervals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_stepsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.convergence_test" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a convergence test on non circular data by sequentially splitting the data into smaller fractions. The
+convergence test begins by calculating the total mean (1/1), then calculating the next smaller fractions (1/2) and
+so on (1/n). This continues until the max_num_intervals (default 100) or a minimum interval length (default 1000) is
+reached. If an overlap between the blocks is desired the calc_overlap flag should be set to True (is default). With
+the overlap active the blocks are overlapping each other. A maximum overlap of 1 (default) doesnt result in a
+complete overlap but rather a maximum overlap of 1 - overlap_stepsize (default 0.1) = 0.9.</p>
+<p>Returns a dictionary mean_vals. Each entry is named after its respective blocksize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>ndarray</em>) – </p></li>
+<li><p><strong>min_interval</strong> (<em>int</em>) – </p></li>
+<li><p><strong>max_num_intervals</strong> (<em>int</em>) – </p></li>
+<li><p><strong>calc_overlap</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>max_overlap</strong> (<em>float</em>) – </p></li>
+<li><p><strong>overlap_stepsize</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mean_vals</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.convergence_test_1">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">convergence_test_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.convergence_test_1" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a block-wise convergence test on non circular data using
+blocksize for the size of each increment. Returns a dictionary block_data.
+Each entry is named after its respective interval. blocksize’s default
+value is 100.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>blocksize</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>intervals</strong> (<em>int</em>)</p></li>
+<li><p><strong>block_data</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.convergence_test_2">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">convergence_test_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.convergence_test_2" title="Permalink to this definition"></a></dt>
+<dd><p>Conducts a block-wise convergence test on non circular data using
+blocksize for the size of each increment between intervals. Returns a
+dictionary block_data. Each entry is named after its respective interval.
+blocksize’s and interval’s default values are 100.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em><em> or </em><em>list</em>) – </p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – </p></li>
+<li><p><strong>blocksize</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>intervals</strong> (<em>int</em>)</p></li>
+<li><p><strong>block_data</strong> (<em>int</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.find_nearest">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">find_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.find_nearest" title="Permalink to this definition"></a></dt>
+<dd><p>Finds nearest element of array to value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>value</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array[idx]</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.get_lux_referencedata">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">get_lux_referencedata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.get_lux_referencedata" title="Permalink to this definition"></a></dt>
+<dd><p>Reads and returns reference data for the integral length scale (Lux).
+This function takes no parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>Lux_10</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_1</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_01</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_001</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_obs_smooth</strong> (<em>array-like</em>)</p></li>
+<li><p><strong>Lux_obs_rough</strong> (<em>array-like</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.get_reference_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">get_reference_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.get_reference_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Get reference spectra from pre-defined location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>height</strong> (<em>int</em><em> or </em><em>float</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ref_specs</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.get_turb_reference_values">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">get_turb_reference_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.get_turb_reference_values" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates and returns the new VDI reference data for the turbulence intensity of
+component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>z</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_u</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_v</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>I_w</strong> (<em>np.array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.power_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">power_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.power_law" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate power law profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_comp</strong> (<em>float</em>) – </p></li>
+<li><p><strong>height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>u_ref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>z_ref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – </p></li>
+<li><p><strong>d0</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.transit_time_weighted_flux">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.transit_time_weighted_flux" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate mean flux using transit time weighted statistics. Transit
+time weighting removes a possible bias towards higher wind velocities.
+Returns a mean weighted flux.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component_1</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component_2</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_flux</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.transit_time_weighted_mean">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.transit_time_weighted_mean" title="Permalink to this definition"></a></dt>
+<dd><p>Weigh the flow component with its transit time through the
+measurement volume. This is analoguous to the processing of the raw
+data in the BSA software. Transit time weighting removes a possible
+bias towards higher wind velocities. Returns the weighted component mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_mean</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.flow.transit_time_weighted_var">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.flow.</span></span><span class="sig-name descname"><span class="pre">transit_time_weighted_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.flow.transit_time_weighted_var" title="Permalink to this definition"></a></dt>
+<dd><p>Weigh the u and v component with its transit time through the
+measurement volume. This is analoguous to the processing of the raw
+data in the BSA software. Transit time weighting removes a possible
+bias towards higher wind velocities. Returns the weighted u and v
+component variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transit_time</strong> (<em>np.arrray</em>) – </p></li>
+<li><p><strong>component</strong> (<em>np.arrray</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>weighted_var</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="windtunnel.concentration.html" class="btn btn-neutral float-left" title="windtunnel.concentration package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="windtunnel.grid.html" class="btn btn-neutral float-right" title="windtunnel.grid package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nikhil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
