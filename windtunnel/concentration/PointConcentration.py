@@ -22,8 +22,9 @@ class PointConcentration(pd.DataFrame):
     necessary to analyse the time series. All the information in a
     PointConcentration object can be saved to a txt file.
 
-    ----------
     Parameters
+    ----------
+    
     time: np.array
     wtref: np.array
     fast_FID: np.array
@@ -312,8 +313,9 @@ class PointConcentration(pd.DataFrame):
     def calc_model_mass_flow_rate(self):
         """ Calculate the model scale flow rate in [kg/s].
         
-        ----------
         Returns
+        ----------
+        
 
         self.mass_flow_rate: float 
         
@@ -331,8 +333,9 @@ class PointConcentration(pd.DataFrame):
     def calc_full_scale_flow_rate(self):
         """ Convert flow rate to full scale flow rate in [m^3/s].
         
-        ----------
         Returns
+        ----------
+        
 
         self.full_scale_flow_rate: float 
         
@@ -346,9 +349,9 @@ class PointConcentration(pd.DataFrame):
     def calc_non_dimensional_flow_rate(self):
         """ Convert flow rate to non-dimensional flow rate [-]. 
         
-        
-        ----------
         Returns
+        ----------
+        
 
         self.full_scale_flow_rate: float 
         
@@ -364,8 +367,9 @@ class PointConcentration(pd.DataFrame):
     def calc_net_concentration(self):
         """ Calculate net concentration in [ppmV]. 
         
-        ----------
         Returns
+        ----------
+        
 
         self.net_concentration: float 
 
@@ -379,8 +383,9 @@ class PointConcentration(pd.DataFrame):
     def calc_c_star(self):
         """ Calculate dimensionless concentration. [-] 
         
-        ----------
         Returns
+        ----------
+        
 
         self.c_star: float
         
@@ -395,8 +400,9 @@ class PointConcentration(pd.DataFrame):
     def calc_full_scale_concentration(self):
         """ Calculate full scale concentration in [ppmV].
         
-        ----------
         Returns
+        ----------
+        
 
         self.full_scale_concentration: float
 
@@ -411,9 +417,9 @@ class PointConcentration(pd.DataFrame):
     def calc_wtref_mean(self):
         """ Calculate scaled wtref mean in [m/s]. 
         
-        
-        ----------
         Returns
+        ----------
+        
 
         self.wtref_mean: float
         
@@ -427,8 +433,9 @@ class PointConcentration(pd.DataFrame):
     def calc_full_scale_time(self):
         """ Calculate full scale timesteps in [s].
         
-        ----------
         Returns
+        ----------
+        
 
         self.full_scale_time: float
         
@@ -451,8 +458,9 @@ class PointConcentration(pd.DataFrame):
     def calc_non_dimensional_time(self):
         """ Calculate non-dimensional time step [-].
         
-        ----------
         Returns
+        ----------
+        
 
         self.non_dimensional_time: float
         
@@ -488,16 +496,18 @@ class PointConcentration(pd.DataFrame):
     def plot_hist_conc(self,n_classes=None,var='net_concentration',path=None,name=None):
         """Creates a historgram point concentration, i.e. continuous release, data.
         
-        ----------
         Parameters
+        ----------
+        
         
         n_classe: int
         var: str
         path: str 
         name: str
 
-        ----------
         Returns
+        ----------
+        
 
         ret: axes object
 
@@ -596,8 +606,9 @@ class PointConcentration(pd.DataFrame):
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
          
-        ----------
         Parameters
+        ----------
+        
         
         filename: str
         out_dir: str
@@ -646,8 +657,10 @@ class PointConcentration(pd.DataFrame):
         """ Save full scale and model scale data from PointConcentration object
         to txt file. filename must include '.txt' ending. If no out_dir
         directory is provided './' is set as standard.
-        ----------
+        
         Parameters
+        ----------
+        
         
         filename: str
         out_dir: str
@@ -705,9 +718,10 @@ class PointConcentration(pd.DataFrame):
         """ Save non-dimensional data from PointConcentration object
         to txt file. filename must include '.txt' ending. If no out_dir
         directory is provided './' is set as standard.
-         
-        ----------
+        
         Parameters
+        ----------
+        
         
         filename: str
         out_dir: str
@@ -764,8 +778,9 @@ class PointConcentration(pd.DataFrame):
         PointConcentration object to txt file. filename must include '.txt'
         ending. If no out_dir directory is provided './' is set as standard.
         
-        ----------
         Parameters
+        ----------
+        
         
         filename: str
         out_dir: str
