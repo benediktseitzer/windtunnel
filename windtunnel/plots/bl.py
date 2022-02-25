@@ -34,8 +34,9 @@ __all__ = [
 def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
     """ Plot helper function to switch abscissa and ordinate.
 
-    ----------
     Parameters
+    ----------
+    
 
     x: array like
     y: array like
@@ -43,8 +44,9 @@ def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
 
@@ -69,8 +71,9 @@ def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
     components mean value are coloured in orange.
 
-    ----------
     Parameters
+    ----------
+    
 
     x: array like
     y: array like
@@ -78,8 +81,9 @@ def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     """
@@ -111,8 +115,9 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     statistics. All outliers outside of 5 STDs of the components mean value are
     coloured in orange, as default.
 
-    ----------
     Parameters
+    ----------
+    
 
     transit_time: array like
     x: array like
@@ -121,8 +126,9 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     """
@@ -158,14 +164,16 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
 def plot_hist(data,ax=None,**kwargs):
     """Creates a histogram for data.
 
-    ----------
     Parameters
+    ----------
+    
 
     data: array like
     ax: axis object
     
-    ----------
     Returns
+    ----------
+    
 
     ret: 
     """
@@ -203,8 +211,9 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     their respective height. yerr specifies the uncertainty. Its default value
     is 0. If lat is True then a lateral profile is created.
 
-    ----------
     Parameters
+    ----------
+    
 
     data: array like
     heights: array like
@@ -216,8 +225,9 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     """
@@ -292,9 +302,10 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
     the low point mean. yerr specifies the uncertainty. Its default value is 0.
     WARNING: Data must be made dimensionless before plotting! If lat is True 
     then a lateral profile is created.
-    ----------
+    
     Parameters
-
+    ----------
+    
     data: list or np.array
     heights: list or np.array
     yerr: float
@@ -304,8 +315,9 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
     ax: axis passed to function
     sfc_height: float
 
-    -------
     Returns
+    ----------
+    
 
     ret: list
     """
@@ -360,8 +372,10 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     a 10% range of the low point mean. yerr specifies the uncertainty. Its 
     default value is 0. WARNING: Data must be made dimensionless before 
     plotting!
-    ----------
+    
     Parameters
+    ----------
+    
 
     data: list or np.array
     heights: list or np.array
@@ -370,8 +384,9 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     ax: axis passed to function
     sfc_height: float
 
-    -------
     Returns
+    ----------
+    
 
     ret: list
     """
@@ -416,8 +431,9 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
     yerr specifies the uncertainty. Its default value is 0. If lat is True then
     a lateral profile is created.
     
-    ----------
     Parameters
+    ----------
+    
 
     mean_magnitude: array like
     u_mean: array like
@@ -429,8 +445,9 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: list of axes objects
     lgd: axes object
@@ -489,9 +506,9 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     """Plots wind components and wind magnitude for their respective height on
     a log scale. yerr specifies the uncertainty. Its default value is 0.
     
-    ----------
     Parameters
-
+    ----------
+    
     mean_magnitude: array like
     u_mean: array like
     v_mean: array like
@@ -500,8 +517,9 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: list of axes objects
     lgd: axes object
@@ -536,8 +554,9 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
     specifies the uncertainty. Its default value is 0. If lat
     is True then a lateral profile, without a loglog scale, is created.
 
-    ----------
     Parameters
+    ----------
+    
 
     Lux: array like
     heights: array like        
@@ -548,8 +567,9 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: list of axes objects
     """
@@ -608,8 +628,9 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
                  ax=None, **kwargs):
     """Plots spectra using INPUT with reference data.
 
-    ----------
     Parameters
+    ----------
+    
 
     f_sm: array like
     S_uu_sm: array like        
@@ -624,8 +645,9 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
     ax: axes object
     kwargs : arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     h1: axes object
     h2: axes object
@@ -641,15 +663,14 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
     # xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
     # xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
-    ref_specs = wt.get_reference_spectra(height,ref_path)
+    #ref_specs = wt.get_reference_spectra(height,ref_path)
     
     h1 = ax.loglog(f_sm[:u_aliasing],S_uu_sm[:u_aliasing],'ro',markersize=3,
                label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
     h2 = ax.loglog(f_sm[u_aliasing:],S_uu_sm[u_aliasing:],'ro',markersize=3,
                fillstyle='none')
     if 'u' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[0,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[1,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
                         label=r'reference range $uu$')
 
@@ -659,14 +680,12 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing,
               fillstyle='none')
      
     if 'v' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[2,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[3,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(0.6,0.6,1.),edgecolor='none',alpha=0.2,
                         label=r'reference range $vv$')
 
     if 'w' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[4,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[5,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(0.6,0.6,1.),edgecolor='none',alpha=0.2,
                         label=r'reference range $ww$')
 
@@ -684,8 +703,9 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
                  comp1_aliasing,comp2_aliasing,wind_comps, height, ref_path=None, set_limits=True):
     """Plots spectra using INPUT with reference data.
     
-    ----------
     Parameters
+    ----------
+    
 
     f_comp1_sm: array like
     f_comp2_sm: array like
@@ -698,8 +718,9 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
     ref_path: string
     set_limits: boolean
 
-    ----------
     Returns
+    ----------
+    
 
     h1: axes object
     h2: axes object
@@ -778,8 +799,9 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
     
-    ----------
     Parameters
+    ----------
+    
 
     data: array like
     wtref: array like
@@ -789,8 +811,9 @@ def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs)
     ax: axes object
     kwargs: arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: list
     """
@@ -824,8 +847,9 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
     
-    ----------
     Parameters
+    ----------
+    
 
     mean_magnitude: array like
     heights: array like
@@ -834,8 +858,9 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     ax: axes object
     kwargs: arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: list    
     """
@@ -866,8 +891,9 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
     scale are used to determine a dimensionless time unit on the x-axis. 
     Default values for each are 1.
     
-    ----------
     Parameters
+    ----------
+    
 
     data: array like
     wtref: float
@@ -878,8 +904,9 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
     ax: axes object
     kwargs: arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     handles: list    
     """
@@ -918,15 +945,17 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
     plot_convergence_test, such as wtref, ref_length and scale. See doc_string
     of plot_convergence_test for more details.
     
-    ----------
     Parameters
+    ----------
+    
 
     data_dict: dictionary
     ncols: integer
     kwargs: arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     axes: axes object 
     """
@@ -945,8 +974,9 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
     transform smoothed and raw for both wind components in one figure. Returns
     the figure. To change overlap.
     
-    ----------
     Parameters
+    ----------
+    
 
     u1: array like
     v1: array like
@@ -959,8 +989,9 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
     fixes_limits: array like
     ymax: float
 
-    ----------
     Returns
+    ----------
+    
 
     fig: figure object 
     """
@@ -1158,8 +1189,9 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
     """ Plots a detailed wind rose using only the perturbation component of
     the wind. Number of bars depends on bar_divider and length of u1.
     
-    ----------
     Parameters
+    ----------
+    
 
     u1: array like
     v1: array like
@@ -1200,8 +1232,9 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
     """ 
     Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
 
-    ----------
     Parameters
+    ----------
+    
 
     delta_t_arr: array like
     arrival_law: array like
@@ -1212,8 +1245,9 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
     ax: axes object
     kwargs: arbitrary
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     lgd: legend object
@@ -1269,15 +1303,17 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     """ 
     Plots transit-time distribution.
 
-    ----------
     Parameters
+    ----------
+    
 
     transit time: array like
     skew: float
     ax: axes object
 
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     """
