@@ -18,8 +18,8 @@ class Timeseries(pd.DataFrame):
     scale, making it equidistant and masking outliers. All the information in
     a Timeseries object can be saved to a txt file.
 
-    ----------
     Parameters
+    ----------
 
     u: np.array
     v: np.array
@@ -65,8 +65,8 @@ class Timeseries(pd.DataFrame):
         """ Return the x, y and z coordinate of the Timeseries object.
         
         
-        ----------
         Returns
+        ----------
 
         Timeseries
         
@@ -89,14 +89,16 @@ class Timeseries(pd.DataFrame):
     def from_file(cls,filename):
         """ Create Timeseries object from file.
         
-        ----------
         Parameters
+        ----------
+        
 
         cls: class
         filename: str
 
-        ----------
         Returns
+        ----------
+        
 
         ret: class
 
@@ -128,8 +130,8 @@ class Timeseries(pd.DataFrame):
         accesses only the one wtref value that is associated to the current
         file.
 
-        ----------
         Parameters
+        ----------
 
         path: string
         filename: string
@@ -153,8 +155,8 @@ class Timeseries(pd.DataFrame):
     def get_wind_comps(self,filename):
         """ Get wind components from filename.
         
-        ----------
         Parameters
+        ----------
         
         filename: string 
 
@@ -192,8 +194,8 @@ class Timeseries(pd.DataFrame):
     def adapt_scale(self,scale):
         """ Convert timeseries from model scale to full scale.
         
-        ----------
         Parameters
+        ----------
         
         scale: float
         
@@ -209,8 +211,8 @@ class Timeseries(pd.DataFrame):
     def rotate_coordinates(self,wdir):
         """Rotates u and v components according to wind direction
         
-        ----------
         Parameters
+        ----------
 
         wdir: float
 
@@ -237,8 +239,8 @@ class Timeseries(pd.DataFrame):
         threshold for a value to be considered an outlier. 5 is the default
         value for std_mask.
         
-        ----------
         Parameters
+        ----------
 
         std_mask: float
 
@@ -281,8 +283,8 @@ class Timeseries(pd.DataFrame):
         value for std_mask. This function uses time transit time weighted 
         statistics.
         
-        ----------
         Parameters
+        ----------
 
         std_mask: float
         
@@ -387,8 +389,8 @@ class Timeseries(pd.DataFrame):
     def set_tau(self, milliseconds):
         """ Give tau a new value 
         
-        ----------
         Parameters
+        ----------
 
         milliseconds: float
         
@@ -479,8 +481,8 @@ class Timeseries(pd.DataFrame):
         '.txt' ending. If no out_dir directory is provided
         'C:/Users/[your_u_number]/Desktop/LDA-Analysis/' is set as standard.
         
-        ----------
         Parameters
+        ----------
 
         filename: str
         out_dir: str
