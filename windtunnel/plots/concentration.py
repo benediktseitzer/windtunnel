@@ -15,8 +15,9 @@ def plot_boxplots(data_dict, ylabel=None, **kwargs):
     Plot statistics of concentration measurements in boxplots. Expects
     input from PointConcentration class.
     
-    ----------
     Parameters
+    ----------
+    
     
     data_dict: dictionary
     ylabel: string
