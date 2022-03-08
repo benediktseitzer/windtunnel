@@ -40,9 +40,6 @@ class building():
         self.y_extent = y_extent
         self.z_extent = z_extent # will be probably stay unused for a while (unless side views are needed)
         self.global_transform = global_transform
-        self.boundaries=[]
-        self.calc_boundaries(global_transform)
-
         if global_transform!=0:
 
             self.coords = np.zeros([4,2])
@@ -60,14 +57,16 @@ class building():
 
             self.coords_transformed = rotate_via_numpy(self.coords,self.global_transform)
 
+        self.boundaries=[]
+        self.calc_boundaries(global_transform)
+
         if type == 'rect':
             if global_transform==0:
                 self.patch = patches.Rectangle((self.x_pos, self.y_pos), 
                 self.x_extent, self.y_extent,edgecolor='none',linewidth=1.5, fill=1,
                 facecolor=[0,0,0,0.5],alpha=0.4)
             else:
-                self.patch = patches.Polygon(np.asarray
-                ([np.asarray((self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),
+                self.patch = patches.Polygon(self.coords_transformed,
                 True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
         elif type == 'cyld':
             self.patch = patches.Ellipse((self.x_pos,self.y_pos),self.x_extent,
@@ -101,8 +100,9 @@ class building():
                 self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
                                             edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
             else:
-                self.patch = patches.Polygon(np.asarray([np.asarray((
-                self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
+                self.patch = patches.Polygon(self.coords_transformed,
+                                             True, edgecolor='none', linewidth=1.5, fill=1, facecolor=[0, 0, 0, 0.5],
+                                             alpha=0.4)
         elif self.type == 'cyld':
             self.patch = patches.Ellipse((self.x_pos,self.y_pos),self.x_extent,self.y_extent,angle=self.global_transform,
                                          edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
@@ -121,13 +121,14 @@ class configuration():
         with open(path,'r') as file:
             for line in csv.reader(file,
                                    delimiter="\t"):  # You can also use delimiter="\t" rather than giving a dialect.
+                print(line)
                 self.buildings.append(building(line[0], line[1], float(line[2]), float(line[3]), float(line[4]),
                                                   float(line[5]), float(line[6]), global_angle))
 
-        self.domain_extents = np.array([np.min([struct.x_pos for struct in self.buildings]) - 100,
-                     np.max([struct.x_pos + struct.x_extent for struct in self.buildings]) + 100,
-                                      np.min([struct.y_pos for struct in self.buildings]) - 100,
-                                      np.max([struct.y_pos + struct.y_extent for struct in self.buildings]) + 100])
+        self.domain_extents = np.array([np.min([struct.x_pos for struct in self.buildings]) - 200,
+                     np.max([struct.x_pos + struct.x_extent for struct in self.buildings]) + 200,
+                                      np.min([struct.y_pos for struct in self.buildings]) - 200,
+                                      np.max([struct.y_pos + struct.y_extent for struct in self.buildings]) + 200])
 
     def plot_configuration(self,figure_size):
         '''
@@ -272,10 +273,8 @@ class configuration():
             z = z.astype(float)
 
         for building in self.buildings:
-            mask = (x + tolerance > building.x_og) & 
-            (x - tolerance < building.x_og+building.x_extent) & \
-                   (y + tolerance > building.y_og) & 
-                   (y - tolerance < building.y_og+building.y_extent) & \
+            mask = (x + tolerance > building.x_og) & (x - tolerance < building.x_og+building.x_extent) & \
+                   (y + tolerance > building.y_og) & (y - tolerance < building.y_og+building.y_extent) & \
                    (z < building.z_extent)
             x[mask] = np.nan
             y[mask] = np.nan
