@@ -798,11 +798,6 @@ def calc_ref_spectra(f_sm):
     
    
     """
-    # TODO: figure what's going on here
-    #e=e+0j
-
-    ##  REDUCED FREQUENCY (PLOT and reference spectra)
-    #reduced_freq = freq * height / np.mean(u_comp)
 
     a=37.61
     b=39.74
@@ -819,16 +814,12 @@ def calc_ref_spectra(f_sm):
     c2=1
     d2=5/3
     e2=1
-    #f = np.arange(0.001, 100, 0.001)
 
     Y=(a*f_sm)/((e+(b*(f_sm**c)))**d) #MAX
     X=(a1*f_sm)/((e1+(b1*(f_sm**c1)))**d1) #MIN
     Z=(a2*f_sm)/((e2+(b2*(f_sm**c2)))**d2) #USER DEFINED
 
     return [Y, X, Z]
-
-
-    #return a*reduced_freq/np.abs(e+b*reduced_freq**c)**d
 
 def convergence_test_1(data,blocksize=100):
     """ Conducts a block-wise convergence test on non circular data using 
