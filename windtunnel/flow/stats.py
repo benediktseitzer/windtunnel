@@ -780,7 +780,7 @@ def calc_spectra_nc(u_comp, t_eq, height):
 
 
 def calc_ref_spectra(f_sm):
-    """ Calculate dimensionless reference spectra using new VDI Guidlines.
+    """ Calculate dimensionless reference spectra using new VDI Guidelines.
 
     Parameters
     ----------
