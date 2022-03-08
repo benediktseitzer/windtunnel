@@ -25,19 +25,17 @@ class EnsembleAnalysis(pd.DataFrame):
 	DataFrame.to_excel(), or DataFrame.rolling().mean()) All the information in a
     PuffConcentration object can be saved to a txt file, as well as all
     file type offered by pandas.
-    @parameter: data, type = np.array"""
+
+    Parameters
+    ----------
+
+    data: np.array
+    
+    """
 
     def __init__(self,data):
         """ Initialise EnsembleAnalysis object. """
-		#edit 08/05/2019: new object, to facitilitate performing the ensemble analysis. Takes results
-		#from PointConcentration class as input. 
-        #edit 08/08/2019: added attributes ensemble_max, ensemble_mean, ensemble_var, and ensemble_std	
-        #edit 08/12/2019: added attributes class_width, n_classes, class_min, class_max, class_center
-        #edit 08/13/2019: added attribute n_classes_raw, class_freq, class_freq_norm
-		#edit 10/01/2019: added attributes x, y, z, scale, calibration_curve, calibration_factor,
-        #mass_flow_controller, ref_height, ref_length, scaling_factor, gas_factor, gas_name, mol_weight,
-        #temperature, standard_temp_K, and pressure
-        #edit 02/21/2020: added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.        
+		
         super().__init__()
 
         self.data = data		
@@ -110,19 +108,45 @@ class EnsembleAnalysis(pd.DataFrame):
 
     @classmethod
     def from_results(cls, data):
-        """ Create object from output of PuffConcentration."""
-		#edit 08/05/2019: new function, create object based on output of PuffConcentration.get_puff_statistics		
+        """ Create object from output of PuffConcentration.
+        
+        Returns
+        ----------
+        data:
+        
+        
+        
+        """
+			
 		
 		
         return cls(data)	
 		
     def ambient_conditions(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure, temperature, calibration_curve,
                            mass_flow_controller, calibration_factor=0):
-        """ Collect ambient conditions during measurement. pressure in [Pa],
-        temperature in [°C]. """
-        #edit 10/01/2019: new function, same as ambient_conditions in PuffConcentration.py,
-        #which collects ambient conditions during measurement. Pressure in [Pa]!	
-        #edit 02/21/2020: added handling of variables for source and measurement locations, added calcuation of distance variable (from calc_puff_statistics function)        
+        """ 
+        Collect ambient conditions during measurement. pressure in [Pa],
+        temperature in [°C].
+        
+        Parameters
+        ----------
+        
+
+
+        x_source: float
+        y_source: float 
+        z_source: float 
+        x_measure: float 
+        y_measure: float 
+        z_measure: float 
+        pressure: float 
+        temperature: float 
+        calibration_curve: float
+        mass_flow_controller: float 
+        calibration_factor: float
+        
+        """
+               
 
         self.x_source = x_source
         self.y_source = y_source
@@ -145,10 +169,22 @@ class EnsembleAnalysis(pd.DataFrame):
 
     def scaling_information(self, scaling_factor, scale, ref_length, ref_height):
         """ Collect data necessary to scale the results. unit: [m], where
-        applicable."""
-        #edit 10/01/2019: new function, same as scaling_information in PuffConcentration.py,
-        #which collects scaling data. Units (where applicable) is [m]	
+        applicable.
+        
+        Parameters
+        ----------
 
+
+        scaling_factor: float  
+        scale: float  
+        ref_length: float  
+        ref_height: float 
+        
+        
+        
+        
+        """
+       
         self.scaling_factor = scaling_factor
         self.scale = scale
         self.ref_length = ref_length
@@ -157,26 +193,42 @@ class EnsembleAnalysis(pd.DataFrame):
 
     def tracer_information(self, gas_name, mol_weight, gas_factor):
         """ Collect information on tracer gas used during measurement.
-        Molecular weight in [kg/mol]. """
-        #edit 10/01/2019: new function, same as tracer_information in PuffConcentration.py,
-        #which collects tracer information. Units (where applicable) is [m].		
+        Molecular weight in [kg/mol].
+        
+        Parameters
+        ----------
+        
+        
 
+        gas_name: str
+        mol_weight: float
+        gas_factor: float
+        
+        
+        """
+        
         self.gas_name = gas_name
         self.mol_weight = mol_weight
         self.gas_factor = gas_factor			
 		
     def convert_temperature(self):
         """ Convert ambient temperature to °K. """
-        #edit 09/19/2019: new function, based on convert_temperature in PointConcentration.py,
-        #which converts temperature, Also edited code to account for removal 
-        #of variable kelvin_temperature. 
+        
         self.temperature_K = self.temperature + 273.15
         self.standard_temp_K = self.standard_temp + 273.15		
 
     def get_ensembles(self,ensemble_size):
-        """Determine composition of the individual ensembles, based on ensemble size. Output is an array of indices for each
-		ensemble"""
-        #edit 08/05/2019: new function, determine the puff numbers that concinstute each individual ensemble, based on the given ensemble size.
+        """
+        Determine composition of the individual ensembles, based on ensemble size. Output is an array of indices for each
+        ensemble
+        
+        
+        Returns
+        ----------
+        puff_numbers: array-like
+        
+        """
+     
         
         if ensemble_size>np.size(self.data):
            print('Error: ensemble size greater than number of data points! Use smaller ensemble size and/or check the dataset. Also consider checking any thershold applying algorithms.')
@@ -197,11 +249,12 @@ class EnsembleAnalysis(pd.DataFrame):
         return puff_numbers
 			
     def get_ensemble_min(self):
-        """Calculate minimum value of each individual ensemble. Output is array of values, with the row denoting the ensemble
-		size, and the column the ensemble number"""
-        #edit 08/05/2019: new function, determine the minimum value for each ensemble.
-        #edit 08/08/2019: revised indexing algorithm, to ensure that correct minimum is written to the ensemble_min array
-		
+        """
+        Calculate minimum value of each individual ensemble. Output is array of values, with the row denoting the ensemble
+		size, and the column the ensemble number
+        
+        """
+        
         self.ensemble_min=np.zeros((np.size(self.data),np.shape(self.data)[0]))		
         for i in range(np.size(self.data)):
             if i<2:
@@ -211,9 +264,13 @@ class EnsembleAnalysis(pd.DataFrame):
                self.ensemble_min[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].min(axis=1)
 			   
     def get_ensemble_max(self):
-        """Calculate maximum value of each individual ensemble. Output is array of values, with the row denoting the ensemble
-		size, and the column the ensemble number"""
-        #edit 08/08/2019: new function, virtually the same as get_ensemble_min, but for maximum value of each ensemble
+        """
+        
+        Calculate maximum value of each individual ensemble. Output is array of values, with the row denoting the ensemble
+		size, and the column the ensemble number
+        
+        """
+        
 		
         self.ensemble_max=np.zeros((np.size(self.data),np.shape(self.data)[0]))		
         for i in range(np.size(self.data)):
@@ -224,9 +281,12 @@ class EnsembleAnalysis(pd.DataFrame):
                self.ensemble_max[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].max(axis=1)
 
     def get_ensemble_mean(self):
-        """Calculate mean value of each individual ensemble. Output is array of values, with the row denoting the ensemble size,
-		and the column the ensemble number"""
-        #edit 08/08/2019: new function, virtually the same as get_ensemble_min and get_ensemble_max, but for mean value of each ensemble
+        """
+        Calculate mean value of each individual ensemble. Output is array of values, with the row denoting the ensemble size,
+		and the column the ensemble number
+        
+        """
+       
 		
         self.ensemble_mean=np.zeros((np.size(self.data),np.shape(self.data)[0]))		
         for i in range(np.size(self.data)):
@@ -237,9 +297,12 @@ class EnsembleAnalysis(pd.DataFrame):
                self.ensemble_mean[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].mean(axis=1)	
 			   
     def get_ensemble_variance(self):
-        """Calculate mean value of each individual ensemble. Output is array of values, with the row denoting the ensemble size,
-		and the column the ensemble number"""
-        #edit 08/08/2019: new function, virtually the same as get_ensemble_min, get_ensemble_max, and get_ensemble_mean but for variance of each ensemble.
+        """
+        Calculate mean value of each individual ensemble. Output is array of values, with the row denoting the ensemble size,
+		and the column the ensemble number
+        
+        """
+        
 		
         self.ensemble_var=np.zeros((np.size(self.data),np.shape(self.data)[0]))		
         for i in range(np.size(self.data)):
@@ -252,7 +315,7 @@ class EnsembleAnalysis(pd.DataFrame):
     def get_ensemble_variance(self):
         """Calculate mean value of each individual ensemble. Output is array of values, with the row denoting the ensemble size,
 		and the column the ensemble number"""
-        #edit 08/08/2019: new function, virtually the same as get_ensemble_min, get_ensemble_max, and get_ensemble_mean but for variance of each ensemble.
+       
 		
         self.ensemble_std=np.zeros((np.size(self.data),np.shape(self.data)[0]))		
         for i in range(np.size(self.data)):
@@ -263,10 +326,28 @@ class EnsembleAnalysis(pd.DataFrame):
                self.ensemble_std[i,:]=np.matlib.repmat(self.data,np.shape(self.data)[0],1)[0,puff_numbers].std(axis=1)		
 			   
     def calc_n_classes(self,ensemble_size,n=None):
-        """Calculate number of classes, based on ensemble size. Method based on original C Program by Anne Philip."""
-        #edit 08/12/2019: new function, which calculates the number of classes for each ensemble size. Similar to subsection of CalculationAndWritingFrequencyDistribution
-        #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
+        """
+        
+        Calculate number of classes, based on ensemble size. 
+        Method based on original C Program by Anne Philip.
+        
+        Parameters
+        ----------
+        
+        
+        ensemble_size: int
+        n: int
 
+
+        Returns
+        ----------
+        
+
+        n_classes: int
+        
+        
+        """
+       
         if ensemble_size>np.size(self.data):
            print('Error: ensemble size greater than number of data points! Use smaller ensemble size and/or check the dataset. Also consider checking any thershold applying algorithms.')
            return 
@@ -286,12 +367,11 @@ class EnsembleAnalysis(pd.DataFrame):
         return n_classes		
 		
     def calc_class_width(self,n=None):
-        """Compute class width for each ensemble size and number"""
-        #edit 08/12/2019: new function, which calculates the width of the classes. Similar to subsection of CalculationAndWritingFrequencyDistribution
-        #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. 
-		#edit 08/13/2019: modified code to also save variable n_classes raw to dictionary. Note that n_classes actually represents twice the number of classes,
-		#and n_classes raw represents the actual number of classes. This confusing convention was taken directly from Anne Philip's original C program, and may
-		#be changed in the future upon consultation with Bernd Leitl and/or Frank Harms.    
+        """
+        Compute class width for each ensemble size and number
+        
+        """
+       
 		
         self.class_width=np.zeros(np.shape(self.ensemble_min))
         self.n_classes=np.zeros(np.shape(self.ensemble_min))
@@ -308,19 +388,18 @@ class EnsembleAnalysis(pd.DataFrame):
                for j in range(np.shape(self.ensemble_min)[1]):
                    #edit 08/13/2019: added multiplicative factor of 2 to class widhth, as in function mantioned above from Anne Philip's C program.  			   
                    self.class_width[i,j]=2*(self.ensemble_max[i,j]-self.ensemble_min[i,j])/self.n_classes[i,j]
-       
-				   				   
+       		   				   
     def calc_class_boundaries(self):
-        """Calculates boundaries of the classes as a function of ensemble size and number. Method based on original C Program by Anne Philip. Output is a 3d array of values, 
+        """
+        Calculates boundaries of the classes as a function of ensemble size and number. Method based on original C Program by Anne Philip. Output is a 3d array of values, 
 		with the 1st dimension denoting the ensemble size, the second dimension denoting the ensemble number, and the 
-		third dimension the class number"""
-		#edit 08/12/2019: new function, which computes the boundaries, and the center of each class, as a function of ensemble size and number. 
+		third dimension the class number
+        
+        """
+
 		#Similar to subsection of CalculationAndWritingFrequencyDistribution function from original C program written by Anne Philip.
 		#See Bachelor Thesis of Anne Philipp (2010) for more details. Requires calc_class_width to be called before calling function. 
-		#edit 08/13/2019: added error messages if n_classes is not an integer. Also changed code to iterate only to n_classes_raw instead of n_classes. This is because n_classes 
-		#actually represents twice the number of classes, and n_classes raw represents the actual number of classes. This confusing convention was taken directly from Anne Philip's
-		#original C program, and may be simplified in the future upon consultation with Bernd Leitl and/or Frank Harms.  
-		
+				
         if self.class_width is None:
            print('Error: class widths not found. Make sure that calc_class_width is called before calling calc_class_boundaries')
            return	
@@ -356,13 +435,14 @@ class EnsembleAnalysis(pd.DataFrame):
                        self.class_center[i,j,k]=(self.class_min[i,j,k]+self.class_max[i,j,k])/2 					   
 
     def get_class_frequency(self):
-        """Returns the number of data points inside the individual classes, based on the class boundaries calculated in calc_class_boundaries. Method based on original C Program 
+        """
+        Returns the number of data points inside the individual classes, based on the class boundaries calculated in calc_class_boundaries. Method based on original C Program 
 		by Anne Philip. Output is a 3d array of values, with the 1st dimension denoting the ensemble size, the second dimension denoting the ensemble number, and the 
 		third dimension the class number. As in Anne Philips program, the classes have closed intervals at the lower boundary, and open interval at the upper boundary, i.e. points on the class
-		boundary are assigned to the interval above the boundary."""
-		#edit 08/13/2019: new function, which returns the number of data points inside each class. Similar to subsection of CalculationAndWritingFrequencyDistribution
-        #function from original C program written by Anne Philip. See Bachelor Thesis of Anne Philipp (2010) for more details. Requires calc_class_boundaries and calc_class_width 
-		#to be called before calling function. 
+		boundary are assigned to the interval above the boundary.
+        
+        """
+		
 
         if self.class_width is None:
            print('Error: class widths not found. Make sure that calc_class_width is called before calling get_class_frequency')
@@ -407,11 +487,25 @@ class EnsembleAnalysis(pd.DataFrame):
 
     def calc_puff_statistics(self, x_source, y_source, z_source, x_measure, y_measure, z_measure, pressure,temperature,wtref,wdir):
         """ Performs basic statistical analysis (mean and standard deviation) of puffs as well as puff info. Similar to 
-        CalculatePuffStatistics in the original c program written by Anne Philip."""
-		#edit 08/08/2019: new function, similar to CalculatePuffStatistics in the original C program written by Anne Philip,
-		#which calculates basic statistical parameters of puff variables from output of get_puffs. See Bachelor Thesis of Anne 
-		#Philipp (2010) for more details. 
-        #edit 02/21/2020: added handling of variables for source and measurement locations, moved calculation of distance variable to ambient_conditions function       
+        CalculatePuffStatistics in the original c program written by Anne Philip.
+        
+        Parameters
+        ----------
+        
+
+
+        x_source: float
+        y_source: float 
+        z_source: float 
+        x_measure: float 
+        y_measure: float 
+        z_measure: float 
+        pressure: float
+        wtref: np.array
+        wdir: float
+        
+        """
+	   
         
         self.stat_mean = None	
         self.stat_std = None
@@ -448,18 +542,30 @@ class EnsembleAnalysis(pd.DataFrame):
         self.temperature = temperature
         self.wtref = wtref
         self.wdir = wdir	
-
-		
-		
-
-		
             
     def plot_convergence_ensemble(self,key=None,path=None,name=None,conv_step=1,full_scale=None):
-        """Plot convergence analysis of puff data based on the calculated ensemble means"""
-        #edit 08/08/2019: new function, plots convergence analysis of puff data. Requires get_ensemble_mean to be called before calling function. 
-		#Variable conv_step plots every conv_step ensemble numbers, default configuration plots all ensemble numbers.
-        #edit 09/23/2019: revisions to plot formatting, including larger figure, larger text, larger markers, and specified tickmark locations
-        #edit 01/28/2020: added support for non-dimensional data
+        """Plot convergence analysis of puff data based on the calculated ensemble means
+        
+
+        Parameters
+        ----------
+        
+
+        key: str
+        path: str
+        name: str
+        conv_step: int
+        full_scale: str
+
+
+        Return
+        ----------
+        
+        
+        ret: plt.object
+        
+        """
+       
         #TODO: add units, requires adding a unit attribute in the data dictionaries
  
         if self.ensemble_mean is None:
@@ -518,12 +624,27 @@ class EnsembleAnalysis(pd.DataFrame):
 
     def plot_class_statistics(self,key=None,path=None,name=None,full_scale=None): 		
 	
-        """Plot histogram of class frequencies, one for each ensemble size"""
-        #edit 08/13/2019: new function, plots histogram using the class analysis for all data. Uses normalized class frequencies, and creates one
-		#plot for each ensemble size. Requires get_class_frequency to be called before calling function.
-        #edit 09/18/2019: adjusted code to make sure data is properly plotted, formatted plots. Unable to specifiy title pad, presumably due to old matplotlib version.
-        #edit 09/23/2019: revisions to plot formatting, specifically a larger figure size
-        #edit 01/28/2020: added support for non-dimensional data         
+        """Plot histogram of class frequencies, one for each ensemble size
+        
+        Parameters
+        ----------
+        
+
+        key: str
+        path: str
+        name: str
+        full_scale: str
+
+
+        Return
+        ----------
+        
+        
+        ret: plt.object
+        
+        
+        """
+      
         #TODO: add units, requires adding a unit attribute in the data dictionaries
 
         if self.class_freq_norm is None:
@@ -584,15 +705,16 @@ class EnsembleAnalysis(pd.DataFrame):
         """ Save model scale data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-		#edit 10/01/2019: new function, similar to save2file_ms in PuffConcentration.py, saves model scale data to file, for (among other things),
-        #plotting the data in Tecplot. Generates a total of 2 different txt files, for convergence analysis data and class data.
-		#Note that data here is dimensional.
-        #edit 10/04/2019: added proper labeling of rows and columns in txt files to make them more readable. 	
-        #edit 10/07/2019: revmoved nan values, since these won't load properly in tecplot.
-		#edit 02/21/2020: added handling of variables for source and measurement locations, added recording of distance variable	
-        #edit 02/25/2020: added compatability with tecplot 
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir:str
+        
+        """
+		
         
         if key==None:
            print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		
@@ -679,9 +801,16 @@ class EnsembleAnalysis(pd.DataFrame):
         """ Save full scale data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-		#edit 02/25/2020: new function, similar to save2file_ms_ensemble, but for full scale data.
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir: str
+        
+        """
+		
         
         if key==None:
            print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		
@@ -768,9 +897,17 @@ class EnsembleAnalysis(pd.DataFrame):
         """ Save full scale data from PuffConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-		#edit 02/25/2020: new function, similar to save2file_ms_ensemble and save2file_fs_ensemble, but for non-dimensional data.
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir:str
+        
+        
+        """
+		
         
         if key==None:
            print('Error: Unspecified key. Unable to save convergence data and class data to file. Please specify key in input of save2file_ms_ensemble!')		

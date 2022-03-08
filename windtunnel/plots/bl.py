@@ -20,7 +20,8 @@ __all__ = [
     'plot_lux',
     'plot_spectra',
     'plot_Re_independence',
-    'plot_repeat',    
+    'plot_repeat',
+    'turb_refernce_plot',
     'plot_convergence_test',
     'plot_convergence',
     'plot_JTFA_STFT',
@@ -32,11 +33,23 @@ __all__ = [
 
 def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
     """ Plot helper function to switch abscissa and ordinate.
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: lat, type = boolean
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.errorbar()
+
+    Parameters
+    ----------
+    
+
+    x: array like
+    y: array like
+    lat: boolean
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: axes object
+
     """
     if ax is None:
         ax = plt.gca()
@@ -57,11 +70,22 @@ def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
 def plot_scatter(x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
     components mean value are coloured in orange.
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: std_mask, float
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.scatter()
+
+    Parameters
+    ----------
+    
+
+    x: array like
+    y: array like
+    std_mask: float
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: axes object
     """
     # Get current axis
     if ax is None:
@@ -90,12 +114,23 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     """Creates a scatter plot of x and y using time transit time weighted 
     statistics. All outliers outside of 5 STDs of the components mean value are
     coloured in orange, as default.
-    @parameter: transit_time, type = np.array
-    @parameter: x, type = list or np.array
-    @parameter: y, type = list or np.array
-    @parameter: std_mask, float
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.scatter()
+
+    Parameters
+    ----------
+    
+
+    transit_time: array like
+    x: array like
+    y: array like
+    std_mask: float
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: axes object
     """
     # Get current axis
     if ax is None:
@@ -127,12 +162,21 @@ def plot_scatter_wght(transit_time,x,y,std_mask=5.,ax=None,**kwargs):
     return ret
     
 def plot_hist(data,ax=None,**kwargs):
-    """Creates a scatter plot of x and y.
-    @parameter: data, type = list or np.array
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
-	#edit 08/01/2019: convert data from times series to array manually, to avoid
-    #compatibility issues with python 3.6 & pandas 0.24
+    """Creates a histogram for data.
+
+    Parameters
+    ----------
+    
+
+    data: array like
+    ax: axis object
+    
+    Returns
+    ----------
+    
+
+    ret: 
+    """
     
     # Get current axis
     if ax is None:
@@ -147,15 +191,15 @@ def plot_hist(data,ax=None,**kwargs):
     
     count = (count/np.size(data))*100.
     
-    # Plot
-    ret = ax.bar(bins[:-1],count,width = np.nanmean(np.diff(bins)))
+    # Plots bar-plot using np.histogram data
+    ret = ax.bar(bins[:-1],count,width = np.nanmean(np.diff(bins)), 
+            color='cornflowerblue')
     ticks=bins[:-1]+0.5*np.nanmean(np.diff(bins))
     ax.set_xticks(ticks.round(2))
     for tick in ax.get_xticklabels():
         tick.set_rotation(55)
     ax.set_xlim([ticks.min()-0.5*np.nanmean(np.diff(bins)),
               ticks.max()+0.5*np.nanmean(np.diff(bins))])
-           
     ax.set_ylabel('relative Frequency (%)')
     ax.grid('on')
     
@@ -166,35 +210,64 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     """ Plots turbulence intensities from data with VDI reference data for 
     their respective height. yerr specifies the uncertainty. Its default value
     is 0. If lat is True then a lateral profile is created.
-    @parameter: data, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: component, type = string
-    @parameter: lat, type = boolean
-    @parameter: ref_path, type = string
-    @parameter: ax, axis passed to function    
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    Parameters
+    ----------
+    
+
+    data: array like
+    heights: array like
+    yerr: float
+    component: string
+    var_lat: string, integer, float
+    lat: boolean
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: axes object
+    """
     if ax is None:
        ax = plt.gca()
 
     if lat == False:
-        slight,moderate,rough,very_rough = wt.get_turb_referencedata(component,
-                                                                     ref_path)
+        z,I_u,I_v,I_w = wt.get_turb_reference_values()
+        if component=='I_u':
+            slight = np.vstack([z,I_u[0]])
+            moderate = np.vstack([z,I_u[1]])
+            rough = np.vstack([z, I_u[2]])
+            very_rough = np.vstack([z, I_u[3]])
+        elif component == 'I_v':
+            slight = np.vstack([z,I_v[0]])
+            moderate = np.vstack([z,I_v[1]])
+            rough = np.vstack([z, I_v[2]])
+            very_rough = np.vstack([z, I_v[3]])
+        elif component == 'I_w':
+            slight = np.vstack([z,I_w[0]])
+            moderate = np.vstack([z,I_w[1]])
+            rough = np.vstack([z, I_w[2]])
+            very_rough = np.vstack([z, I_w[3]])
+
+        s = ax.plot(slight[1, :], slight[0, :], 'k-', linewidth=0.5,
+                    label='VDI slightly rough (lower bound)')
+        m = ax.plot(moderate[1, :], moderate[0, :], 'k-', linewidth=0.5,
+                    label='VDI moderately rough (lower bound)')
+        r = ax.plot(rough[1, :], rough[0, :], 'k-', linewidth=0.5,
+                    label='VDI rough (lower bound)')
+        vr = ax.plot(very_rough[1, :], very_rough[0, :], 'k-', linewidth=0.5,
+                    label='VDI very rough (lower bound)')
+
     ret = []
-    for turb_int, height in zip(data, heights):  
+    for turb_int, height in zip(data, heights):
         if lat == False:
             l = ax.errorbar(turb_int,height,yerr=yerr,fmt='o',
                             color='dodgerblue',
                             label=r'turbulence intensity '+component,**kwargs)
-            s = ax.plot(slight[1,:],slight[0,:],'k-',linewidth=0.5,
-                         label='VDI slightly rough (lower bound)')
-            m = ax.plot(moderate[1,:],moderate[0,:],'k-',linewidth=0.5,
-                         label='VDI moderately rough (lower bound)')
-            r = ax.plot(rough[1,:],rough[0,:],'k-',linewidth=0.5,
-                         label='VDI rough (lower bound)')
-            vr = ax.plot(very_rough[1,:],very_rough[0,:],'k-',linewidth=0.5,
-                          label='VDI very rough (lower bound)')
-            
+
             labels = [r'turbulence intensity '+component,
                       'VDI slightly rough (lower bound)',
                       'VDI moderately rough (lower bound)',
@@ -205,7 +278,7 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
                              color='dodgerblue', **kwargs)
             
 
-            labels = [r'turbulence intensity ' + component + '(-)']
+            labels = [r'turbulence intensity ' + component + ' (-)']
             
         ret.append(l)
         
@@ -213,13 +286,13 @@ def plot_turb_int(data,heights,yerr=0,component='I_u',var_lat=None,lat=False,
     if lat == False:
         ax.legend([l,s,m,r,vr],labels,bbox_to_anchor=(0.5, 1.04),loc=8,
                    fontsize=14)
-        ax.set_xlabel(r'turbulence intensity ' + component + '(-)')
+        ax.set_xlabel(r'turbulence intensity ' + component + ' (-)')
         ax.set_ylabel('z full-scale (m)')
     else:
         ax.legend([l],labels,bbox_to_anchor=(0.5, 1.04),loc=8,numpoints=1,
                                                                   fontsize=14)
         ax.set_xlabel(var_lat+' full-scale (m)')
-        ax.set_ylabel(r'turbulence intensity ' + component + '(-)')
+        ax.set_ylabel(r'turbulence intensity ' + component + ' (-)')
     
     return ret
 
@@ -229,9 +302,10 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
     the low point mean. yerr specifies the uncertainty. Its default value is 0.
     WARNING: Data must be made dimensionless before plotting! If lat is True 
     then a lateral profile is created.
-    ----------
+    
     Parameters
-
+    ----------
+    
     data: list or np.array
     heights: list or np.array
     yerr: float
@@ -241,8 +315,9 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
     ax: axis passed to function
     sfc_height: float
 
-    -------
     Returns
+    ----------
+    
 
     ret: list
     """
@@ -278,15 +353,15 @@ def plot_fluxes(data, heights, yerr=0, component='v', var_lat=None, lat=False,
                    edgecolor='none', alpha=0.2,
                    label='10% range of low point mean')
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ [-]$')
-        ax.set_ylabel('z full-scale [m]')
+        ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
+        ax.set_ylabel('z full-scale (m)')
         if np.nanmax(data)<0:
             ax.set_xlim([np.nanmin(data) * 1.1, 0])
         else:
             ax.set_xlim([np.nanmin(data) * 1.1, np.nanmax(data)*1.1])
     else:
         ax.legend([l],labels,loc='best',fontsize=16)
-        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot$ $U_{0}^{-2}\ (-)$')
+        ax.set_ylabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ $(-)$')
         ax.set_xlabel(var_lat+' full-scale (m)')
         
     return ret
@@ -297,8 +372,10 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     a 10% range of the low point mean. yerr specifies the uncertainty. Its 
     default value is 0. WARNING: Data must be made dimensionless before 
     plotting!
-    ----------
+    
     Parameters
+    ----------
+    
 
     data: list or np.array
     heights: list or np.array
@@ -307,8 +384,9 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     ax: axis passed to function
     sfc_height: float
 
-    -------
     Returns
+    ----------
+    
 
     ret: list
     """
@@ -337,9 +415,10 @@ def plot_fluxes_log(data, heights, yerr=0, component='v',
     ax.axvspan(xcen-xrange,xcen+xrange,facecolor='lightskyblue',
                 edgecolor='none', alpha=0.2,
                 label='10% range of low point mean')
-    ax.legend([l],labels,loc='best',fontsize=16)
-    ax.set_xlabel(r'u'' '+component+'\'$\cdot U_{0}^{-2}\ (-)$')
-    ax.set_ylabel('z full-scale (m)')
+    ax.legend([l],labels,loc='best',fontsize=16, numpoints=1)
+    ax.set_xlabel(r'u' + '\'' + component + '\' $\cdot u_{ref}^{-2}$ (-)')
+    ax.set_ylabel('$z$ (m)')
+    ax.set_ylim(4.,100.)
     if np.nanmax(data) < 0:
         ax.set_xlim([np.nanmin(data) * 1.1, 0])
     else:
@@ -351,14 +430,28 @@ def plot_winddata(mean_magnitude, u_mean, v_mean, heights, yerr=0, var_lat=None,
     """ Plots wind components and wind magnitude for their respective height.
     yerr specifies the uncertainty. Its default value is 0. If lat is True then
     a lateral profile is created.
-    @parameter: mean_magnitude, type = list or np.array
-    @parameter: u_mean, type = list or np.array
-    @parameter: v_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: lat, type = boolean
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    
+    Parameters
+    ----------
+    
+
+    mean_magnitude: array like
+    u_mean: array like
+    v_mean: array like
+    heights: array like        
+    yerr: float
+    var_lat: string, integer, float 
+    lat: boolean
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: list of axes objects
+    lgd: axes object
+    """
     if ax is None:
        ax = plt.gca()
 
@@ -412,13 +505,26 @@ def plot_winddata_log(mean_magnitude,u_mean,v_mean,heights,yerr=0,ax=None,
                       **kwargs):
     """Plots wind components and wind magnitude for their respective height on
     a log scale. yerr specifies the uncertainty. Its default value is 0.
-    @parameter: mean_magnitude, type = list or np.array
-    @parameter: u_mean, type = list or np.array
-    @parameter: v_mean, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: yerr, type = int or float
-    @parameter: ax, axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    
+    Parameters
+    ----------
+    
+    mean_magnitude: array like
+    u_mean: array like
+    v_mean: array like
+    heights: array like        
+    yerr: float
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: list of axes objects
+    lgd: axes object
+
+    """
     if ax is None:
        ax = plt.gca()
     
@@ -447,13 +553,26 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
     """Plots Lux data on a double logarithmic scale with reference data. yerr
     specifies the uncertainty. Its default value is 0. If lat
     is True then a lateral profile, without a loglog scale, is created.
-    @parameter: Lux, type = list or np.array
-    @parameter: heights, type = list or np.array
-    @parameter: err, type = int or float
-    @parameter: lat, type = boolean
-    @parameter: ref_path = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    Parameters
+    ----------
+    
+
+    Lux: array like
+    heights: array like        
+    err: float
+    var_lat: string, integer, float 
+    lat: boolean
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: list of axes objects
+    """
 	#edit 08/02/2019: moved labels to ax.plot, to ensure proper plotting of legend, and removing need for extra labels variable.
     if ax is None:
        ax = plt.gca()
@@ -464,7 +583,7 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
 
     ret = []
     if lat == False:
-        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='navy',label='wind tunnel')
+        Lux = ax.errorbar(Lux,heights,xerr=err,fmt='o',color='cornflowerblue',label='wind tunnel')
         ref1 = ax.plot(Lux_10[1,:],Lux_10[0,:],'k-',linewidth=1,label=r'$z_0=10\ m$ (theory)')
         ref2 = ax.plot(Lux_1[1,:],Lux_1[0,:],'k--',linewidth=1,label=r'$z_0=1\ m$ (theory)')
         ref3 = ax.plot(Lux_01[1,:],Lux_01[0,:],'k-.',linewidth=1,label=r'$z_0=0.1\ m$ (theory)')
@@ -485,12 +604,13 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         #ax.legend([Lux,ref1,ref2,ref3,ref4,ref5,ref6],labels,
                   #bbox_to_anchor=(0.5,1.05),loc='lower center',
                   #borderaxespad=0.,ncol=2,fontsize=16)
-        ax.legend(loc='upper center',bbox_to_anchor=(0.5,1.5),borderaxespad=0.,ncol=2,fontsize=12)
-        
+        # ax.legend(loc='upper center',bbox_to_anchor=(0.5,1.5),borderaxespad=0.,ncol=2,fontsize=12)
+        ax.legend(loc='upper left', numpoints=1)
+
         ax.set_xlim([10,1000])
         ax.set_ylim([min(heights),1000])
         ax.set_xlabel(r'$L_{u}^{x}$ full-scale (m)')
-        ax.set_ylabel(r'$z$ full-scale ([)m)')    
+        ax.set_ylabel(r'$z$ full-scale (m)')    
         
     else:
         Lux = ax.errorbar(heights,Lux,yerr=err,fmt='o',color='navy')
@@ -503,14 +623,38 @@ def plot_lux(Lux, heights, err=None, var_lat=None, lat=False, ref_path=None, ax=
         
     return ret
 
-def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
-                 uv_aliasing, wind_comps, height, ref_path=None,
+def plot_spectra(f_sm, S_uu_sm, S_vv_sm, u_aliasing, v_aliasing, 
+                 wind_comps, height, ref_path=None,
                  ax=None, **kwargs):
     """Plots spectra using INPUT with reference data.
-    @parameter: ???
-    @parameter: ref_path, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+
+    Parameters
+    ----------
+    
+
+    f_sm: array like
+    S_uu_sm: array like        
+    S_vv_sm: array like
+    S_vv_sm: array like
+    u_aliasing: integer
+    v_aliasing: integer
+    uv_aliasing: integer
+    wind_comps: list
+    height: float
+    ref_path: string
+    ax: axes object
+    kwargs : arbitrary
+
+    Returns
+    ----------
+    
+
+    h1: axes object
+    h2: axes object
+    h3: axes object
+    h4: axes object    
+    
+    """
     if ax is None:
         ax = plt.gca()
     
@@ -519,15 +663,14 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
     # xsmin = np.nanmin(10**-4,np.nanmin(f_sm[np.where(f_sm>0)]))
     # xsmax = np.nanmax(100,np.nanmax(f_sm[np.where(f_sm>0)]))
     ref_x = np.logspace(np.log10(xsmin),np.log10(xsmax),50)
-    ref_specs = wt.get_reference_spectra(height,ref_path)
+    #ref_specs = wt.get_reference_spectra(height,ref_path)
     
     h1 = ax.loglog(f_sm[:u_aliasing],S_uu_sm[:u_aliasing],'ro',markersize=3,
                label=r'wind tunnel $'+'{0}{0}'.format(wind_comps[0])+'$')
     h2 = ax.loglog(f_sm[u_aliasing:],S_uu_sm[u_aliasing:],'ro',markersize=3,
                fillstyle='none')
     if 'u' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[0,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[1,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(1.,0.6,0.6),edgecolor='none',alpha=0.2,
                         label=r'reference range $uu$')
 
@@ -537,18 +680,17 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
               fillstyle='none')
      
     if 'v' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[2,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[3,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(0.6,0.6,1.),edgecolor='none',alpha=0.2,
                         label=r'reference range $vv$')
 
     if 'w' in wind_comps:
-        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x,*ref_specs[4,:]),
-                        wt.calc_ref_spectra(ref_x,*ref_specs[5,:]),
+        ax.fill_between(ref_x,wt.calc_ref_spectra(ref_x)[0],wt.calc_ref_spectra(ref_x)[1],
                         facecolor=(0.6,0.6,1.),edgecolor='none',alpha=0.2,
                         label=r'reference range $ww$')
 
-    ax.set_xlim(xsmin,xsmax)
+    # ax.set_xlim(xsmin,xsmax)
+    ax.set_xlim(10**-3.,2.*10.**2.)
     ax.set_ylim([10**-6,10])
     ax.set_xlabel(r"$f\cdot z\cdot U^{-1}$")
     ax.set_ylabel(r"$f\cdot S_{ij}\cdot (\sigma_i\sigma_j)^{-1}$")
@@ -560,10 +702,29 @@ def plot_spectra(f_sm, S_uu_sm, S_vv_sm, S_uv_sm, u_aliasing, v_aliasing,
 def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
                  comp1_aliasing,comp2_aliasing,wind_comps, height, ref_path=None, set_limits=True):
     """Plots spectra using INPUT with reference data.
-    @parameter: ???
-    @parameter: ref_path, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot() """
+    
+    Parameters
+    ----------
+    
+
+    f_comp1_sm: array like
+    f_comp2_sm: array like
+    S_comp1_sm: array like        
+    S_comp2_sm: array like
+    comp1_aliasing: integer
+    comp2_aliasing: integer
+    wind_comps: list
+    height: float
+    ref_path: string
+    set_limits: boolean
+
+    Returns
+    ----------
+    
+
+    h1: axes object
+    h2: axes object
+    """
 
 
     f_sm = [f_comp1_sm,f_comp2_sm][np.argmin([np.nanmax(f_comp1_sm),np.nanmax(f_comp2_sm)])]
@@ -617,15 +778,45 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
 
     return h1, h2
 
+
+def turb_refernce_plot(z, Iu, Iv, Iw):
+    z0 = np.array([0.005, 0.1, 0.5, 2])
+    components = ['Iu', 'Iv', 'Iw']
+
+    for j, I in enumerate([Iu, Iv, Iw]):
+
+        fig, ax = plt.subplots()
+
+        for i, I_z0 in enumerate(I):
+            ax.plot(I_z0, z, linewidth=0.5, ls='-', label='$z_{0}$ = ' + str(z0[i]))
+
+        ax.legend()
+        ax.set_xlabel('Turbulence Intensity ' + components[j])
+        ax.set_ylabel('z (m) ')
+
 def plot_Re_independence(data,wtref,ymin=None,ymax=None,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Reynolds Number Independence test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
-    @parameter: data, type = np.array or list
-    @parameter: wtref, type = np.array or list
-    @parameter: yerr, type = int or float
-    @parameter: ax: axis passed to function
-    @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
+    
+    Parameters
+    ----------
+    
+
+    data: array like
+    wtref: array like
+    ymin: float
+    ymax: float
+    yerr: float
+    ax: axes object
+    kwargs: arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: list
+    """
     if ax is None:
         ax=plt.gca()
     if ymin is None:
@@ -655,11 +846,24 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     """ Plots the results for a Repeatability test from a non-
     dimensionalised timeseries. yerr specifies the uncertainty. Its default 
     value is 0.
-    @parameter: data, type = np.array or list
-    @parameter: wtref, type = np.array or list
-    @parameter: yerr, type = int or float
-    @parameter: ax: axis passed to function
-    @parameter: kwargs: additional keyword arguments passed to plt.plot()"""
+    
+    Parameters
+    ----------
+    
+
+    mean_magnitude: array like
+    heights: array like
+    wtref: array like
+    yerr: float
+    ax: axes object
+    kwargs: arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: list    
+    """
     if ax is None:
         ax=plt.gca()
 
@@ -677,7 +881,6 @@ def plot_repeat(mean_magnitude, heights, wtref,yerr=0,ax=None,**kwargs):
     ax.legend(labels,loc='lower right',fontsize=14)
     ax.grid(True)
    
-    
     return ret         
 
 def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',ax=None,
@@ -687,12 +890,26 @@ def plot_convergence_test(data,wtref=1,ref_length=1,scale=1,ylabel='',title='',a
     rest results using dictionaries as input objects. wtref, ref_length and 
     scale are used to determine a dimensionless time unit on the x-axis. 
     Default values for each are 1.
-    @parameter: data_dict, type = dictionary
-    @parameter: wtref, type = float or int
-    @parameter: ref_length, type = float or int
-    @parameter: scale, type = float or int
-    @parameter: ylabel, type = string
-    @parameter: ax: axis passed to function"""
+    
+    Parameters
+    ----------
+    
+
+    data: array like
+    wtref: float
+    ref_length: float
+    scale: float
+    ylabel: string
+    title: string
+    ax: axes object
+    kwargs: arbitrary
+
+    Returns
+    ----------
+    
+
+    handles: list    
+    """
 
     if ax is None:
         ax = plt.gca()
@@ -727,9 +944,21 @@ def plot_convergence(data_dict,ncols=3,**kwargs):
     the output plot. kwargs contains any parameters to be passed to
     plot_convergence_test, such as wtref, ref_length and scale. See doc_string
     of plot_convergence_test for more details.
-    @parameter: data_dict, type = dictionary
-    @parameter: ncols, type = int
-    @parameter: kwargs keyword arguments passed to plot_convergence_test"""
+    
+    Parameters
+    ----------
+    
+
+    data_dict: dictionary
+    ncols: integer
+    kwargs: arbitrary
+
+    Returns
+    ----------
+    
+
+    axes: axes object 
+    """
 
     fig, axes = plt.subplots(ncols,int(np.ceil(len(data_dict.keys())/ncols)),
                              figsize=(24,14))
@@ -743,13 +972,29 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
                    ymax = None):
     """ Plots the joint time frequency analysis using a short-time Fourier
     transform smoothed and raw for both wind components in one figure. Returns
-    the figure. To change overlap, 
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: t_eq: as defined by Timeseries
-    @parameter: height: z as defined by Timeseries
-    @parameter: second_comp, type = string: the name of the second measured wind component
-    @parameter: window_length, type = int: window length in ms"""
+    the figure. To change overlap.
+    
+    Parameters
+    ----------
+    
+
+    u1: array like
+    v1: array like
+    height: array like
+    t_eq: array like
+    second_comp: string
+    window_length: integer
+    ncols: integer
+    kwargs: arbitrary
+    fixes_limits: array like
+    ymax: float
+
+    Returns
+    ----------
+    
+
+    fig: figure object 
+    """
     
     #set the window size to 3500 ms - this seems to caputure the relevant 
     #frequency range
@@ -885,14 +1130,18 @@ def plot_JTFA_STFT(u1, v1, t_eq, height, second_comp = 'v',
     
     return fig
  
-def plot_stdevs(data, t_eq, tau, comp='u', ax=None, **kwargs):
+def plot_stdevs(data, t_eq, tau, ax=None, **kwargs):
     """ This function plots the spread of an array based on how many standard 
-    deviations each point is from the mean over each tau-long time period
-    @parameter: data, type = np.array (the array to be analysed)
-    @parameter: t_eq, type = np.array (corresponding times steps in [ms])
-    @parameter: tau, type = int or float (characteristic time scale (ms)
-    @parameter: ax, axis passed to function
-    @parameter kwargs : additional keyword arguments passed to ax.bar() """
+    deviations each point is from the mean over each tau-long time period.
+    
+    ----------
+    Parameters
+
+    data: array like
+    t_eq: array like
+    tau: integer
+    ax: axes object
+    """
     # Get current axis
     if ax is None:
         ax = plt.gca()
@@ -939,12 +1188,18 @@ def plot_perturbation_rose(u1, v1, total_mag, total_direction,
                            bar_divider = 3000, second_comp = 'v'):
     """ Plots a detailed wind rose using only the perturbation component of
     the wind. Number of bars depends on bar_divider and length of u1.
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: total_mag: array containing magnitude of wind (not perturbation)
-    @parameter: total_direction: array containing direction of wind (not perturbation)
-    @parameter: bar_divider: inversely proportional to number of bars to be plotted
-    @parameter: second_comp, type = string: the name of the second measured wind component"""
+    
+    Parameters
+    ----------
+    
+
+    u1: array like
+    v1: array like
+    total_mag: array like
+    total_direction: array like
+    bar_divider: float
+    second_comp: string
+    """
     
     u1 = np.asarray(u1)
     v1 = np.asarray(v1)
@@ -977,11 +1232,25 @@ def plot_arrival_law(delta_t_arr, arrival_law, binscenters,
     """ 
     Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.
 
-    @parameter: delta_t_arr: inter arrival times
-    @parameter: arrival law: theoretical data rates
-    @parameter: binscenters: distribution inter arrival times
-    @parameter: data_entries: distribution data rates
-    @parameter: popt: fitted data rate
+    Parameters
+    ----------
+    
+
+    delta_t_arr: array like
+    arrival_law: array like
+    binscenters: float
+    data_entries: array like
+    popt: float
+    logplot: boolean
+    ax: axes object
+    kwargs: arbitrary
+
+    Returns
+    ----------
+    
+
+    ret: axes object
+    lgd: legend object
     """
     if logplot == None:
         logplot = True
@@ -1034,9 +1303,19 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     """ 
     Plots transit-time distribution.
 
-    @parameter: u1: array of u-component perturbations
-    @parameter: v1: array of second-component perturbations
-    @parameter: additional keywords arguments passed to plt.semilogy().
+    Parameters
+    ----------
+    
+
+    transit time: array like
+    skew: float
+    ax: axes object
+
+    Returns
+    ----------
+    
+
+    ret: axes object
     """
 
     if ax is None:
@@ -1049,6 +1328,5 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
     ax.grid()
     ax.text(x=0.8, y=0.9, s=r'$\gamma = {}$'.format(np.around(skew,2)), 
                 transform=ax.transAxes)
-
 
     return ret

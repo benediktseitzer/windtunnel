@@ -18,6 +18,7 @@ __all__ = [
     'calc_wind_stats_wght',
     'calc_turb_data',
     'calc_turb_data_wght',
+    'calc_flux_autocorr',
     'calc_lux_data',
     'calc_lux_data_wght',
     'calc_acorr',
@@ -30,19 +31,27 @@ __all__ = [
     'power_law',
     'calc_alpha',
     'calc_z0',
-    'calc_normalization_params',
-    'calc_theo_arrival_law',
-    'calc_arrival_law',
-    'calc_transit_time_distribution',
-]
+    'calc_alpha_profile']
 
 def calc_intervalmean(indata,intervals,DD=False):    
     """ Calculates interval means of indata. If DD is set to True the means are 
     calculated for circular quantities. Returns a dictionary with 
     intervals as keys. If intervals has length 1 the function returns an array.
-    @parameter: indata, type = any
-    @parameter: intervals, type = list
-    @parameter: DD, type = boolean"""
+
+    Parameters
+    ----------
+
+
+    indata: array-like
+    intervals: list
+    DD: boolean
+
+    Returns
+    ----------
+    
+    outdata: np.array
+
+    """
    
     outdata = {}
     outdata.fromkeys(intervals)
@@ -70,8 +79,23 @@ def calc_intervalmean(indata,intervals,DD=False):
 def calc_stats(sets,DD=False):
     """Returns mean, standard deviation and variance of data in sets. If DD is 
     true then the circular equivalents are calculated. TO BE USED WITH CAUTION
-    @parameter sets: iterable set of data
-    @parameter DD: boolean"""
+
+    Parameters
+    ----------
+    
+
+    sets: iterable set of data
+    DD: boolean
+    
+    Returns
+    ----------
+    
+
+    means: np.array
+    var: np.array
+    stds: np.array
+        
+    """
        
     means = np.array([])
     var = np.array([])
@@ -96,8 +120,22 @@ def calc_stats(sets,DD=False):
 def calc_exceedance_prob(data,threshold):
     """ Calculates exceedance probability of threshold in data. Returns 
     threshold and exceedance probability in percent.
-    @parameter data: 
-    @parameter threshold: int """
+
+    Parameters
+    ----------
+    
+    
+    data: np.array
+    threshold: int
+    
+    Returns
+    ----------
+    
+
+    threshold: int
+    exceed_prob: int
+
+    """
     
     tmp = data[data>threshold]
     exceed_prob = (np.size(tmp)/np.size(data))*100
@@ -107,11 +145,23 @@ def calc_exceedance_prob(data,threshold):
 def calc_wind_stats(u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
-    @parameter: u_comp: np.array or list
-    @parameter: v_comp: np.array or list
-    @parameter: wdir: int"""
+
+    Parameters
+    ----------
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+
+    u_comp: np.array or list
+    v_comp: np.array or list
+    wdir: int
+    
+    Returns
+    ----------
+    
+
+    data: np.array
+    """
+    
+    mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))
     u = u_comp[mask]
     v = v_comp[mask]
@@ -132,12 +182,25 @@ def calc_wind_stats(u_comp,v_comp,wdir=0.):
 def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
     """ Calculate wind data from equidistant times series of u and 
     v components. wdir is a reference wind direction.
-    @parameter: transit_time, type = np.array
-    @parameter: u_comp, type = np.array
-    @parameter: v_comp, type = np.array
-    @parameter: wdir: int"""
+
+    Parameters
+    ----------
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+    
+    transit_time, type = np.array
+    u_comp, type = np.array
+    v_comp, type = np.array
+    wdir: int
+    
+    Returns
+    ----------
+    
+
+    data: np.array
+
+    """
+    
+    mask =  np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp),~np.isnan(transit_time))
     u = u_comp[mask]
     v = v_comp[mask]
@@ -160,21 +223,34 @@ def calc_wind_stats_wght(transit_time,u_comp,v_comp,wdir=0.):
 def calc_turb_data(u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components.
-    @parameter: u_comp: np.array or list
-    @parameter: v_comp: np.array or list""" 
+
+    Parameters
+    ----------
     
-    mask = mask = np.logical_and(~np.isnan(u_comp),
+    
+    u_comp: np.array or list
+    v_comp: np.array or list 
+    
+    Returns
+    ----------
+    
+
+    data: np.array
+
+    """ 
+    
+    mask = np.logical_and(~np.isnan(u_comp),
                           ~np.isnan(v_comp))    
     u = np.asarray(u_comp[mask])
     v = np.asarray(v_comp[mask])
     
-    M = np.mean(np.sqrt(u_comp**2 +v_comp**2))
+    M = np.mean(np.sqrt(u**2 +v**2))
     u_mean = np.mean(u)
     v_mean = np.mean(v)
     u_dev = u - u_mean
     v_dev = v - v_mean
-    u_std = np.std(u_comp)
-    v_std = np.std(v_comp)
+    u_std = np.std(u)
+    v_std = np.std(v)
     ##  TURBULENCE INTENSITY
     I_u = u_std/np.mean(M)
     I_v = v_std/np.mean(M)
@@ -188,33 +264,113 @@ def calc_turb_data(u_comp,v_comp):
 def calc_turb_data_wght(transit_time,u_comp,v_comp):
     """ Calculate turbulence intensity and turbulent fluxes from equidistant
     times series of u and v components using transit time weighted statistics.
-    @parameter: transit_time. type = np.array
-    @parameter: u_compy type = np.array
-    @parameter: v_comp, type = np.array"""    
-    mask = mask = np.logical_and(~np.isnan(u_comp),
-                          ~np.isnan(v_comp))    
+
+    Parameters
+    ----------
+    
+    
+    transit_time: np.array
+    u_compy: np.array
+    v_comp: np.array
+        
+    Returns
+    ----------
+    
+
+    data: np.array
+
+    """    
+    
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(v_comp),
+                          ~np.isnan(transit_time))    
+    tt = transit_time[mask]
     u = u_comp[mask]
     v = v_comp[mask]
     
     # TODO: test ways of applying TT weighting to M
-    M = np.mean(np.sqrt(u_comp**2 +v_comp**2))
-    u_std = np.sqrt(wt.transit_time_weighted_var(transit_time,u))
-    v_std = np.sqrt(wt.transit_time_weighted_var(transit_time,v))
+    M = np.mean(np.sqrt(u**2 +v**2))
+    u_std = np.sqrt(wt.transit_time_weighted_var(tt,u))
+    v_std = np.sqrt(wt.transit_time_weighted_var(tt,v))
     # TURBULENCE INTENSITY
     I_u = u_std/np.mean(M)
     I_v = v_std/np.mean(M)
     # Fluxes
-    flux = wt.transit_time_weighted_flux(transit_time,u_comp,v_comp)
+    flux = wt.transit_time_weighted_flux(tt,u,v)
     
     data = np.array([I_u,I_v,flux])
     
     return data
 
+def calc_flux_autocorr(dt, u_comp, transit_time):
+    """
+    Calculates the velocity fluctuation autocorrelation as a function of time lag.
+
+    Parameters
+    ----------
+    
+
+    dt: float
+    u_comp: np.array
+    transit_time: np.array
+
+    Returns
+    ----------
+    
+
+    u_dev_acorr: np.array
+    ret_lag: np.array
+
+    """
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(transit_time))    
+    u = u_comp[mask]
+    tt = transit_time[mask]
+
+    tt_sum = np.sum(tt)
+    u_dev = ((u - np.mean(u)) * tt)/tt_sum
+
+    initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
+    if initial_guess >= len(u_dev):
+        initial_guess = int(len(u_dev) / 2)
+    lag_eq = np.arange(1, np.size(u_dev) + 1) * dt  # array of time lags
+
+    ret_lag = []
+    u_dev_acorr = []
+    for lag in range(int(initial_guess), len(lag_eq), int(initial_guess)):
+        for x in range(lag):
+            if x == 0:
+                u_dev_acorr.append(1.)
+                ret_lag.append(0.)
+            else:
+                u_dev_acorr.append(np.corrcoef(u_dev[x:], u_dev[:-x])[0][1])
+                ret_lag.append(float(x))
+        if np.any(np.diff(u_dev_acorr) > 0):
+            break
+    u_dev_acorr = np.asarray(u_dev_acorr)
+    ret_lag = np.asarray(ret_lag)
+
+    return u_dev_acorr, ret_lag
+
+
 def calc_lux_data(dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011) 
     from an equidistant time series of the u component using time step dt.
-    @parameter: t_eq, type = int or float
-    @parameter: u_comp, type = np.array or list """
+
+    Parameters
+    ----------
+    
+
+    t_eq: int or float
+    u_comp: np.array or list 
+    
+    Returns
+    ----------
+    
+
+    Lux: float
+    
+    """
 
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
@@ -263,21 +419,36 @@ def calc_lux_data(dt, u_comp):
         elif autc1 <= 0:
             break
 
-    Lux = abs(Lux * np.mean(u_comp) * dt)
+    Lux = abs(Lux * np.mean(u) * dt)
     return Lux
 
 def calc_lux_data_wght(transit_time, dt, u_comp):
     """ Calculates the integral length scale according to R. Fischer (2011)
     from an equidistant time series of the u component using time step dt.
-    @parameter: t_eq, type = int or float
-    @parameter: u_comp, type = np.array or list """
+
+    Parameters
+    ----------
+    
+    
+    t_eq: int or float
+    u_comp: np.array or list 
+    
+    Returns
+    ----------
+    
+
+    Lux: float or int
+    
+    """
 
     if np.size(u_comp) < 5:
         raise Exception('Too few value to estimate Lux!')
 
-    mask = np.where(~np.isnan(u_comp))
+    mask = np.logical_and(~np.isnan(u_comp),
+                          ~np.isnan(transit_time)) 
 
     u = u_comp[mask]
+    tt = transit_time[mask]
 
     initial_guess = 1000 / dt  # number of values for the length of the first autocorrelation
     if initial_guess >= len(u):
@@ -319,14 +490,26 @@ def calc_lux_data_wght(transit_time, dt, u_comp):
         elif autc1 <= 0:
             break
 
-    Lux = abs(Lux * wt.transit_time_weighted_mean(transit_time, u_comp) * dt)
+    Lux = abs(Lux * wt.transit_time_weighted_mean(tt, u) * dt)
 
     return Lux
 
 def calc_acorr(timeseries, maxlags):
     """ Full autocorrelation of time series for lags up to maxlags.
     @parameter timeseries: np.array or list
-    @parameter maxlags: int"""
+
+    Parameters
+    ----------
+    
+
+    maxlags: int
+        
+    ----------
+    Returns
+
+    autocorr: np.array
+    
+    """
 
     timeseries = timeseries[~np.isnan(timeseries)]
     acorr = np.asarray([1. if x == 0 else np.corrcoef(timeseries[x:], timeseries[:-x])[0][1] for x in range(maxlags)])
@@ -334,8 +517,21 @@ def calc_acorr(timeseries, maxlags):
 
 def calc_autocorr(timeseries, lag=1):
     """ Autocorrelation of time series with lag.
-    @parameter tiemseries: np.array or list
-    @parameter lag: int"""
+
+    Parameters
+    ----------
+    
+    
+    timeseries: np.array or list
+    lag: int
+    
+    Returns
+    ----------
+    
+
+    autocorr: np.array
+    
+    """
 
     timeseries = timeseries[~np.isnan(timeseries)]
     autocorr = np.corrcoef(timeseries[0:np.size(timeseries) - lag],
@@ -345,9 +541,30 @@ def calc_autocorr(timeseries, lag=1):
 def calc_spectra(u_comp,v_comp,t_eq,height):
     """ Calculate dimensionless energy density spectra from an equidistant 
     time series.
-    @parameter: u_comp, type = np.array or list
-    @parameter: v_comp, type = np.array or list
-    @parameter: t_eq, type = np.array or list """
+
+    Parameters
+    ----------
+    
+    
+    u_comp: np.array or list
+    v_comp: np.array or list
+    t_eq: np.array or list 
+    
+    Returns
+    ----------
+    
+    
+    
+    f_sm: array like
+    S_uu_sm: array like
+    S_vv_sm: array like
+    S_uv_sm: array like
+    u_aliasing: array like
+    v_aliasing: array like
+    uv_aliasing: array like
+   
+    """
+
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp),t_eq[1]-t_eq[0])
 
@@ -447,8 +664,24 @@ def calc_spectra(u_comp,v_comp,t_eq,height):
 def calc_spectra_nc(u_comp, t_eq, height):
     """ Calculate dimensionless energy density spectra from an equidistant
     time series.
-    @parameter: u_comp, type = np.array or list
-    @parameter: t_eq, type = np.array or list """
+
+    Parameters
+    ----------
+    
+    
+    u_comp: np.array or list
+    t_eq: np.array or list
+    height: float
+
+    Returns
+    ----------
+    
+    
+    f_sm: array like
+    S_uu_sm: array like
+    u_aliasing: array like
+    
+    """
     ## FREQUENCY
     freq = np.fft.fftfreq(np.size(u_comp), t_eq[1] - t_eq[0])
 
@@ -546,26 +779,69 @@ def calc_spectra_nc(u_comp, t_eq, height):
 #           uv_normalization_params[2]
 
 
-def calc_ref_spectra(reduced_freq,a,b,c,d,e):
-   """ Calculate dimensionless reference spectra. ???
-   @parameter: reduced_freq, type = ???
-   @parameter: a, type = ???
-   @parameter: b, type = ???
-   @parameter: c, type = ???
-   @parameter: d, type = ???
-   @parameter: e, type = ???"""
-   # TODO: figure what's going on here
-   e=e+0j
+def calc_ref_spectra(f_sm):
+    """ Calculate dimensionless reference spectra using new VDI Guidelines.
 
-   return a*reduced_freq/np.abs(e+b*reduced_freq**c)**d
+    Parameters
+    ----------
+
+
+    f_sm: array-like
+    a,a1,a2: float
+    b,b1,b2: float
+    c,c1,c2: float
+    d,d1,d2: float
+    e,e1,e2: float
+   
+    Returns
+    ----------
+    
+   
+    """
+
+    a=37.61
+    b=39.74
+    c=0.96
+    d=1.72
+    e=0.74
+    a1=6.57
+    b1=95.30
+    c1=1.36
+    d1=1.24
+    e1=0.69
+    a2=16.80
+    b2=33
+    c2=1
+    d2=5/3
+    e2=1
+
+    Y=(a*f_sm)/((e+(b*(f_sm**c)))**d) #MAX
+    X=(a1*f_sm)/((e1+(b1*(f_sm**c1)))**d1) #MIN
+    Z=(a2*f_sm)/((e2+(b2*(f_sm**c2)))**d2) #USER DEFINED
+
+    return [Y, X, Z]
 
 def convergence_test_1(data,blocksize=100):
     """ Conducts a block-wise convergence test on non circular data using 
     blocksize for the size of each increment. Returns a dictionary block_data.
     Each entry is named after its respective interval. blocksize's default 
     value is 100.
-    @parameter: data, type = np.array or list
-    @parameter: blocksize, type = int or float"""
+
+    Parameters
+    ----------
+    
+
+    data: np.array or list
+    blocksize: int
+    
+    Returns
+    ----------
+
+
+    intervals: int
+    block_data: int
+    
+    """
     
     if blocksize > 0.5*np.size(data):
         raise Exception('blocksize must be smaller than half of the length\
@@ -581,9 +857,24 @@ def convergence_test_2(data,interval=100,blocksize=100):
     blocksize for the size of each increment between intervals. Returns a 
     dictionary block_data. Each entry is named after its respective interval.
     blocksize's and interval's default values are 100.
-    @parameter: data, type = np.array or list
-    @parameter: interval, type = int
-    @parameter: blocksize, type = int"""
+
+
+    Parameters
+    ----------
+    
+
+    data: np.array or list
+    interval: int
+    blocksize: int
+    
+    Returns
+    ----------
+    
+
+    intervals: int
+    block_data: int
+    
+    """
     
     if blocksize > 0.5*np.size(data):
         raise Exception('blocksize must be smaller than half of the length\
@@ -684,12 +975,23 @@ def convergence_test(values, min_interval = 1000, max_num_intervals = 100, calc_
 
 def power_law(u_comp,height,u_ref,z_ref,alpha,d0=0):
     """ Estimate power law profile.
-    @parameter: u_comp, type = int or float
-    @parameter: height, type = int or float
-    @parameter: u_ref, type = int or float
-    @parameter: z_ref, type = int or float
-    @parameter: alpha, type = int or float
-    @parameter: d0, type = int or float """
+
+    Parameters
+    ----------
+    
+
+    u_comp: float
+    height: float
+    u_ref: float
+    z_ref: float
+    alpha: float
+    d0: float
+
+    Returns
+    ----------
+    
+    
+    """
    
     return np.abs(u_comp / u_ref - ((height-d0)/(z_ref-d0))**alpha)
 
@@ -700,8 +1002,10 @@ def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=[]):
     There are two ways to pick the used data-points.
     Choose BL_height (the maximum height used to calculate alpha)
     Give array BL predifined by own script
-    ----------
+    
     Parameters
+    ----------
+    
 
     u_mean: array like
     heights: array like
@@ -709,8 +1013,9 @@ def calc_alpha(u_mean, heights, d0=0., BL_height=600., BL=[]):
     BL_height: float
     BL: array like
 
-    -------
     Returns
+    -------
+    
 
     alpha: float
     ref: float    
@@ -756,8 +1061,10 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     Choose sfc_height (the maximum height used to calculate z0)
     Give array sfc_layer predifined by own script (e.g. <10% deviation 
     in fluxes or visual estimation)
-    ----------
+    
     Parameters
+    ----------
+    
 
     u_mean: array like
     heights: array like
@@ -765,8 +1072,9 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     sfc_height: float
     sfc_layer: array like
 
-    -------
     Returns
+    -------
+    
 
     z0: float
     err: float    
@@ -818,102 +1126,75 @@ def calc_z0(u_mean,heights,d0=0.,sfc_height=100., sfc_layer=[]):
     
     return z0, err, fitted_height
 
-def calc_normalization_params(freqs, transform, t, height, mean_x, sdev_x, 
-    num_data_points):
-    pass
-#    """ Calculate the normalized Fourier transform and frequency for the 
-#    Fourier transform of x
-#    Warning: A previous code version normalized segments, while this version 
-#    normalizes the entire data set at once. The previous version also included 
-#    a smoothing algorithm, which has been omitted for simplicity.
-#    @parameter: freqs, type = list or np.array
-#    @parameter: transform, type = list or np.array - this is the non-normalized
-#                                                     Fourier transform
-#    @parameter: t, type = float - this is time
-#    @parameter: height, type = float - z in the Timeseries object
-#    @parameter: mean_x, type = float - the mean of the parameter of the Fourier
-#                                       transform F(x)
-#    @parameter: sdev_x, type = float - the standard deviation of x
-#    @parameter: num_data_points, type = int - the number of elements in x 
-#                                              before the transform was found"""   
-#
-#    ## DISCRETE SPECTRA
-#    transform = transform/num_data_points
-#
-#
-#    E = transform ** 2
-#    S = E * len(t)*(t[1]-t[0])
-#   
-#    ##  REDUCED FREQUENCY (PLOT and reference spectra)
-#    reduced_freq = np.abs(freqs*height/mean_x)
-#    reduced_transform = np.abs(np.meshgrid(S[0],
-#                               freqs,sparse=True)[0]*S/sdev_x**2)
-#    reduced_transform = reduced_transform[0]
-#
-#    ##  ALIASING
-#    aliasing = reduced_freq.size - 9 + \
-#               np.hstack((np.where(np.diff(
-#                          reduced_transform[-10:])>=0.)[0],[9]))[0]
-#    
-#    return reduced_transform, reduced_freq, aliasing
-
-def calc_theo_arrival_law(t_arr, data_rate):
-    """ 
-    calculate theoretical particle arrival law. 
-    if exponential, there is temporally uniform seeding.
+def calc_alpha_profile(mean_mag, heights, wtref, z_ref, d_0=0, mode='all',min_height=None,max_height=None,split_height=None):
+    """Calculate profile exponent alpha and roughness length z_0, and save data to excel file. 
+    Avaliable modes are 'all' (calculates profile between min_height and max_height), and 
+    'seperate', which calulates two profiles, one above and one below split_height.
+    Setting minimum and maximum height to 'None' calculates profile to bottom and top of
+    data respectively. All heights assumed in m full-scale.
+        
+    Parameters
+    ----------
     
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate from mean file 
-    """
 
-    # allocate
-    delta_t_arr = []
-    # calculate inter arrival times for each burst
-    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
-    delta_t_arr = np.asarray(delta_t_arr)
-    # calculate particle arrival law: p(t_arr) = dN/dt * exp(- dN/dt * t_arr)
-    particle_arrival_law = data_rate * np.exp(-data_rate * delta_t_arr)
+    mean_mag: np.asarry 
+    heights: float
+    wtref: np.array
+    z_ref: flpat     
+    d_0: float 
+    mode='all'
+    min_height: float 
+    max_height: float 
+    split_height: float 
 
-    return delta_t_arr, particle_arrival_law
-
-def calc_arrival_law(t_arr, data_rate):
-    """ 
-    calculate particle arrival law and fit the distribution. 
-    if exponential, there is temporally uniform seeding.
     
-    @parameter: t_arr, type = list or np.array, arrival times
-    @parameter: data_rate, type = float, data rate N/T
-    """
-
-    # allocate
-    delta_t_arr = []
-    # calculate inter arrival times for each burst
-    delta_t_arr = [ t_arr[i+1] - t_arr[i] for i in range(len(t_arr)-1) ]
-    delta_t_arr = np.asarray(delta_t_arr)
-
-    data_entries, bins = np.histogram(delta_t_arr, bins='auto',density=True)
-    binscenters = np.array([0.5 * (bins[i] + bins[i+1]) for i in range(len(bins)-1)])
-
-    def fit_function(x, A):
-        return (A * np.exp(-x * A) )
-
-    popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries)
-    print('     fitted data rate = {}'.format(popt))
-    print('     expected data rate = {}'.format(data_rate))
-    # scale
-    # data_entries = data_entries * popt
-
-    return binscenters, data_entries, popt
-
-def calc_transit_time_distribution(transit_time):
-    """ 
-    calculate particle arrival law. 
-    if exponential, there is temporally uniform seeding.
+    Returns
+    ----------
+    alpha_top: np.array
     
-    @parameter: transit_time, type = list or np.array, 
-                                    time particle moves 
-                                    through measurement volume
     """
-
-    return sc.skew(transit_time, nan_policy='omit')
+    print("Warning: Assuming that wind data is non-dimensional, and that heights are in m full-scale. d_0 in mm.")
+    #Note: heights should be in (m) full-scale. Change code if this is not the case!
+    
+    heights=np.asarray(heights)
+    mean_mag=np.asarray(mean_mag)
+    if min_height == None:
+       min_height = np.min(heights)
+    if max_height == None:
+       max_height = np.max(heights)
+    if mode == 'all':
+       heights_mask=(heights>=min_height) & (heights<=max_height)
+       heights=heights[heights_mask]
+       mean_mag=mean_mag[heights_mask]
+       z_norm = (np.array(heights)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm=np.vstack([np.log(z_norm),np.zeros(len(z_norm))]).transpose()
+       print(z_norm)
+       alpha=np.linalg.lstsq(z_norm,np.log(np.array(mean_mag)))
+       print(alpha) 
+       return alpha
+    elif mode == 'seperate':
+       heights_bottom=heights[(heights>=min_height) & (heights<=split_height)]
+       mean_mag_bottom = mean_mag[(heights>=min_height) & (heights<=split_height)]
+       z_norm_bottom = (np.array(heights_bottom)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_bottom=np.vstack([np.log(z_norm_bottom),np.zeros(len(z_norm_bottom))]).transpose()
+       print(z_norm_bottom)
+       alpha_bottom=np.linalg.lstsq(z_norm_bottom,np.log(np.array(mean_mag_bottom)))
+       print(alpha_bottom)
+       heights_top=heights[(heights>=split_height) & (heights<=max_height)]
+       mean_mag_top = mean_mag[(heights>=split_height) & (heights<=max_height)]
+       z_norm_top = (np.array(heights_top)-d_0)/(z_ref-d_0)
+       #Note: the wind data in this script is already non-dimensional.
+       #If the code is edited to allow for dimensional plotting, change 
+       #function to non-dimensionalise data if necessary!
+       z_norm_top=np.vstack([np.log(z_norm_top),np.zeros(len(z_norm_top))]).transpose()
+       print(z_norm_top)
+       alpha_top=np.linalg.lstsq(z_norm_top,np.log(np.array(mean_mag_top)))
+       print(alpha_top)  
+       return alpha_top
 

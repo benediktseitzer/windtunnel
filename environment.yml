@@ -1,0 +1,11 @@
+numpy
+scipy
+pandas
+logging
+matplotlib
+skimage
+openpyxl
+tkinter
+logging
+csv
+tsp_solver

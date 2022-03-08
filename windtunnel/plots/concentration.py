@@ -11,12 +11,19 @@ __all__ = [
 ]
 
 def plot_boxplots(data_dict, ylabel=None, **kwargs):
-    """ Plot statistics of concentration measurements in boxplots. Expects
+    """ 
+    Plot statistics of concentration measurements in boxplots. Expects
     input from PointConcentration class.
-    @parameters: data, type = dict
-    @parameters: ylabel, type = string
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.boxplot()
+    
+    Parameters
+    ----------
+    
+    
+    data_dict: dictionary
+    ylabel: string
+    ax: axes-object
+    kwargs : arbitrary
+
     """
     # Set standard ylabel if none is specified
     if ylabel is None:

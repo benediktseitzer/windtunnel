@@ -55,6 +55,7 @@ class building():
     def calc_boundaries(self,global_transform):
         '''
         Calculates the building boundaries from the positions and extents.
+
         Returns
         -------
         '''
@@ -139,6 +140,7 @@ class configuration():
     def add_configuration(self,ax):
         '''
         Adds the building configuration to the ax.
+
         Parameters
         ----------
         ax
@@ -161,6 +163,7 @@ class configuration():
         Generates a polar grid of points from the input parameters. If desired the points that lie inside of
         buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
         parameters to shift the centre of the polar grid.
+
         Parameters
         ----------
         angles: array_like
@@ -181,6 +184,12 @@ class configuration():
 
         x = np.outer(d, np.cos(np.radians(a)))-x_offset
         y = np.outer(d, np.sin(np.radians(a)))-y_offset
+
+        if self.global_transform != 0:
+            xy_transformed = rotate_via_numpy(np.stack([x, y]),self.global_transform)
+            x = xy_transformed[:,0]
+            y = xy_transformed[:,1]
+
         z,_ = np.meshgrid(z,z)
         x=np.diag(x)
         y=np.diag(y)
@@ -194,6 +203,7 @@ class configuration():
         '''
         Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
         buildings can be omitted.
+
         Parameters
         ----------
         x: array_like
@@ -222,6 +232,7 @@ class configuration():
         '''
         Filters out points which lie inside or in the vicinity of buildings. The value of tolerance acts as a buffer
         around the buildings where points are also filtered out.
+
         Parameters
         ----------
         x: array_like
@@ -264,7 +275,8 @@ class configuration():
 
     def get_building_boundaries(self):
         '''
-        Returns a list of the boundaries of the buildings-
+        Returns a list of the boundaries of the buildings
+
         Returns
         -------
         boundaries: list
@@ -329,7 +341,10 @@ def cost_func(angles,angle_cost=4):
     plt.figure()
     plt.plot(np.arange(91),(np.cos(np.deg2rad(np.arange(91)*4))+0.2)*((np.cos(np.deg2rad(np.arange(91)*4))+0.2)>0)*4)
     :param angles:
-    :return:cost
+
+    Returns
+    ----------
+    cost: float
     '''
     cost = (np.cos(np.deg2rad(angles*4))+0.2)*((np.cos(np.deg2rad(angles*4))+0.2)>0)*angle_cost
     cost[cost<1] = 1
@@ -340,10 +355,14 @@ def cost_func(angles,angle_cost=4):
 
 def get_metangle(x, y):
     '''Get meteorological angle of input vector.
-    Args:
+
+    Parameters
+    ----------
         x (numpy.ndarray): X-components of input vectors.
         y (numpy.ndarray): Y-components of input vectors.
-    Returns:
+
+    Returns
+    ----------
         (numpy.ma.core.MaskedArray): Meteorological angles.
     '''
     mask = np.logical_and(x == 0, y == 0)  # Vectors (0, 0) not valid.
@@ -356,6 +375,7 @@ def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     This function optimizes an input grid of points by minimizing the traveltime and angle between each point. Angles
     between points of ]0 - 25 and 65-90[ are punished in terms of traveltime and are avoided. Furthermore routes through
     buildings can be avoided aswell.
+
     Parameters
     ----------
     points: array_like
@@ -404,3 +424,33 @@ def optimize_grid(points,configuration,avoid_buildings=True,angle_cost=10):
     path = solve_tsp(dist_all, endpoints=(0, None))
 
     return points[path]
+
+def rotate_via_numpy(xy, angle):
+    """Use numpy to build a rotation matrix and take the dot product.
+    
+    Parameters
+    ----------
+    xy: array-like
+    angle: float
+
+    Returns
+    ----------
+    xy_transformed: array-like
+    
+    """
+    # build rotation matrix
+    if len(xy.flatten())==2:
+        xy=[xy.astype(float)]
+    xy_tranformed = np.copy(xy)
+    radians = np.deg2rad(angle)
+    c, s = np.cos(radians), np.sin(radians)
+    j = np.matrix([[c, s], [-s, c]])
+
+    # rotate coordinates via j
+    for i,point in enumerate(xy):
+        m = np.dot(j, [point[0], point[1]])
+        x_trans = m.T[0]
+        y_trans = m.T[1]
+        xy_tranformed[i] = np.stack([float(x_trans),float(y_trans)])
+
+    return xy_tranformed

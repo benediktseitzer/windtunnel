@@ -21,19 +21,22 @@ class PointConcentration(pd.DataFrame):
     the raw time series, the corresponding wtref and all other quantities
     necessary to analyse the time series. All the information in a
     PointConcentration object can be saved to a txt file.
-    @parameter: time, type = np.array
-    @parameter: wtref, type = np.array
-    @parameter: fast_FID, type = np.array
-    @parameter: slow_FID, type = np.array
-    @parameter: open_rate, type = np.array"""
+
+    Parameters
+    ----------
+    
+    time: np.array
+    wtref: np.array
+    fast_FID: np.array
+    slow_FID: np.array
+    open_rate: np.array
+    
+    
+    
+    """
 
     def __init__(self, time, wtref, slow_FID, fast_FID, open_rate):
-        #edit 09/19/2019: removed variable Kelvin_temp. This variable makes no sense, 
-        #as it is simply a unit conversion factor equivalent to the 0°C in K used to
-        #convert temperatures between °C and K, and has been replaced by adjustments
-        #to the convert_temperature function.   Also removed duplicate variables
-        #full_scale_time and scale. 
-        #edit 05/13/2020: added attributes x_source, y_source, z_source, x_measure, y_measure, z_measure, and distance.        
+             
         """ Initialise PointConcentration object. """
         super().__init__()
 
@@ -97,7 +100,7 @@ class PointConcentration(pd.DataFrame):
     def from_file(cls, filename):
         """ Create PointConcentration object from file. open_rate is converted
         to %."""
-	    #edit 07/22/2019: data does not usually have six colums. 
+	   
         #TODO: open rate = flow rate?		
         time, wtref, slow_FID, fast_FID, open_rate = np.genfromtxt(filename,
                                                                    usecols=(0, 1, 2, 3, 4),
@@ -108,10 +111,7 @@ class PointConcentration(pd.DataFrame):
     def to_full_scale(self):
         """ Return all quantities to full scale. Requires XXXXXX to be
         specified."""
-	#edit 07/26/2019: changed clear_zeros to a standalone funciton, which is now called from 
-	#outside calc_net_concentration
-	#edit 05/13/2020: added scaling of source and measurement locations
-    #edit 07/27/2020: adapted code to conventions established in puff_concentration.py    
+	
         if self.__check_sum >= 8:
 
             #quantities = ['x', 'y', 'z', 'time', 'concentration', 'flow rate']
@@ -146,8 +146,7 @@ class PointConcentration(pd.DataFrame):
                             
     def to_non_dimensional(self):
         """ Converts all quantities to non-dimensional, overwriting model scale variables."""
-		#edit 07/27/2020: new function, which converts data to non-dimensional values. Virtually identical to
-        #to_non_dimensional function in puff_concentration.py
+	
         
         if self.__check_sum >= 8:
 
@@ -180,31 +179,26 @@ class PointConcentration(pd.DataFrame):
         """Read ambient conditions from csv file. If no such file exists, function
 		does nothing and instead ambient conditions are read from values in
 		example_puff_measurement.py."""	
-		#edit 10/21/2019: new function, similar to get_ambient_conditions in PuffConcentration.py
-        #which reads ambient conditions during measurement from seperate csv file. Assumes that the
-        #csv data is located in the same folder as the measurement data, and that each column represents
-        #an input variable, and each row represents a dataset. If no such file exists in the data directory,
-        #function does nothing and instead ambient conditions are read from input variables
-		#in example_puff_measurement.py.
+		
         if input_file==None:
            print('Warning: Input csv filename (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')
            return		   
         elif name==None:
            print('Warning: Name of dataset not specified. Cannot attempt to locate csv file containing ambient conditions data. Resorting\
-to input data in example_puff_measurement.py')
+                to input data in example_puff_measurement.py')
         elif path==None:
            print('Warning: Path of input csv file (for ambient conditions) not specified. Resorting to input data in example_puff_measurement.py')			   
            return
         elif not os.path.exists(input_file):
            print('Error: Cannont find csv file containing ambient conditions in specified directory. Check name and/or location of ambient \
-conditions file. Resorting to input data in example_puff_measurement.py')	
+                conditions file. Resorting to input data in example_puff_measurement.py')	
            return		   
         else:	
            ambient_conditions=pd.read_csv(input_file,sep=',',index_col=0) 
         
         if name not in ambient_conditions.keys():
            print('Error: Dataset not found in csv file. Check to make sure that csv file to make sure that the csv file contains all necessary \
-data and is properly formatted. Resorting to input data in example_puff_measurement.py')
+                data and is properly formatted. Resorting to input data in example_puff_measurement.py')
            return	
 
         #list of all variables output by read_ambient_conditions fuction.  
@@ -212,7 +206,7 @@ data and is properly formatted. Resorting to input data in example_puff_measurem
         'scaling_factor','scale','ref_length','ref_height','gas_name','mol_weight','gas_factor','full_scale_wtref','full_scale_flow_rate' }
         if not all(name2 in ambient_conditions[name] for name2 in necessary_keys):
            print('Error: csv file does not contain all necessary ambient conditions data. Check to make sure that csv file to make sure that \
-the csv file contains all necessary data and is properly formatted. Resorting to input data in example_puff_measurement.py')
+                the csv file contains all necessary data and is properly formatted. Resorting to input data in example_puff_measurement.py')
            return			   
        		
 
@@ -221,17 +215,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def read_ambient_conditions(ambient_conditions,name):
         """Populate individual variables representing ambient conditions based on data
 		in ambient_conditions array. """	
-        #edit 10/21/2019: new function, similar to read_ambient_conditions in PuffConcentration.oy which
-        #populates the individual variables representing the ambient conditions data based on data in
-        #ambient_conditions. Requires get_ambient_conditions to be called before calling function, further
-        #requires that get_ambient_conditions sucessfullly outputs the ambient_conditions array (i.e. requires
-        #the csv file containing the ambient conditions data to be in the proper format and location). function
-        #also assumes that csv file (and thus the ambient_conditions array) is in the correct format and contains
-        #the variables x,y,z,pressure,temperature,calibration_curve,mass_flow_controller, calibration_factor,
-        #scaling_factor,scale,ref_length,ref_height,gas_name,mol_weight,gas_factor,full_scale_wtref,and 
-        #full_scale_flow_rate.
-        #edit 05/13/2020: added seperate handling of source and measurement locations. 
- 	   
+    
         x_source=None if ambient_conditions[name]['x_source'] =='None' else np.float(ambient_conditions[name]['x_source'])
         y_source=None if ambient_conditions[name]['y_source'] =='None' else np.float(ambient_conditions[name]['y_source'])
         z_source=None if ambient_conditions[name]['z_source'] =='None' else np.float(ambient_conditions[name]['z_source'])  
@@ -261,7 +245,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
                            mass_flow_controller, calibration_factor=0):
         """ Collect ambient conditions during measurement. pressure in [Pa],
         temperature in [°C]. """
-        #edit 05/13/2020: added seperate handling of source and measurement locations.
+       
         self.__check_sum = self.__check_sum + 1
 
         self.x_source = x_source
@@ -318,14 +302,24 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         self.full_scale_flow_rate = full_scale_flow_rate
 
     def convert_temperature(self):
-        """ Convert ambient temperature to °K. """
+        """ Convert ambient temperature to °K.
+        
+        """
         #edit 09/19/2019: edited code to account for removal 
         #of variable kelvin_temperature. 		
         self.temperature_K = self.temperature + 273.15
         self.standard_temp_K = self.standard_temp + 273.15
 
     def calc_model_mass_flow_rate(self):
-        """ Calculate the model scale flow rate in [kg/s]. """
+        """ Calculate the model scale flow rate in [kg/s].
+        
+        Returns
+        ----------
+        
+
+        self.mass_flow_rate: float 
+        
+         """
         self.__check_sum = self.__check_sum + 1
 
         self.mass_flow_rate = self.gas_factor * (np.mean(self.open_rate) *
@@ -337,7 +331,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.mass_flow_rate
 
     def calc_full_scale_flow_rate(self):
-        """ Convert flow rate to full scale flow rate in [m^3/s]. """
+        """ Convert flow rate to full scale flow rate in [m^3/s].
+        
+        Returns
+        ----------
+        
+
+        self.full_scale_flow_rate: float 
+        
+         """
         self.full_scale_flow_rate = (self.full_scale_flow_rate * self.R *
                                      self.standard_temp_K) / \
                                     (self.standard_pressure * self.mol_weight)
@@ -345,9 +347,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_flow_rate
         
     def calc_non_dimensional_flow_rate(self):
-        """ Convert flow rate to non-dimensional flow rate [-]. """
-        #edit 01/14/2020: new function, based on calc_non_dimensional_flow_rate in PuffConcentration.py,
-        #which calculates the non-dimensional mass flow rate in [-]		
+        """ Convert flow rate to non-dimensional flow rate [-]. 
+        
+        Returns
+        ----------
+        
+
+        self.full_scale_flow_rate: float 
+        
+        """
+       	
         #TODO: fix function!!        
         self.full_scale_flow_rate = (self.full_scale_flow_rate * self.R *
                                      self.standard_temp_K) / \
@@ -356,7 +365,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_flow_rate            
 
     def calc_net_concentration(self):
-        """ Calculate net concentration in [ppmV]. """
+        """ Calculate net concentration in [ppmV]. 
+        
+        Returns
+        ----------
+        
+
+        self.net_concentration: float 
+
+        """
         self.__check_sum = self.__check_sum + 1
 
         self.net_concentration = self.fast_FID - self.slow_FID
@@ -364,7 +381,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.net_concentration
 
     def calc_c_star(self):
-        """ Calculate dimensionless concentration. [-] """
+        """ Calculate dimensionless concentration. [-] 
+        
+        Returns
+        ----------
+        
+
+        self.c_star: float
+        
+        """
         self.__check_sum = self.__check_sum + 1
         # TODO: calc_mass_flow_rate (for Point, Line and Area)
         self.c_star = self.net_concentration * self.wtref_mean * \
@@ -373,7 +398,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.c_star
 
     def calc_full_scale_concentration(self):
-        """ Calculate full scale concentration in [ppmV]. """
+        """ Calculate full scale concentration in [ppmV].
+        
+        Returns
+        ----------
+        
+
+        self.full_scale_concentration: float
+
+         """
         self.full_scale_concentration = self.c_star * \
                                         self.full_scale_flow_rate / \
                                         (self.full_scale_ref_length ** 2 *
@@ -382,7 +415,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_concentration
 
     def calc_wtref_mean(self):
-        """ Calculate scaled wtref mean in [m/s]. """
+        """ Calculate scaled wtref mean in [m/s]. 
+        
+        Returns
+        ----------
+        
+
+        self.wtref_mean: float
+        
+        """
         self.__check_sum = self.__check_sum + 1
 
         self.wtref_mean = self.scaling_factor * np.mean(self.wtref)
@@ -390,8 +431,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.wtref_mean
 
     def calc_full_scale_time(self):
-        """ Calculate full scale timesteps in [s]. """
-        #edit 10/24/2019: replaced full_scale_ref_length/ref_length with scale. This should be equivalent, and is likely to appear more logical	
+        """ Calculate full scale timesteps in [s].
+        
+        Returns
+        ----------
+        
+
+        self.full_scale_time: float
+        
+         """
+      
         if self.wtref_mean is None:
             self.wtref_mean = PointConcentration.calc_wtref_mean()
 
@@ -407,10 +456,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         return self.full_scale_time
         
     def calc_non_dimensional_time(self):
-        """ Calculate non-dimensional time step [-]. """
-        #edit 07/27/2020: new function, based on calc_full_scale_time, which
-        #calculates the non-dimensional time step [-]. Based on calc_non_dimensional_time
-        #function in puff_concentration.py.        
+        """ Calculate non-dimensional time step [-].
+        
+        Returns
+        ----------
+        
+
+        self.non_dimensional_time: float
+        
+         """
+            
         if self.wtref_mean is None:
             self.wtref_mean = PointConcentration.calc_wtref_mean()
 
@@ -422,10 +477,7 @@ the csv file contains all necessary data and is properly formatted. Resorting to
     def clear_zeros(self):
 	    
         """ Clear and count zeros in concentration measurements."""
-		#edit 07/22/2019: convert mask to array to apply it to full_scale_time. 
-		#Aditionally, mask c_star, and net concentration. Also changed script so 
-		#that the negative values are removed from the time series, not the positive
-		#ones as done previosuly, since negative concetration values don't make any sense. 
+		 
         concentration_size = np.size(self.net_concentration)
 
         # Mask zeros
@@ -442,20 +494,32 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         ))
 		
     def plot_hist_conc(self,n_classes=None,var='net_concentration',path=None,name=None):
-        """Creates a historgram point concentration, i.e. continuous release, data."""
-        #edit 10/17/2019: New function, largely based off of plot_hist in bl.py (for plotting wind data), 
-        #as well as plot_class_statistics in EnsembleAnalysis.py (for plotting puff data), which plots
-        #histogram of point concentration (continuous release) data.
+        """Creates a historgram point concentration, i.e. continuous release, data.
+        
+        Parameters
+        ----------
+        
+        
+        n_classe: int
+        var: str
+        path: str 
+        name: str
+
+        Returns
+        ----------
+        
+
+        ret: axes object
+
+        """
+       
         #TODO: add units to class mean label		
 
        
 
         data=getattr(self,var)
         data_size=np.size(data)		
-        #if n_classes not specified, calculate the number of classes. Algorithm to determine number of
-        #classes based on CalculationAndWritingFrequencyDistribution function from old C program written
-        #by Anne Philip, and also used in calc_n_classes function in Enesemble_Analysis.py (for use with
-        #puff data). 
+       
 
         if n_classes == None:
            n_classes=np.int(1+math.log10(data_size)/math.log10(2))	
@@ -541,9 +605,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save model scale data from PointConcentration object to txt file.
         filename must include '.txt' ending. If no out_dir directory is
         provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-        #edit 05/13/2020: added seperate handling of source and measurement locations
+         
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir: str
+        
+        """
+        
         if out_dir is None:
             out_dir = './'
         if not os.path.exists(out_dir):
@@ -586,8 +657,15 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save full scale and model scale data from PointConcentration object
         to txt file. filename must include '.txt' ending. If no out_dir
         directory is provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""#
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir: str
+        
+        """
         #edit 05/13/2020: added seperate handling of source and measurement locations        
         if self.__check_sum < 8:
             raise Exception('Please enter or calculate all full scale data '
@@ -640,9 +718,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save non-dimensional data from PointConcentration object
         to txt file. filename must include '.txt' ending. If no out_dir
         directory is provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""#
-        #edit 05/13/2020: new function to save non-dimensional data, similar to save2file_fs and save2file_ms      
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir: str
+        
+        """
+            
         if self.__check_sum < 8:
             raise Exception('Please enter or calculate all full scale data '
                             'necessary!')
@@ -692,9 +777,16 @@ the csv file contains all necessary data and is properly formatted. Resorting to
         """ Save average full scale and model scale data from
         PointConcentration object to txt file. filename must include '.txt'
         ending. If no out_dir directory is provided './' is set as standard.
-        @parameter: filename, type = str
-        @parameter: out_dir, type = str"""
-        #edit 05/13/2020: added seperate handling of source and measurement locations
+        
+        Parameters
+        ----------
+        
+        
+        filename: str
+        out_dir: str
+        
+        """
+       
         if self.__check_sum < 8:
             raise Exception('Please enter or calculate all full scale data '
                             'necessary!')

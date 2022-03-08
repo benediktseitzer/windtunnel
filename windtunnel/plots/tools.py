@@ -17,7 +17,6 @@ __all__ = [
     'plot_pdfs',
     'plot_pdfs_err',
     'plot_cdfs',
-    'plot_rose_map',
 ]
 
 class Windrose:
@@ -42,11 +41,18 @@ def plot_windrose(inFF,inDD, num_bars = 10, ax = None, left_legend = False):
     """ Plots windrose with dynamic velocity classes of each 10% percentile and
     10 degree classes for directional data. The representation of the windrose 
     in this function is more detailed than in plot_DWD_windrose().
-    @parameter inFF: np.array
-    @parameter inDD: np.array
-    @parameter num_bars: how many segments the degree range should be broken into
-    @parameter ax: pyplot axes object, must be polar
-    @left_legend: if true, the legend is positioned to the left of the plot instead of the right"""
+   
+    Parameters
+    ----------
+    
+    
+    inFF: np.array
+    inDD: np.array
+    num_bars: integer
+    ax: pyplot axes object, must be polar
+    left_legend: bool
+    
+    """
 
     ffs = np.array([])
     percs = np.arange(0,100,10)
@@ -111,8 +117,14 @@ def plot_DWD_windrose(inFF,inDD):
     """ Plots windrose according to DWD classes of 1 m/s for velocity data and
     30 degree classes for directional data. The representation of the windrose 
     in this function is less detailed than in plotwindrose().
-    @parameter inFF: np.array
-    @parameter inDD: np.array"""
+
+    Parameters
+    ----------
+    
+    inFF: np.array
+    inDD: np.array
+
+    """
     ffs = np.arange(np.max(inFF))
     dd_range = 30.
     labels = []
@@ -152,12 +164,18 @@ def plot_DWD_windrose(inFF,inDD):
               borderaxespad=0.,fontsize=12)
     
 def plot_rose(inFF,inDD,ff_steps,dd_range):
-    """ Plots windrose according to user specified input from ff_steps and
+    """ Plots windrose according to user specified input from ff_steps and 
     dd_Range.
-    @parameter: inFF, type = np.array
-    @parameter: inDD, type = np.array
-    @parameter: ff_steps, type = list or np.array
-    @parameter: dd_range, type = int or float"""
+
+    Parameters
+    ----------
+    
+    inFF:  np.array
+    inDD:  np.array
+    ff_steps: list or np.array
+    dd_range: int or float
+
+    """
     
     labels = []
     for i,f in enumerate(ff_steps[:-2]):
@@ -201,15 +219,28 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
 def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap=plt.cm.viridis):
     """ Plots windrose according to user specified input from ff_steps and
     dd_Range.
-    @parameter: inFF, type = np.array, contains the windspeeds
-    @parameter: inDD, type = np.array, contains the winddirections
-    @parameter: x_coor, type = np.array, contains the x coordinates of the measurements
-    @parameter: y_coor, type = np.array, contains the x coordinates of the measurements
-    @parameter: ff_steps, type = list or np.array, specifies the steps of the windspeeds for the windrose
-    @parameter: dd_range, type = int or float, specifies the direction ranges
-    @parameter: ax, type = pyplot axes object
-    @parameter: alpha, type = float
-    @parameter: cmap, type = `~matplotlib.colors.Colormap`"""
+
+    Parameters
+    ----------
+
+    inFF: np.array, contains the windspeeds
+    inDD:np.array, contains the winddirections
+    x_coor:  np.array, contains the x coordinates of the measurements
+    y_coor:  np.array, contains the x coordinates of the measurements
+    ff_steps:  list or np.array, specifies the steps of the windspeeds for the windrose
+    dd_range: int or float, specifies the direction ranges
+    ax: pyplot axes object
+    alpha: float
+    cmap: `~matplotlib.colors.Colormap
+
+    Returns
+    ----------
+    
+
+    ax:  axes object
+    cbar: matplotlib object
+
+    """
 
 
     # this dummy image will only be generated to create a colorbar
@@ -262,10 +293,22 @@ def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap
 
 def plot_pdfs(sets,lablist,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist.
-    @parameter sets: iterable set of data
-    @parameter lablist: list of strings
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot()"""
+
+    Parameters
+    ----------
+    
+    sets: iterable set of data
+    lablist: list of strings
+    ax: axis passed to function
+    kwargs : additional keyword arguments passed to plt.plot()
+    
+    Returns
+    ----------
+    
+
+    ret: axes object
+    
+    """
     if ax is None:
        ax = plt.gca()
         
@@ -287,11 +330,22 @@ def plot_pdfs(sets,lablist,ax=None, **kwargs):
 def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist with
     a given margin of error.
-    @parameter sets: iterable set of data
-    @parameter lablist: list of strings
-    @parameter error: int or float
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot()"""
+
+    Parameters
+    ----------
+    
+    sets: array-like
+    lablist: list of strings
+    error: int or float
+    ax: axis passed to function
+    kwargs : additional keyword arguments passed to plt.plot()
+    
+    Returns
+    ----------
+    
+    ret: list of axes object
+    
+    """
     if ax is None:
        ax = plt.gca()
         
@@ -317,10 +371,22 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
 
 def plot_cdfs(sets, lablist, ax=None, **kwargs):
     """Plots CDFs of data in sets using the respective labels from lablist
-    @parameter sets: iterable set of data
-    @parameter lablist: list of strings
-    @parameter ax: axis passed to function
-    @parameter kwargs : additional keyword arguments passed to plt.plot()"""
+
+    Parameters
+    ----------
+     
+    sets: array like
+    lablist: list of strings
+    ax: axis passed to function
+    kwargs : additional keyword arguments passed to plt.plot()
+    
+    Returns
+    ----------
+    
+
+    ret: list of axes object
+    
+    """
     if ax is None:
         ax = plt.gca()
         

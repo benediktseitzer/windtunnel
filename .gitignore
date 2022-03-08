@@ -6,6 +6,6 @@ postprocessed*
 *txt
 # ignore own scripts
 own*
-example*
+#example*
 # ignore itself
 .gitignore
