@@ -19,7 +19,9 @@ __all__ = [
     'get_metangle',
     'cost_func',
     'optimize_grid',
-    'rotate_origin_only']
+    'rotate_origin_only',
+    'rotate_via_numpy'
+]
 
 
 class building():
@@ -41,17 +43,36 @@ class building():
         self.boundaries=[]
         self.calc_boundaries(global_transform)
 
+        if global_transform!=0:
+
+            self.coords = np.zeros([4,2])
+            self.coords[0][0] = x
+            self.coords[0][1] = y
+
+            self.coords[1][0] = x + x_extent
+            self.coords[1][1] = y
+
+            self.coords[2][0] = x + x_extent
+            self.coords[2][1] = y + y_extent
+
+            self.coords[3][0] = x
+            self.coords[3][1] = y + y_extent
+
+            self.coords_transformed = rotate_via_numpy(self.coords,self.global_transform)
 
         if type == 'rect':
             if global_transform==0:
-                self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
-                                            edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
+                self.patch = patches.Rectangle((self.x_pos, self.y_pos), 
+                self.x_extent, self.y_extent,edgecolor='none',linewidth=1.5, fill=1,
+                facecolor=[0,0,0,0.5],alpha=0.4)
             else:
-                self.patch = patches.Polygon(np.asarray([np.asarray((self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),
-                                True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
+                self.patch = patches.Polygon(np.asarray
+                ([np.asarray((self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),
+                True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
         elif type == 'cyld':
-            self.patch = patches.Ellipse((self.x_pos,self.y_pos),self.x_extent,self.y_extent,angle=global_transform,
-                                         edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
+            self.patch = patches.Ellipse((self.x_pos,self.y_pos),self.x_extent,
+            self.y_extent,angle=global_transform,edgecolor='none',linewidth=1.5, 
+            fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
     def calc_boundaries(self,global_transform):
         '''
         Calculates the building boundaries from the positions and extents.
@@ -70,15 +91,17 @@ class building():
                                 [self.x_pos, self.y_pos]])  # left
         else:
             self.boundaries.append([[rotate_origin_only(self.x_og,self.y_og,global_transform)],
-                                [rotate_origin_only(self.x_og+self.x_extent,self.y_og,global_transform)]]) #lower
-            self.boundaries.append([[rotate_origin_only(self.x_og+self.x_extent,self.y_og,global_transform)],
-                                [rotate_origin_only(self.x_og + self.x_extent, self.y_og + self.y_extent,
-                                                    global_transform)]]) # right
-            self.boundaries.append([[rotate_origin_only(self.x_og + self.x_extent, self.y_og + self.y_extent,
-                                                        global_transform)],
-                                [rotate_origin_only(self.x_og, self.y_og + self.y_extent,global_transform)]])  # upper
-            self.boundaries.append([[rotate_origin_only(self.x_og, self.y_og + self.y_extent,global_transform)],
-                                [rotate_origin_only(self.x_og, self.y_og,global_transform)]])  # left
+                                [rotate_origin_only(self.x_og+self.x_extent,
+                                self.y_og,global_transform)]]) #lower
+            self.boundaries.append([[rotate_origin_only(self.x_og+self.x_extent,
+            self.y_og,global_transform)],[rotate_origin_only(self.x_og + self.x_extent, 
+            self.y_og + self.y_extent,global_transform)]]) # right
+            self.boundaries.append([[rotate_origin_only(self.x_og + self.x_extent, 
+            self.y_og + self.y_extent,global_transform)],
+            [rotate_origin_only(self.x_og, self.y_og + self.y_extent,global_transform)]])  # upper
+            self.boundaries.append([[rotate_origin_only(self.x_og, 
+            self.y_og + self.y_extent,global_transform)],[rotate_origin_only(self.x_og, 
+            self.y_og,global_transform)]])  # left
 
     def refresh_patches(self):
         if self.type == 'rect':
@@ -86,8 +109,8 @@ class building():
                 self.patch = patches.Rectangle((self.x_pos, self.y_pos), self.x_extent, self.y_extent,
                                             edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
             else:
-                self.patch = patches.Polygon(np.asarray([np.asarray((self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),
-                                True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
+                self.patch = patches.Polygon(np.asarray([np.asarray((
+                self.boundaries[x][0][0])) for x in range(len(self.boundaries))]),True,edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
         elif self.type == 'cyld':
             self.patch = patches.Ellipse((self.x_pos,self.y_pos),self.x_extent,self.y_extent,angle=self.global_transform,
                                          edgecolor='none',linewidth=1.5, fill=1,facecolor=[0,0,0,0.5],alpha=0.4)
@@ -257,8 +280,10 @@ class configuration():
             z = z.astype(float)
 
         for building in self.buildings:
-            mask = (x + tolerance > building.x_og) & (x - tolerance < building.x_og+building.x_extent) & \
-                   (y + tolerance > building.y_og) & (y - tolerance < building.y_og+building.y_extent) & \
+            mask = (x + tolerance > building.x_og) & 
+            (x - tolerance < building.x_og+building.x_extent) & \
+                   (y + tolerance > building.y_og) & 
+                   (y - tolerance < building.y_og+building.y_extent) & \
                    (z < building.z_extent)
             x[mask] = np.nan
             y[mask] = np.nan
