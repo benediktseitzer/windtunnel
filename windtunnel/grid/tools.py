@@ -90,18 +90,10 @@ class building():
             self.boundaries.append([[self.x_pos, self.y_pos + self.y_extent],
                                 [self.x_pos, self.y_pos]])  # left
         else:
-            self.boundaries.append([[rotate_origin_only(self.x_og,self.y_og,global_transform)],
-                                [rotate_origin_only(self.x_og+self.x_extent,
-                                self.y_og,global_transform)]]) #lower
-            self.boundaries.append([[rotate_origin_only(self.x_og+self.x_extent,
-            self.y_og,global_transform)],[rotate_origin_only(self.x_og + self.x_extent, 
-            self.y_og + self.y_extent,global_transform)]]) # right
-            self.boundaries.append([[rotate_origin_only(self.x_og + self.x_extent, 
-            self.y_og + self.y_extent,global_transform)],
-            [rotate_origin_only(self.x_og, self.y_og + self.y_extent,global_transform)]])  # upper
-            self.boundaries.append([[rotate_origin_only(self.x_og, 
-            self.y_og + self.y_extent,global_transform)],[rotate_origin_only(self.x_og, 
-            self.y_og,global_transform)]])  # left
+            self.boundaries.append([self.coords_transformed[0, :], self.coords_transformed[1, :]])
+            self.boundaries.append([self.coords_transformed[1, :], self.coords_transformed[2, :]])
+            self.boundaries.append([self.coords_transformed[2, :], self.coords_transformed[3, :]])
+            self.boundaries.append([self.coords_transformed[3, :], self.coords_transformed[0, :]])
 
     def refresh_patches(self):
         if self.type == 'rect':
