@@ -29,6 +29,7 @@ __all__ = [
     'plot_perturbation_rose',
     'plot_arrival_law',
     'plot_transit_time_distribution',
+    'plot_wavelet_transform',
 ]
 
 def plot_wrapper(x, y, lat=False, ax=None, **kwargs):
@@ -778,7 +779,6 @@ def plot_spectra_nc(f_comp1_sm,f_comp2_sm, S_comp1_sm,S_comp2_sm,
 
     return h1, h2
 
-
 def turb_refernce_plot(z, Iu, Iv, Iw):
     z0 = np.array([0.005, 0.1, 0.5, 2])
     components = ['Iu', 'Iv', 'Iw']
@@ -1330,3 +1330,61 @@ def plot_transit_time_distribution(transit_time, skew, ax=None):
                 transform=ax.transAxes)
 
     return ret
+
+def plot_wavelet_transform(wavelet, scale, u_eq, t_eq, z_val, ax=None):
+    """ 
+    Plots CWT-results as a contour-plot. 
+    The Wavelet-Coefficients Wn(s,t) are plotted for each timestep in a defined range of scales. 
+
+    ----------
+    Parameters
+
+    wavelet: array like
+    scale: array-like
+    u_eq: array-like
+    t_eq: array-like
+    z_val: float
+    ax: axes object
+
+    ----------
+    Returns
+
+    ret: axes object
+    """
+
+    if ax is None:
+        ax = plt.gca()
+
+    f_scale = z_val/(scale * np.mean(u_eq))
+
+    im1 = ax.contour(t_eq,
+                f_scale, 
+                np.abs(wavelet)**2. * np.std(u_eq)**-2.,
+                levels = 15,
+                colors='gray')
+    im2 = ax.contourf(t_eq,
+                f_scale, 
+                np.abs(wavelet)**2. * np.std(u_eq)**-2.,
+                levels = 15,
+                cmap='YlGnBu')
+    # plot cone of incidence
+    pl1 = ax.plot(scale*2.**0.25,
+                f_scale,
+                color='black',
+                linestyle='dashed')
+    pl2 = ax.plot(np.amax(t_eq)-(scale*2.**0.25),
+                f_scale,
+                color='black',
+                linestyle='dashed')
+    
+    # if colorbar is wished:
+    # plt.colorbar(im2, label=r'$|W_n(f,t)|^{2} \cdot \sigma_u^{-2}$ (-)')
+    ax.grid(True)
+    ax.set_ylabel(r'$f z \cdot \overline{u}^{-1}$ (-)', fontsize=18)
+    ax.set_xlabel(r'$t$ (s)', fontsize=18)
+    ax.set_yscale('log')
+    ax.set_box_aspect(0.5)    
+    ax.set_ylim(np.min(f_scale), 100.)
+    ax.set_xlim(0., np.amax(t_eq))
+
+    return im1, im2, pl1, pl2
