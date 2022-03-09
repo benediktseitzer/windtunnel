@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>windtunnel.grid package &mdash; EWTL 1.009 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="windtunnel.plots package" href="windtunnel.plots.html" />
+    <link rel="prev" title="windtunnel.flow package" href="windtunnel.flow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EWTL
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="windtunnel.html">windtunnel package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="windtunnel.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.flow.html">windtunnel.flow package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">windtunnel.grid package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.grid.tools">windtunnel.grid.tools module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.grid">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.plots.html">windtunnel.plots package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries">windtunnel.timeseries module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries_nc">windtunnel.timeseries_nc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.utils">windtunnel.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.plots.html">windtunnel.plots package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.flow.html">windtunnel.flow package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">windtunnel.grid package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.grid.tools">windtunnel.grid.tools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EWTL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="windtunnel.html">windtunnel package</a> &raquo;</li>
+      <li>windtunnel.grid package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/windtunnel.grid.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="windtunnel-grid-package">
+<h1>windtunnel.grid package<a class="headerlink" href="#windtunnel-grid-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-windtunnel.grid.tools">
+<span id="windtunnel-grid-tools-module"></span><h2>windtunnel.grid.tools module<a class="headerlink" href="#module-windtunnel.grid.tools" title="Permalink to this headline"></a></h2>
+<p>/grid/tools.py:
+generates measurement grids for domains with obstacles/buildings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.building">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.building" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class used to describe the properties of a building. Used to easier plot the different buildings in a flow or
+concentration experiment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.building.calc_boundaries">
+<span class="sig-name descname"><span class="pre">calc_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.building.calc_boundaries" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the building boundaries from the positions and extents.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.building.refresh_patches">
+<span class="sig-name descname"><span class="pre">refresh_patches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.building.refresh_patches" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_transform</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Takes positions, extents and types of buildings from a .csv file and generates a configuration which can be used for
+plotting and grid generation. To initialize an object of the configuration class only a .csv file of the building
+parameters is needed. The following structure is required:
+Name    type(rect)  x_pos   y_pos   x_extent    y_extent    z_extent</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.add_configuration">
+<span class="sig-name descname"><span class="pre">add_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.add_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the building configuration to the ax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.filter_points">
+<span class="sig-name descname"><span class="pre">filter_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.filter_points" title="Permalink to this definition"></a></dt>
+<dd><p>Filters out points which lie inside or in the vicinity of buildings. The value of tolerance acts as a buffer
+around the buildings where points are also filtered out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>z</strong> (<em>array_like</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – </p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – unused</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.gen_cart_grid">
+<span class="sig-name descname"><span class="pre">gen_cart_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.gen_cart_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
+buildings can be omitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.gen_polar_grid">
+<span class="sig-name descname"><span class="pre">gen_polar_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.gen_polar_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a polar grid of points from the input parameters. If desired the points that lie inside of
+buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
+parameters to shift the centre of the polar grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angles</strong> (<em>array_like</em>) – angles in degrees</p></li>
+<li><p><strong>dists</strong> (<em>array_like</em>) – distances</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>x_offset</strong> (<em>float</em>) – </p></li>
+<li><p><strong>y_offset</strong> (<em>float</em>) – </p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.get_building_boundaries">
+<span class="sig-name descname"><span class="pre">get_building_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.get_building_boundaries" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of the boundaries of the buildings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>boundaries</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.configuration.plot_configuration">
+<span class="sig-name descname"><span class="pre">plot_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.configuration.plot_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the buildings in the configuration with a desired figure size
+:param figure_size:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.cost_func">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">cost_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.cost_func" title="Permalink to this definition"></a></dt>
+<dd><p>arbitrary cost function which punishes small angles: for visuals follow
+plt.figure()
+plt.plot(np.arange(91),(np.cos(np.deg2rad(np.arange(91)*4))+0.2)*((np.cos(np.deg2rad(np.arange(91)*4))+0.2)&gt;0)*4)
+:param angles:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>cost</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.get_metangle">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">get_metangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.get_metangle" title="Permalink to this definition"></a></dt>
+<dd><p>Get meteorological angle of input vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>numpy.ndarray</strong><strong>)</strong> (<em>y</em>) – </p></li>
+<li><p><strong>(</strong><strong>numpy.ndarray</strong><strong>)</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(numpy.ma.core.MaskedArray)</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Meteorological angles.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.intersects">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.intersects" title="Permalink to this definition"></a></dt>
+<dd><p>Tests if 2 line segments are intersecting. Assumes line segments are stored in the format [(x0,y0),(x1,y1)].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s0</strong> (<em>list of tuples</em>) – </p></li>
+<li><p><strong>s1</strong> (<em>list of tuples</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.optimize_grid">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">optimize_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.optimize_grid" title="Permalink to this definition"></a></dt>
+<dd><p>This function optimizes an input grid of points by minimizing the traveltime and angle between each point. Angles
+between points of ]0 - 25 and 65-90[ are punished in terms of traveltime and are avoided. Furthermore routes through
+buildings can be avoided aswell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>configuration</strong> (<em>object</em>) – </p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>angle_cost</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.tools.rotate_via_numpy">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.tools.</span></span><span class="sig-name descname"><span class="pre">rotate_via_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.tools.rotate_via_numpy" title="Permalink to this definition"></a></dt>
+<dd><p>Use numpy to build a rotation matrix and take the dot product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xy_transformed</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-windtunnel.grid">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-windtunnel.grid" title="Permalink to this headline"></a></h2>
+<p>Created on Thu Nov 16 15:45:47 2017</p>
+<p>&#64;author: u300517</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.grid.building">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.building" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class used to describe the properties of a building. Used to easier plot the different buildings in a flow or
+concentration experiment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.building.calc_boundaries">
+<span class="sig-name descname"><span class="pre">calc_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.building.calc_boundaries" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the building boundaries from the positions and extents.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.building.refresh_patches">
+<span class="sig-name descname"><span class="pre">refresh_patches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.building.refresh_patches" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_transform</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Takes positions, extents and types of buildings from a .csv file and generates a configuration which can be used for
+plotting and grid generation. To initialize an object of the configuration class only a .csv file of the building
+parameters is needed. The following structure is required:
+Name    type(rect)  x_pos   y_pos   x_extent    y_extent    z_extent</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.add_configuration">
+<span class="sig-name descname"><span class="pre">add_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.add_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the building configuration to the ax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.filter_points">
+<span class="sig-name descname"><span class="pre">filter_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.filter_points" title="Permalink to this definition"></a></dt>
+<dd><p>Filters out points which lie inside or in the vicinity of buildings. The value of tolerance acts as a buffer
+around the buildings where points are also filtered out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>z</strong> (<em>array_like</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – </p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – unused</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.gen_cart_grid">
+<span class="sig-name descname"><span class="pre">gen_cart_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.gen_cart_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a cartesian grid of points from the input parameters. If desired the points that lie inside of
+buildings can be omitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – 1-D arrays representing the coordinates of a grid.</p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.gen_polar_grid">
+<span class="sig-name descname"><span class="pre">gen_polar_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.gen_polar_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a polar grid of points from the input parameters. If desired the points that lie inside of
+buildings can be omitted. If the origin of the polar grid is not on (0,0) adjust the x_offset and y_offset
+parameters to shift the centre of the polar grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angles</strong> (<em>array_like</em>) – angles in degrees</p></li>
+<li><p><strong>dists</strong> (<em>array_like</em>) – distances</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>x_offset</strong> (<em>float</em>) – </p></li>
+<li><p><strong>y_offset</strong> (<em>float</em>) – </p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – 2-D array representing the coordinates of the points [X,Y,Z]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.get_building_boundaries">
+<span class="sig-name descname"><span class="pre">get_building_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.get_building_boundaries" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of the boundaries of the buildings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>boundaries</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.grid.configuration.plot_configuration">
+<span class="sig-name descname"><span class="pre">plot_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.configuration.plot_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the buildings in the configuration with a desired figure size
+:param figure_size:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.cost_func">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">cost_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.cost_func" title="Permalink to this definition"></a></dt>
+<dd><p>arbitrary cost function which punishes small angles: for visuals follow
+plt.figure()
+plt.plot(np.arange(91),(np.cos(np.deg2rad(np.arange(91)*4))+0.2)*((np.cos(np.deg2rad(np.arange(91)*4))+0.2)&gt;0)*4)
+:param angles:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>cost</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.get_metangle">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">get_metangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.get_metangle" title="Permalink to this definition"></a></dt>
+<dd><p>Get meteorological angle of input vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>numpy.ndarray</strong><strong>)</strong> (<em>y</em>) – </p></li>
+<li><p><strong>(</strong><strong>numpy.ndarray</strong><strong>)</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(numpy.ma.core.MaskedArray)</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Meteorological angles.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.intersects">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.intersects" title="Permalink to this definition"></a></dt>
+<dd><p>Tests if 2 line segments are intersecting. Assumes line segments are stored in the format [(x0,y0),(x1,y1)].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s0</strong> (<em>list of tuples</em>) – </p></li>
+<li><p><strong>s1</strong> (<em>list of tuples</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.optimize_grid">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">optimize_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_buildings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.optimize_grid" title="Permalink to this definition"></a></dt>
+<dd><p>This function optimizes an input grid of points by minimizing the traveltime and angle between each point. Angles
+between points of ]0 - 25 and 65-90[ are punished in terms of traveltime and are avoided. Furthermore routes through
+buildings can be avoided aswell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>configuration</strong> (<em>object</em>) – </p></li>
+<li><p><strong>avoid_buildings</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>angle_cost</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.grid.rotate_via_numpy">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.grid.</span></span><span class="sig-name descname"><span class="pre">rotate_via_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.grid.rotate_via_numpy" title="Permalink to this definition"></a></dt>
+<dd><p>Use numpy to build a rotation matrix and take the dot product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xy_transformed</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="windtunnel.flow.html" class="btn btn-neutral float-left" title="windtunnel.flow package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="windtunnel.plots.html" class="btn btn-neutral float-right" title="windtunnel.plots package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nikhil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

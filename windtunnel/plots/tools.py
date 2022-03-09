@@ -42,8 +42,9 @@ def plot_windrose(inFF,inDD, num_bars = 10, ax = None, left_legend = False):
     10 degree classes for directional data. The representation of the windrose 
     in this function is more detailed than in plot_DWD_windrose().
    
-    ----------
     Parameters
+    ----------
+    
     
     inFF: np.array
     inDD: np.array
@@ -117,8 +118,8 @@ def plot_DWD_windrose(inFF,inDD):
     30 degree classes for directional data. The representation of the windrose 
     in this function is less detailed than in plotwindrose().
 
-    ----------
     Parameters
+    ----------
     
     inFF: np.array
     inDD: np.array
@@ -166,8 +167,8 @@ def plot_rose(inFF,inDD,ff_steps,dd_range):
     """ Plots windrose according to user specified input from ff_steps and 
     dd_Range.
 
-    ----------
     Parameters
+    ----------
     
     inFF:  np.array
     inDD:  np.array
@@ -219,8 +220,8 @@ def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap
     """ Plots windrose according to user specified input from ff_steps and
     dd_Range.
 
-    ----------
     Parameters
+    ----------
 
     inFF: np.array, contains the windspeeds
     inDD:np.array, contains the winddirections
@@ -232,8 +233,9 @@ def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap
     alpha: float
     cmap: `~matplotlib.colors.Colormap
 
-    ----------
     Returns
+    ----------
+    
 
     ax:  axes object
     cbar: matplotlib object
@@ -292,16 +294,17 @@ def plot_rose_map(inFF, inDD, x_coor, y_coor, ff_steps, dd_range, ax, alpha,cmap
 def plot_pdfs(sets,lablist,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist.
 
-    ----------
     Parameters
+    ----------
     
     sets: iterable set of data
     lablist: list of strings
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
     
-    ----------
     Returns
+    ----------
+    
 
     ret: axes object
     
@@ -328,8 +331,8 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     """Plots PDFs of data in sets using the respective labels from lablist with
     a given margin of error.
 
-    ----------
     Parameters
+    ----------
     
     sets: array-like
     lablist: list of strings
@@ -337,9 +340,9 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
     
-    ----------
     Returns
-
+    ----------
+    
     ret: list of axes object
     
     """
@@ -369,16 +372,17 @@ def plot_pdfs_err(sets,lablist,error,ax=None, **kwargs):
 def plot_cdfs(sets, lablist, ax=None, **kwargs):
     """Plots CDFs of data in sets using the respective labels from lablist
 
-    ----------
     Parameters
+    ----------
      
     sets: array like
     lablist: list of strings
     ax: axis passed to function
     kwargs : additional keyword arguments passed to plt.plot()
     
-    ----------
     Returns
+    ----------
+    
 
     ret: list of axes object
     

@@ -20,7 +20,8 @@ __all__ = [
     'calc_theo_arrival_law',
     'calc_arrival_law',
     'calc_transit_time_distribution',
-    'get_turb_reference_values',
+    'get_turb_reference_values'
+    
 ]
 
 
@@ -28,8 +29,9 @@ def get_turb_reference_values():
     """Calculates and returns the new VDI reference data for the turbulence intensity of
     component.
 
-    ----------
     Returns
+    ----------
+    
 
     z: np.array
     I_u: np.array
@@ -83,8 +85,9 @@ def get_lux_referencedata(ref_path=None):
     """Reads and returns reference data for the integral length scale (Lux).
     This function takes no parameters. 
     
-    ----------
     Returns
+    ----------
+    
     
     Lux_10: array-like
     Lux_1: array-like
@@ -114,14 +117,16 @@ def get_lux_referencedata(ref_path=None):
 def find_nearest(array, value):
     """ Finds nearest element of array to value.
 
-    ----------
     Parameters
+    ----------
+    
     
     array: np.array
     value: int or float
 
-    ----------
     Returns
+    ----------
+    
     
     array[idx]: float
     
@@ -133,13 +138,15 @@ def find_nearest(array, value):
 def get_reference_spectra(height, ref_path=None):
     """ Get reference spectra from pre-defined location.
     
-    ----------
     Parameters
+    ----------
+    
     
     height: int or float
 
-    ----------
     Returns
+    ----------
+    
 
     ref_specs: array-like
     
@@ -160,14 +167,16 @@ def transit_time_weighted_mean(transit_time, component):
     data in the BSA software. Transit time weighting removes a possible
     bias towards higher wind velocities. Returns the weighted component mean.
     
-    ----------
     Parameters
+    ----------
+    
     
     transit_time: np.arrray
     component: np.arrray
     
-    ----------
     Returns
+    ----------
+    
 
     weighted_mean: float
     
@@ -188,13 +197,15 @@ def transit_time_weighted_var(transit_time, component):
     bias towards higher wind velocities. Returns the weighted u and v
     component variance.
 
-    ----------
     Parameters
+    ----------
+    
     transit_time: np.arrray
     component: np.arrray
     
-    ----------
     Returns
+    ----------
+    
     weighted_var: float
 
     """
@@ -214,15 +225,17 @@ def transit_time_weighted_flux(transit_time, component_1, component_2):
     time weighting removes a possible bias towards higher wind velocities.
     Returns a mean weighted flux.
 
-    ----------
     Parameters
+    ----------
+    
     
     transit_time: np.arrray
     component_1: np.arrray
     component_2: np.arrray
     
-    ----------
     Returns
+    ----------
+    
     weighted_flux: float
 
     """
@@ -241,14 +254,16 @@ def calc_theo_arrival_law(t_arr, data_rate):
     if exponential, there is temporally uniform seeding.
     Input parameters are the arrival times for each burst and the data rate of the measurement.
 
-    ----------
     Parameters
+    ----------
+    
 
     t_arr:list or np.array
     data_rate:float
 
-    ----------
     Returns
+    ----------
+    
 
     delta_t_arr: array  
     particle_arrival_law: array
@@ -270,14 +285,16 @@ def calc_arrival_law(t_arr, data_rate):
     calculate particle arrival law and fit the distribution. 
     if exponential, there is temporally uniform seeding.
 
-    ----------
     Parameters
+    ----------
+    
     
     t_arr: list or np.array
     data_rate: float
 
-    ----------
     Returns
+    ----------
+    
 
     binscenters: list or array
     data_entries: numpy object
@@ -308,13 +325,14 @@ def calc_transit_time_distribution(transit_time):
     calculate particle arrival law. 
     if exponential, there is temporally uniform seeding.
 
-    ----------
     Parameters
+    ----------
     
     transit_time: list or np.array
     
-    ----------
     Returns
+    ----------
+    
     
     """
 

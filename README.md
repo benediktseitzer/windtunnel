@@ -19,7 +19,8 @@ To set up the windtunnel-package, simply place it in a directory of your choice.
  - csv v1.0
  - tsp_solver 
  - os, sys, time, fnmatch, math, mpl_toolkits (all built-in modules)
- 
+ - sphinx, sphinx_rtd_theme
+  
 The listed versions represent minimum requirements.
 
 #### 1.2. Windows

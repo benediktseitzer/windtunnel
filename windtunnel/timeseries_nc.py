@@ -18,8 +18,9 @@ class Timeseries_nc(pd.DataFrame):
     masking outliers. All the information in a Timeseries object can be saved
     to a txt file.
 
-    ----------
     Parameters
+    ----------
+    
 
     u: np.array
     v: np.array
@@ -29,8 +30,8 @@ class Timeseries_nc(pd.DataFrame):
     t_arr: np.array
     t_transit: np.array
 
-    ----------
     Returns
+    ----------
     
     """
     def __init__(self,comp_1,comp_2,x=None,y=None,z=None,t_arr_1=None,
@@ -62,8 +63,8 @@ class Timeseries_nc(pd.DataFrame):
     def __repr__(self):
         """ Return the x, y and z coordinate of the Timeseries object. 
         
-        ----------
         Returns
+        ----------
         
         Timeseries
 
@@ -76,8 +77,8 @@ class Timeseries_nc(pd.DataFrame):
         """ Two Timeseries objects are considered equal, if their x and y
         coordinates are the same. 
         
-        ----------
         Returns
+        ----------
         
         """
         return self.x == other.x and self.y == other.y
@@ -86,14 +87,14 @@ class Timeseries_nc(pd.DataFrame):
     def from_file(cls,filename):
         """ Create Timeseries object from file. 
         
-        ----------
         Parameters
+        ----------
 
         cls: class
         filename: str
 
-        ----------
         Returns
+        ----------
 
         ret: class
         
@@ -126,8 +127,8 @@ class Timeseries_nc(pd.DataFrame):
         accesses only the one wtref value that is associated to the current
         file.
 
-        ----------
         Parameters
+        ----------
         
         path: string
         filename:string
@@ -150,8 +151,8 @@ class Timeseries_nc(pd.DataFrame):
     def get_wind_comps(self,filename):
         """ Get wind components from filename.
 
-        ----------
         Parameters
+        ----------
         filename: str
 
         """
@@ -181,8 +182,8 @@ class Timeseries_nc(pd.DataFrame):
     def adapt_scale(self,scale):
         """ Convert timeseries from model scale to full scale.
 
-        ----------
         Parameters
+        ----------
         scale: float
 
         """
@@ -198,8 +199,8 @@ class Timeseries_nc(pd.DataFrame):
         tolerance to match a pair of measurements. atol is set to 1 as default,
         its unit is [ms].
 
-        ----------
         Parameters
+        ----------
         
         atol: float or int 
 
@@ -228,8 +229,8 @@ class Timeseries_nc(pd.DataFrame):
         threshold for a value to be considered an outlier. 5 is the default
         value for std_mask.
 
-        ----------
         Parameters
+        ----------
 
         std_mask: float
         """
@@ -290,8 +291,8 @@ class Timeseries_nc(pd.DataFrame):
         bias towards higher wind velocities. Returns the weighted u and v
         component means.
         
-        ----------
         Returns
+        ----------
         
         self.weighted_u_mean: float
         self.weighted_u_mean: float
@@ -313,8 +314,8 @@ class Timeseries_nc(pd.DataFrame):
         bias towards higher wind velocities. Returns the weighted u and v
         component variance.
         
-        ----------
         Returns
+        ----------
         
         self.weighted_u_var: float
         self.weighted_u_var: float
@@ -332,8 +333,8 @@ class Timeseries_nc(pd.DataFrame):
     def mean_magnitude(self):
         """ Calculate mean wind magnitude from unweighted components. 
         
-        ----------
         Returns
+        ----------
         
         """
         #if self.magnitude is None:
@@ -347,8 +348,8 @@ class Timeseries_nc(pd.DataFrame):
         """ Calculate mean wind direction from components relative to the wind
         tunnels axis.
         
-        ----------
         Returns
+        ----------
 
         """
         #if self.paired_components is None:
@@ -368,14 +369,15 @@ class Timeseries_nc(pd.DataFrame):
         '.txt' ending. If no out_dir directory is provided './' is set as
         standard.
 
-        ----------
         Parameters
+        ----------
 
         filename: str
         out_dir: str
         
-        ----------
         Returns
+        ----------
+        
         
         """
         if out_dir is None:

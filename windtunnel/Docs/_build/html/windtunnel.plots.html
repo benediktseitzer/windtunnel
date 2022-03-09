@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>windtunnel.plots package &mdash; EWTL 1.009 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="windtunnel.grid package" href="windtunnel.grid.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EWTL
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="windtunnel.html">windtunnel package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="windtunnel.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.flow.html">windtunnel.flow package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windtunnel.grid.html">windtunnel.grid package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">windtunnel.plots package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.plots.bl">windtunnel.plots.bl module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.plots.concentration">windtunnel.plots.concentration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.plots.tools">windtunnel.plots.tools module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-windtunnel.plots">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries">windtunnel.timeseries module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.timeseries_nc">windtunnel.timeseries_nc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel.utils">windtunnel.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windtunnel.html#module-windtunnel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">windtunnel.plots package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.plots.bl">windtunnel.plots.bl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.plots.concentration">windtunnel.plots.concentration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.plots.tools">windtunnel.plots.tools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-windtunnel.plots">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.concentration.html">windtunnel.concentration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.flow.html">windtunnel.flow package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windtunnel.grid.html">windtunnel.grid package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EWTL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="windtunnel.html">windtunnel package</a> &raquo;</li>
+      <li>windtunnel.plots package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/windtunnel.plots.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="windtunnel-plots-package">
+<h1>windtunnel.plots package<a class="headerlink" href="#windtunnel-plots-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-windtunnel.plots.bl">
+<span id="windtunnel-plots-bl-module"></span><h2>windtunnel.plots.bl module<a class="headerlink" href="#module-windtunnel.plots.bl" title="Permalink to this headline"></a></h2>
+<p>Plotting tools for boundary layer assessment.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_JTFA_STFT">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_JTFA_STFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_JTFA_STFT" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the joint time frequency analysis using a short-time Fourier
+transform smoothed and raw for both wind components in one figure. Returns
+the figure. To change overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>height</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>t_eq</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>second_comp</strong> (<em>string</em>) – </p></li>
+<li><p><strong>window_length</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>ncols</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+<li><p><strong>fixes_limits</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ymax</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fig</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>figure object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_Re_independence">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_Re_independence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_Re_independence" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the results for a Reynolds Number Independence test from a non-
+dimensionalised timeseries. yerr specifies the uncertainty. Its default
+value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ymin</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ymax</strong> (<em>float</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta_t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_law</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binscenters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_entries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta_t_arr</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>arrival_law</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>binscenters</strong> (<em>float</em>) – </p></li>
+<li><p><strong>data_entries</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>popt</strong> (<em>float</em>) – </p></li>
+<li><p><strong>logplot</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>legend object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_convergence">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_convergence" title="Permalink to this definition"></a></dt>
+<dd><p>Plots results of convergence tests performed on any number of
+quantities in one plot. ncols specifies the number of columns desired in
+the output plot. kwargs contains any parameters to be passed to
+plot_convergence_test, such as wtref, ref_length and scale. See doc_string
+of plot_convergence_test for more details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<em>dictionary</em>) – </p></li>
+<li><p><strong>ncols</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axes</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_convergence_test">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_convergence_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_convergence_test" title="Permalink to this definition"></a></dt>
+<dd><p>Plots results of convergence tests  from data. This is a very limited
+function and is only intended to give a brief overview of the convergence
+rest results using dictionaries as input objects. wtref, ref_length and
+scale are used to determine a dimensionless time unit on the x-axis.
+Default values for each are 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ref_length</strong> (<em>float</em>) – </p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – </p></li>
+<li><p><strong>title</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>handles</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_fluxes">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_fluxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_fluxes" title="Permalink to this definition"></a></dt>
+<dd><p>Plots fluxes from data for their respective height with a 10% range of
+the low point mean. yerr specifies the uncertainty. Its default value is 0.
+WARNING: Data must be made dimensionless before plotting! If lat is True
+then a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_fluxes_log">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_fluxes_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_fluxes_log" title="Permalink to this definition"></a></dt>
+<dd><p>Plots fluxes from data for their respective height on a log scale with
+a 10% range of the low point mean. yerr specifies the uncertainty. Its
+default value is 0. WARNING: Data must be made dimensionless before
+plotting!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_hist">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_hist" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a histogram for data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis object</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ret</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_lux">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_lux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Lux</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_lux" title="Permalink to this definition"></a></dt>
+<dd><p>Plots Lux data on a double logarithmic scale with reference data. yerr
+specifies the uncertainty. Its default value is 0. If lat
+is True then a lateral profile, without a loglog scale, is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Lux</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>err</strong> (<em>float</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_perturbation_rose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_perturbation_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_divider</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_perturbation_rose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots a detailed wind rose using only the perturbation component of
+the wind. Number of bars depends on bar_divider and length of u1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>total_mag</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>total_direction</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>bar_divider</strong> (<em>float</em>) – </p></li>
+<li><p><strong>second_comp</strong> (<em>string</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_repeat">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_repeat" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the results for a Repeatability test from a non-
+dimensionalised timeseries. yerr specifies the uncertainty. Its default
+value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_scatter">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_scatter" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
+components mean value are coloured in orange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>std_mask</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_uu_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_vv_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_aliasing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_aliasing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wind_comps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Plots spectra using INPUT with reference data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_uu_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_vv_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_vv_sm</strong> – </p></li>
+<li><p><strong>u_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>v_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>uv_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>wind_comps</strong> (<em>list</em>) – </p></li>
+<li><p><strong>height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h1</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h2</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h3</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h4</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_stdevs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_stdevs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_stdevs" title="Permalink to this definition"></a></dt>
+<dd><p>This function plots the spread of an array based on how many standard
+deviations each point is from the mean over each tau-long time period.</p>
+<p>Parameters</p>
+<p>data: array like
+t_eq: array like
+tau: integer
+ax: axes object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_transit_time_distribution">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_transit_time_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_transit_time_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Plots transit-time distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>transit</em>) – </p></li>
+<li><p><strong>skew</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_turb_int">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_turb_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'I_u'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_turb_int" title="Permalink to this definition"></a></dt>
+<dd><p>Plots turbulence intensities from data with VDI reference data for
+their respective height. yerr specifies the uncertainty. Its default value
+is 0. If lat is True then a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_winddata">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_winddata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_winddata" title="Permalink to this definition"></a></dt>
+<dd><p>Plots wind components and wind magnitude for their respective height.
+yerr specifies the uncertainty. Its default value is 0. If lat is True then
+a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>list of axes objects</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.plot_winddata_log">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">plot_winddata_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.plot_winddata_log" title="Permalink to this definition"></a></dt>
+<dd><p>Plots wind components and wind magnitude for their respective height on
+a log scale. yerr specifies the uncertainty. Its default value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>list of axes objects</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.bl.turb_refernce_plot">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.bl.</span></span><span class="sig-name descname"><span class="pre">turb_refernce_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.bl.turb_refernce_plot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-windtunnel.plots.concentration">
+<span id="windtunnel-plots-concentration-module"></span><h2>windtunnel.plots.concentration module<a class="headerlink" href="#module-windtunnel.plots.concentration" title="Permalink to this headline"></a></h2>
+<p>Plotting tools for concentration measurement assessment.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.concentration.plot_boxplots">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.concentration.</span></span><span class="sig-name descname"><span class="pre">plot_boxplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.concentration.plot_boxplots" title="Permalink to this definition"></a></dt>
+<dd><p>Plot statistics of concentration measurements in boxplots. Expects
+input from PointConcentration class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<em>dictionary</em>) – </p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes-object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-windtunnel.plots.tools">
+<span id="windtunnel-plots-tools-module"></span><h2>windtunnel.plots.tools module<a class="headerlink" href="#module-windtunnel.plots.tools" title="Permalink to this headline"></a></h2>
+<p>Plotting utilities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.Windrose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">Windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.Windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.Windrose.pack">
+<span class="sig-name descname"><span class="pre">pack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.Windrose.pack" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_DWD_windrose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_DWD_windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_DWD_windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to DWD classes of 1 m/s for velocity data and
+30 degree classes for directional data. The representation of the windrose
+in this function is less detailed than in plotwindrose().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_cdfs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_cdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_cdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots CDFs of data in sets using the respective labels from lablist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_pdfs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_pdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots PDFs of data in sets using the respective labels from lablist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>iterable set of data</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_pdfs_err">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_pdfs_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_pdfs_err" title="Permalink to this definition"></a></dt>
+<dd><p>Plots PDFs of data in sets using the respective labels from lablist with
+a given margin of error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>error</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_rose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dd_range</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_rose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to user specified input from ff_steps and
+dd_Range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>ff_steps</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>dd_range</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_rose_map">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_rose_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_coor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dd_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap=&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_rose_map" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to user specified input from ff_steps and
+dd_Range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em><em>, </em><em>contains the windspeeds</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em><em>, </em><em>contains the winddirections</em>) – </p></li>
+<li><p><strong>x_coor</strong> (<em>np.array</em><em>, </em><em>contains the x coordinates of the measurements</em>) – </p></li>
+<li><p><strong>y_coor</strong> (<em>np.array</em><em>, </em><em>contains the x coordinates of the measurements</em>) – </p></li>
+<li><p><strong>ff_steps</strong> (<em>list</em><em> or </em><em>np.array</em><em>, </em><em>specifies the steps of the windspeeds for the windrose</em>) – </p></li>
+<li><p><strong>dd_range</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>specifies the direction ranges</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>pyplot axes object</em>) – </p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – </p></li>
+<li><p><strong>cmap</strong> (<a href="#id1"><span class="problematic" id="id2">`</span></a>~matplotlib.colors.Colormap) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ax</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>cbar</strong> (<em>matplotlib object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.tools.plot_windrose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.tools.</span></span><span class="sig-name descname"><span class="pre">plot_windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.tools.plot_windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose with dynamic velocity classes of each 10% percentile and
+10 degree classes for directional data. The representation of the windrose
+in this function is more detailed than in plot_DWD_windrose().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>num_bars</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>pyplot axes object</em><em>, </em><em>must be polar</em>) – </p></li>
+<li><p><strong>left_legend</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-windtunnel.plots">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-windtunnel.plots" title="Permalink to this headline"></a></h2>
+<p>Created on Thu Nov 16 15:45:47 2017</p>
+<p>&#64;author: u300517</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="windtunnel.plots.Windrose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">Windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.Windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="windtunnel.plots.Windrose.pack">
+<span class="sig-name descname"><span class="pre">pack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.Windrose.pack" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_DWD_windrose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_DWD_windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_DWD_windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to DWD classes of 1 m/s for velocity data and
+30 degree classes for directional data. The representation of the windrose
+in this function is less detailed than in plotwindrose().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_JTFA_STFT">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_JTFA_STFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_JTFA_STFT" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the joint time frequency analysis using a short-time Fourier
+transform smoothed and raw for both wind components in one figure. Returns
+the figure. To change overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>height</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>t_eq</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>second_comp</strong> (<em>string</em>) – </p></li>
+<li><p><strong>window_length</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>ncols</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+<li><p><strong>fixes_limits</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ymax</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fig</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>figure object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_Re_independence">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_Re_independence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_Re_independence" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the results for a Reynolds Number Independence test from a non-
+dimensionalised timeseries. yerr specifies the uncertainty. Its default
+value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ymin</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ymax</strong> (<em>float</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_arrival_law">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_arrival_law</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta_t_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_law</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binscenters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_entries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_arrival_law" title="Permalink to this definition"></a></dt>
+<dd><p>Plots particle arrival law and scale KDE-pdf to mean data rate before plotting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta_t_arr</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>arrival_law</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>binscenters</strong> (<em>float</em>) – </p></li>
+<li><p><strong>data_entries</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>popt</strong> (<em>float</em>) – </p></li>
+<li><p><strong>logplot</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>legend object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_boxplots">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_boxplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_boxplots" title="Permalink to this definition"></a></dt>
+<dd><p>Plot statistics of concentration measurements in boxplots. Expects
+input from PointConcentration class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<em>dictionary</em>) – </p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes-object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_cdfs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_cdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_cdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots CDFs of data in sets using the respective labels from lablist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_convergence">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_convergence" title="Permalink to this definition"></a></dt>
+<dd><p>Plots results of convergence tests performed on any number of
+quantities in one plot. ncols specifies the number of columns desired in
+the output plot. kwargs contains any parameters to be passed to
+plot_convergence_test, such as wtref, ref_length and scale. See doc_string
+of plot_convergence_test for more details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<em>dictionary</em>) – </p></li>
+<li><p><strong>ncols</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axes</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_convergence_test">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_convergence_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_convergence_test" title="Permalink to this definition"></a></dt>
+<dd><p>Plots results of convergence tests  from data. This is a very limited
+function and is only intended to give a brief overview of the convergence
+rest results using dictionaries as input objects. wtref, ref_length and
+scale are used to determine a dimensionless time unit on the x-axis.
+Default values for each are 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ref_length</strong> (<em>float</em>) – </p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – </p></li>
+<li><p><strong>title</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>handles</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_fluxes">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_fluxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_fluxes" title="Permalink to this definition"></a></dt>
+<dd><p>Plots fluxes from data for their respective height with a 10% range of
+the low point mean. yerr specifies the uncertainty. Its default value is 0.
+WARNING: Data must be made dimensionless before plotting! If lat is True
+then a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_fluxes_log">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_fluxes_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfc_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_fluxes_log" title="Permalink to this definition"></a></dt>
+<dd><p>Plots fluxes from data for their respective height on a log scale with
+a 10% range of the low point mean. yerr specifies the uncertainty. Its
+default value is 0. WARNING: Data must be made dimensionless before
+plotting!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>sfc_height</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_hist">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_hist" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a histogram for data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis object</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ret</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_lux">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_lux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Lux</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_lux" title="Permalink to this definition"></a></dt>
+<dd><p>Plots Lux data on a double logarithmic scale with reference data. yerr
+specifies the uncertainty. Its default value is 0. If lat
+is True then a lateral profile, without a loglog scale, is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Lux</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>err</strong> (<em>float</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_pdfs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_pdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots PDFs of data in sets using the respective labels from lablist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>iterable set of data</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_pdfs_err">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_pdfs_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lablist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_pdfs_err" title="Permalink to this definition"></a></dt>
+<dd><p>Plots PDFs of data in sets using the respective labels from lablist with
+a given margin of error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<em>array-like</em>) – </p></li>
+<li><p><strong>lablist</strong> (<em>list of strings</em>) – </p></li>
+<li><p><strong>error</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axis passed to function</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>additional keyword arguments passed to plt.plot</em><em>(</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_perturbation_rose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_perturbation_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_divider</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_perturbation_rose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots a detailed wind rose using only the perturbation component of
+the wind. Number of bars depends on bar_divider and length of u1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v1</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>total_mag</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>total_direction</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>bar_divider</strong> (<em>float</em>) – </p></li>
+<li><p><strong>second_comp</strong> (<em>string</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_repeat">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_repeat" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the results for a Repeatability test from a non-
+dimensionalised timeseries. yerr specifies the uncertainty. Its default
+value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>wtref</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_rose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dd_range</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_rose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to user specified input from ff_steps and
+dd_Range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>ff_steps</strong> (<em>list</em><em> or </em><em>np.array</em>) – </p></li>
+<li><p><strong>dd_range</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_rose_map">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_rose_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_coor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dd_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap=&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_rose_map" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose according to user specified input from ff_steps and
+dd_Range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em><em>, </em><em>contains the windspeeds</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em><em>, </em><em>contains the winddirections</em>) – </p></li>
+<li><p><strong>x_coor</strong> (<em>np.array</em><em>, </em><em>contains the x coordinates of the measurements</em>) – </p></li>
+<li><p><strong>y_coor</strong> (<em>np.array</em><em>, </em><em>contains the x coordinates of the measurements</em>) – </p></li>
+<li><p><strong>ff_steps</strong> (<em>list</em><em> or </em><em>np.array</em><em>, </em><em>specifies the steps of the windspeeds for the windrose</em>) – </p></li>
+<li><p><strong>dd_range</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>specifies the direction ranges</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>pyplot axes object</em>) – </p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – </p></li>
+<li><p><strong>cmap</strong> (<a href="#id3"><span class="problematic" id="id4">`</span></a>~matplotlib.colors.Colormap) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ax</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>cbar</strong> (<em>matplotlib object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_scatter">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_scatter" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a scatter plot of x and y. All outliers outside of 5 STDs of the
+components mean value are coloured in orange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>std_mask</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_spectra">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_uu_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_vv_sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_aliasing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_aliasing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wind_comps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_spectra" title="Permalink to this definition"></a></dt>
+<dd><p>Plots spectra using INPUT with reference data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_uu_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_vv_sm</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>S_vv_sm</strong> – </p></li>
+<li><p><strong>u_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>v_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>uv_aliasing</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>wind_comps</strong> (<em>list</em>) – </p></li>
+<li><p><strong>height</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h1</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h2</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h3</strong> (<em>axes object</em>)</p></li>
+<li><p><strong>h4</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_stdevs">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_stdevs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_stdevs" title="Permalink to this definition"></a></dt>
+<dd><p>This function plots the spread of an array based on how many standard
+deviations each point is from the mean over each tau-long time period.</p>
+<p>Parameters</p>
+<p>data: array like
+t_eq: array like
+tau: integer
+ax: axes object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_transit_time_distribution">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_transit_time_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_transit_time_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Plots transit-time distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>transit</em>) – </p></li>
+<li><p><strong>skew</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_turb_int">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_turb_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'I_u'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_turb_int" title="Permalink to this definition"></a></dt>
+<dd><p>Plots turbulence intensities from data with VDI reference data for
+their respective height. yerr specifies the uncertainty. Its default value
+is 0. If lat is True then a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>component</strong> (<em>string</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ref_path</strong> (<em>string</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>axes object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_winddata">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_winddata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_winddata" title="Permalink to this definition"></a></dt>
+<dd><p>Plots wind components and wind magnitude for their respective height.
+yerr specifies the uncertainty. Its default value is 0. If lat is True then
+a lateral profile is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>var_lat</strong> (<em>string</em><em>, </em><em>integer</em><em>, </em><em>float</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>boolean</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>list of axes objects</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_winddata_log">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_winddata_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_winddata_log" title="Permalink to this definition"></a></dt>
+<dd><p>Plots wind components and wind magnitude for their respective height on
+a log scale. yerr specifies the uncertainty. Its default value is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_magnitude</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>u_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>v_mean</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>heights</strong> (<em>array like</em>) – </p></li>
+<li><p><strong>yerr</strong> (<em>float</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>axes object</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>arbitrary</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ret</strong> (<em>list of axes objects</em>)</p></li>
+<li><p><strong>lgd</strong> (<em>axes object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.plot_windrose">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">plot_windrose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inFF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inDD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.plot_windrose" title="Permalink to this definition"></a></dt>
+<dd><p>Plots windrose with dynamic velocity classes of each 10% percentile and
+10 degree classes for directional data. The representation of the windrose
+in this function is more detailed than in plot_DWD_windrose().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inFF</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>inDD</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>num_bars</strong> (<em>integer</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>pyplot axes object</em><em>, </em><em>must be polar</em>) – </p></li>
+<li><p><strong>left_legend</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="windtunnel.plots.turb_refernce_plot">
+<span class="sig-prename descclassname"><span class="pre">windtunnel.plots.</span></span><span class="sig-name descname"><span class="pre">turb_refernce_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#windtunnel.plots.turb_refernce_plot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="windtunnel.grid.html" class="btn btn-neutral float-left" title="windtunnel.grid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nikhil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
